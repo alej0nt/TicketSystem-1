@@ -1,0 +1,76 @@
+# =====================================================
+# Global – Aplicable a todo el repositorio
+# =====================================================
+.env
+*.env.local
+*.env.*.local
+
+.DS_Store
+Thumbs.db
+
+.vscode/
+.idea/
+*.iml
+*.ipr
+*.iws
+
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+report.*
+*~
+*.swp
+
+# =====================================================
+# Backend – Spring Boot (Gradle)
+# =====================================================
+/backend/build/
+/backend/.gradle/
+
+# IDE y archivos compilados
+/backend/.idea/
+/backend/*.class
+/backend/.settings/
+/backend/.springBeans/
+/backend/.factorypath
+
+/backend/*.jar
+/backend/*.war
+
+# IDE – NetBeans
+/backend/nbproject/private/
+/backend/nbbuild/
+/backend/dist/
+/backend/nbdist/
+/backend/.nb-gradle/
+/backend/nb-configuration.xml
+
+# =====================================================
+# Frontend – Angular (npm)
+# =====================================================
+/frontend/node_modules/
+/frontend/dist/
+/frontend/out-tsc/
+/frontend/.angular/
+/frontend/.sass-cache/
+/frontend/coverage/
+/frontend/tmp/
+/frontend/e2e/test-output/
+/frontend/typings/
+/frontend/.ng/
+/frontend/*.tsbuildinfo
+
+/frontend/npm-debug.log*
+/frontend/yarn-debug.log*
+/frontend/yarn-error.log*
+
+/frontend/.env*
+/frontend/.env.*.local
+
+/frontend/.DS_Store
+/frontend/Thumbs.db
+
+
+
