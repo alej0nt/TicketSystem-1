@@ -10,7 +10,7 @@ description = 'A project for managment tickets in a company'
 
 java {
 	toolchain {
-		languageVersion = JavaLanguageVersion.of(17)
+		languageVersion = JavaLanguageVersion.of(21)
 	}
 }
 
