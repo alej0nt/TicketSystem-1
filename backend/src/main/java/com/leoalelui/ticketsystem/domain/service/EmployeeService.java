@@ -13,5 +13,5 @@ public interface EmployeeService {
     EmployeeResponseDTO getEmployeeById(Long id);
     List<EmployeeResponseDTO> getAllEmployees();
     EmployeeResponseDTO getEmployeeByEmail(String email);
-    boolean validateCredentials(String email, String password);
+    //boolean validateCredentials(String email, String password);
 }

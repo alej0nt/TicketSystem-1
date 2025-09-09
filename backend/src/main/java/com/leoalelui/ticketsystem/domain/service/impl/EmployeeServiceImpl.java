@@ -22,11 +22,9 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public EmployeeResponseDTO createEmployee(EmployeeCreateDTO dto) {
-        /*EmployeeEntity employee = employeeMapper.toEntity(dto);
-        employee.setPassword(passwordEncoder.encode(dto.getPassword()));
+        EmployeeEntity employee = employeeMapper.toEntity(dto);
         EmployeeEntity saved = employeeDAO.save(employee);
-        return employeeMapper.toResponseDTO(saved);*/
-        return null;
+        return employeeMapper.toResponseDTO(saved);
     }
 
     @Override
@@ -35,8 +33,9 @@ public class EmployeeServiceImpl implements EmployeeService {
                 .orElseThrow(() -> new EntityNotFoundException("Empleado no encontrado"));
 
         employee.setName(dto.getName());
-        employee.setDepartment(dto.getDepartment());
+        employee.setEmail(dto.getEmail());
         employee.setRole(dto.getRole());
+        employee.setDepartment(dto.getDepartment());
 
         EmployeeEntity updated = employeeDAO.save(employee);
         return employeeMapper.toResponseDTO(updated);
@@ -69,12 +68,10 @@ public class EmployeeServiceImpl implements EmployeeService {
         return employeeMapper.toResponseDTO(employee);
     }
 
-    @Override
+    /*@Override
     public boolean validateCredentials(String email, String password) {
-        /*EmployeeEntity employee = employeeDAO.findByEmail(email)
+        EmployeeEntity employee = employeeDAO.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("Credenciales inválidas"));
-        return passwordEncoder.matches(password, employee.getPassword());*/
-        return true;
-    }
-
+        return passwordEncoder.matches(password, employee.getPassword());
+    }*/
 }
