@@ -1,7 +1,7 @@
 package com.leoalelui.ticketsystem.domain.service.impl;
 
-import com.leoalelui.ticketsystem.domain.dto.category.CategoryCreateDTO;
-import com.leoalelui.ticketsystem.domain.dto.category.CategoryResponseDTO;
+import com.leoalelui.ticketsystem.domain.dto.request.CategoryCreateDTO;
+import com.leoalelui.ticketsystem.domain.dto.response.CategoryResponseDTO;
 import com.leoalelui.ticketsystem.domain.service.CategoryService;
 import com.leoalelui.ticketsystem.persistence.dao.CategoryDAO;
 import lombok.RequiredArgsConstructor;

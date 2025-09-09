@@ -1,7 +1,7 @@
 package com.leoalelui.ticketsystem.persistence.dao;
 
-import com.leoalelui.ticketsystem.domain.dto.category.CategoryCreateDTO;
-import com.leoalelui.ticketsystem.domain.dto.category.CategoryResponseDTO;
+import com.leoalelui.ticketsystem.domain.dto.request.CategoryCreateDTO;
+import com.leoalelui.ticketsystem.domain.dto.response.CategoryResponseDTO;
 import com.leoalelui.ticketsystem.persistence.entity.CategoryEntity;
 import com.leoalelui.ticketsystem.persistence.mapper.CategoryMapper;
 import com.leoalelui.ticketsystem.persistence.repository.CategoryRepository;

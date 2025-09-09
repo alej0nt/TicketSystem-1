@@ -3,7 +3,8 @@ package com.leoalelui.ticketsystem.persistence.entity;
 import jakarta.persistence.*;
 import lombok.Data;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
+import org.hibernate.annotations.CreationTimestamp;
 
 @Data
 @Entity
@@ -22,6 +23,7 @@ public class TicketRecordEntity {
     @Column(name = "next_state")
     private String nextState;
 
-    @Column(name = "change_date")
-    private LocalDate changeDate;
+    @CreationTimestamp
+    @Column(name = "changed_date", nullable = false, updatable = false)
+    private LocalDateTime changedDate;
 }

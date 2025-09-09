@@ -1,9 +1,11 @@
 package com.leoalelui.ticketsystem.persistence.entity;
 
 import jakarta.persistence.*;
+import java.time.LocalDateTime;
 import lombok.Data;
 
 import java.util.List;
+import org.hibernate.annotations.CreationTimestamp;
 
 @Data
 @Entity
@@ -16,7 +18,7 @@ public class TicketEntity {
     @JoinColumn(name = "employee_id", nullable = false)
     private EmployeeEntity employee;
 
-    private String tittle;
+    private String title;
     private String description;
 
     @ManyToOne
@@ -25,6 +27,13 @@ public class TicketEntity {
 
     private String priority;
     private String state;
+    
+    @CreationTimestamp
+    @Column(name = "creation_date", nullable = false, updatable = false)
+    private LocalDateTime creationDate;
+
+    @Column(name = "closing_date")
+    private LocalDateTime closingDate;
 
     @OneToMany(mappedBy = "ticket", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CommentEntity> comments;

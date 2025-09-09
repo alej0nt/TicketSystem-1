@@ -1,4 +1,4 @@
-package com.leoalelui.ticketsystem.domain.dto.employee;
+package com.leoalelui.ticketsystem.domain.dto.request;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -7,21 +7,19 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class EmployeeUpdateDTO {
+public class EmployeeCreateDTO {
 
-    @NotBlank(message = "El nombre del empleado no puede ser nulo o vacío.")
+    @NotBlank(message = "El nombre del empleado no puede ser nulo o vacìo.")
     private String name;
 
     @NotBlank(message = "El email del empleado no puede ser nulo o vacìo.")
     @Email(message = "Formato de email invàlido.")
     private String email;
 
+    @NotBlank(message = "La contrasña no pueder ser nula o vacia.")
     private String password;
 
-    @NotBlank(message = "El role del empleado no puede ser nulo o vacío.")
-    private String role;
-
-    @NotBlank(message = "El departamento del empleado no puede ser nulo o vacío.")
+    @NotBlank(message = "El departamento del empleado no puede ser nulo o vacìo.")
     private String department;
 
 }

@@ -1,8 +1,8 @@
 package com.leoalelui.ticketsystem.domain.service;
 
-import com.leoalelui.ticketsystem.domain.dto.employee.EmployeeCreateDTO;
-import com.leoalelui.ticketsystem.domain.dto.employee.EmployeeUpdateDTO;
-import com.leoalelui.ticketsystem.domain.dto.employee.EmployeeResponseDTO;
+import com.leoalelui.ticketsystem.domain.dto.request.EmployeeCreateDTO;
+import com.leoalelui.ticketsystem.domain.dto.request.EmployeeUpdateDTO;
+import com.leoalelui.ticketsystem.domain.dto.response.EmployeeResponseDTO;
 
 import java.util.List;
 

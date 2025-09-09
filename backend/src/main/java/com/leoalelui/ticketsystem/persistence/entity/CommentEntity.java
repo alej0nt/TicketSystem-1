@@ -1,7 +1,9 @@
 package com.leoalelui.ticketsystem.persistence.entity;
 
 import jakarta.persistence.*;
+import java.time.LocalDateTime;
 import lombok.Data;
+import org.hibernate.annotations.CreationTimestamp;
 
 @Data
 @Entity
@@ -19,4 +21,7 @@ public class CommentEntity {
     private EmployeeEntity employee;
 
     private String text;
+    @CreationTimestamp
+    @Column(name = "created_at", nullable = false, updatable = false)
+    private LocalDateTime createdAt;
 }

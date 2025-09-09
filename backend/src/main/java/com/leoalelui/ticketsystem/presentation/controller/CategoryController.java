@@ -1,7 +1,7 @@
 package com.leoalelui.ticketsystem.presentation.controller;
 
-import com.leoalelui.ticketsystem.domain.dto.category.CategoryCreateDTO;
-import com.leoalelui.ticketsystem.domain.dto.category.CategoryResponseDTO;
+import com.leoalelui.ticketsystem.domain.dto.request.CategoryCreateDTO;
+import com.leoalelui.ticketsystem.domain.dto.response.CategoryResponseDTO;
 import com.leoalelui.ticketsystem.domain.service.CategoryService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
