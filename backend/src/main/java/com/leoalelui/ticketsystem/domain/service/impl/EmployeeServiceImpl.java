@@ -23,6 +23,9 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     public EmployeeResponseDTO createEmployee(EmployeeCreateDTO dto) {
         EmployeeEntity employee = employeeMapper.toEntity(dto);
+
+        employee.setRole("USER");
+
         EmployeeEntity saved = employeeDAO.save(employee);
         return employeeMapper.toResponseDTO(saved);
     }

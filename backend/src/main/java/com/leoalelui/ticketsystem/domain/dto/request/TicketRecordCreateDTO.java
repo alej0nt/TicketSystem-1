@@ -14,7 +14,6 @@ import java.time.LocalDate;
 @Data
 @AllArgsConstructor
 public class TicketRecordCreateDTO {
-
     @NotNull(message = "El id del ticket no puede ser nulo.")
     private Long ticketId;
 

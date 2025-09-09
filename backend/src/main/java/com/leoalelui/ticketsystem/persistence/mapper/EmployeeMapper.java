@@ -12,5 +12,5 @@ public interface EmployeeMapper {
     @Mapping(target = "role", ignore = true)
     EmployeeEntity toEntity(EmployeeCreateDTO employeeCreateDTO);
 
-    EmployeeResponseDTO toResponseDTO(EmployeeEntity employee);
+    EmployeeResponseDTO toResponseDTO(EmployeeEntity employeeEntity);
 }
