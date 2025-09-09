@@ -9,7 +9,6 @@ import com.leoalelui.ticketsystem.persistence.entity.EmployeeEntity;
 import com.leoalelui.ticketsystem.persistence.mapper.EmployeeMapper;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -20,14 +19,14 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     private final EmployeeDAO employeeDAO;
     private final EmployeeMapper employeeMapper;
-    private final PasswordEncoder passwordEncoder;
 
     @Override
     public EmployeeResponseDTO createEmployee(EmployeeCreateDTO dto) {
-        EmployeeEntity employee = employeeMapper.toEntity(dto);
+        /*EmployeeEntity employee = employeeMapper.toEntity(dto);
         employee.setPassword(passwordEncoder.encode(dto.getPassword()));
         EmployeeEntity saved = employeeDAO.save(employee);
-        return employeeMapper.toResponseDTO(saved);
+        return employeeMapper.toResponseDTO(saved);*/
+        return null;
     }
 
     @Override
@@ -72,9 +71,10 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public boolean validateCredentials(String email, String password) {
-        EmployeeEntity employee = employeeDAO.findByEmail(email)
+        /*EmployeeEntity employee = employeeDAO.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("Credenciales inválidas"));
-        return passwordEncoder.matches(password, employee.getPassword());
+        return passwordEncoder.matches(password, employee.getPassword());*/
+        return true;
     }
 
 }
