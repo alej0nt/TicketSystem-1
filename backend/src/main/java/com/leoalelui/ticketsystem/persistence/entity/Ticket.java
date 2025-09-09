@@ -13,7 +13,7 @@ public class Ticket {
 
     @ManyToOne()
     @JoinColumn(name = "employee_id", nullable = false)
-    private Employee employee;
+    private EmployeeEntity employee;
 
     private String tittle;
 

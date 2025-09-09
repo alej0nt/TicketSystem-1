@@ -17,7 +17,7 @@ public class Comment {
 
     @ManyToOne()
     @JoinColumn(name = "employee_id", nullable = false)
-    private Employee employee;
+    private EmployeeEntity employee;
 
     private String text;
 

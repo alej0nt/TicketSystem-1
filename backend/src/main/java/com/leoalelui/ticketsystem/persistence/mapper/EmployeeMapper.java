@@ -1,4 +1,22 @@
 package com.leoalelui.ticketsystem.persistence.mapper;
 
-public class EmployeeMapper {
+import com.leoalelui.ticketsystem.domain.dto.EmployeeCreateDTO;
+import com.leoalelui.ticketsystem.domain.dto.EmployeeResponseDTO;
+import com.leoalelui.ticketsystem.domain.dto.EmployeeUpdateDTO;
+import com.leoalelui.ticketsystem.persistence.entity.EmployeeEntity;
+import org.mapstruct.BeanMapping;
+import org.mapstruct.Mapper;
+import org.mapstruct.MappingTarget;
+import org.mapstruct.NullValuePropertyMappingStrategy;
+
+@Mapper(componentModel = "spring")
+public interface EmployeeMapper {
+
+    EmployeeEntity toEntity(EmployeeCreateDTO dto);
+
+    EmployeeResponseDTO toResponseDTO(EmployeeEntity employee);
+
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    void updateEntityFromDto(EmployeeUpdateDTO dto, @MappingTarget EmployeeEntity employee);
+
 }

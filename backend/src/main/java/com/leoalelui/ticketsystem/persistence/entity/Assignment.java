@@ -19,7 +19,7 @@ public class Assignment {
 
     @ManyToOne()
     @JoinColumn(name = "employee_id", nullable = false)
-    private Employee employee;
+    private EmployeeEntity employee;
 
     private String assignment_date;
 
