@@ -2,7 +2,9 @@ package com.leoalelui.ticketsystem.presentation.controller;
 
 import com.leoalelui.ticketsystem.domain.dto.request.EmployeeCreateDTO;
 import com.leoalelui.ticketsystem.domain.dto.request.EmployeeUpdateDTO;
+import com.leoalelui.ticketsystem.domain.dto.response.CommentResponseDTO;
 import com.leoalelui.ticketsystem.domain.dto.response.EmployeeResponseDTO;
+import com.leoalelui.ticketsystem.domain.dto.response.TicketRecordResponseDTO;
 import com.leoalelui.ticketsystem.domain.service.EmployeeService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -30,8 +32,8 @@ public class EmployeeController {
             @PathVariable Long id,
             @Valid @RequestBody EmployeeUpdateDTO employeeUpdateDTO
     ) {
-        EmployeeResponseDTO updated = employeeService.updateEmployee(id, employeeUpdateDTO);
-        return ResponseEntity.ok(updated); // 200 OK
+        EmployeeResponseDTO employeeUpdated = employeeService.updateEmployee(id, employeeUpdateDTO);
+        return ResponseEntity.ok(employeeUpdated); // 200 OK
     }
 
     @DeleteMapping("/{id}")
@@ -42,8 +44,8 @@ public class EmployeeController {
 
     @GetMapping("/{id}")
     public ResponseEntity<EmployeeResponseDTO> getEmployeeById(@PathVariable Long id) {
-        EmployeeResponseDTO employee = employeeService.getEmployeeById(id);
-        return ResponseEntity.ok(employee); // 200 OK
+        EmployeeResponseDTO employeeFound = employeeService.getEmployeeById(id);
+        return ResponseEntity.ok(employeeFound); // 200 OK
     }
 
     @GetMapping
@@ -54,7 +56,7 @@ public class EmployeeController {
 
     @GetMapping("/email/{email}")
     public ResponseEntity<EmployeeResponseDTO> getEmployeeByEmail(@PathVariable String email) {
-        EmployeeResponseDTO employee = employeeService.getEmployeeByEmail(email);
-        return ResponseEntity.ok(employee); // 200 OK
+        EmployeeResponseDTO employeeFound = employeeService.getEmployeeByEmail(email);
+        return ResponseEntity.ok(employeeFound); // 200 OK
     }
 }
