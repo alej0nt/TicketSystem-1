@@ -22,7 +22,8 @@ public class CommentEntity {
     private EmployeeEntity employee;
 
     private String text;
+
     @CreationTimestamp
-    @Column(name = "created_at", nullable = false, updatable = false)
-    private LocalDateTime createdAt;
+    @Column(name = "creation_date", nullable = false, updatable = false)
+    private LocalDateTime creationDate;
 }
