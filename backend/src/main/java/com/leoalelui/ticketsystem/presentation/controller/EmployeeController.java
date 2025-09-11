@@ -59,14 +59,4 @@ public class EmployeeController {
         EmployeeResponseDTO employeeFound = employeeService.getEmployeeByEmail(email);
         return ResponseEntity.ok(employeeFound); // 200 OK
     }
-
-    @GetMapping("/{id}/comments")
-    public ResponseEntity<List<CommentResponseDTO>> getAllCommentsByTicketId(@PathVariable Long id) {
-        return ResponseEntity.ok().build();
-    }
-
-    @GetMapping("/{id}/ticket-records")
-    public ResponseEntity<List<TicketRecordResponseDTO>> getAllTicketRecordsByTicketId(@PathVariable Long id) {
-        return ResponseEntity.ok().build();
-    }
 }

@@ -2,6 +2,8 @@ package com.leoalelui.ticketsystem.presentation.controller;
 
 import com.leoalelui.ticketsystem.domain.dto.request.TicketCreateDTO;
 import com.leoalelui.ticketsystem.domain.dto.request.TicketUpdateStateDTO;
+import com.leoalelui.ticketsystem.domain.dto.response.CommentResponseDTO;
+import com.leoalelui.ticketsystem.domain.dto.response.TicketRecordResponseDTO;
 import com.leoalelui.ticketsystem.domain.dto.response.TicketResponseDTO;
 import com.leoalelui.ticketsystem.domain.service.TicketService;
 import jakarta.validation.Valid;
@@ -56,5 +58,15 @@ public class TicketController {
     public ResponseEntity<List<TicketResponseDTO>> getTicketsByState(@PathVariable String state) {
         List<TicketResponseDTO> tickets = ticketService.getTicketsByState(state);
         return ResponseEntity.ok(tickets); // 200 OK
+    }
+
+    @GetMapping("/{id}/comments")
+    public ResponseEntity<List<CommentResponseDTO>> getAllCommentsByTicketId(@PathVariable Long id) {
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/{id}/ticket-records")
+    public ResponseEntity<List<TicketRecordResponseDTO>> getAllTicketRecordsByTicketId(@PathVariable Long id) {
+        return ResponseEntity.ok().build();
     }
 }
