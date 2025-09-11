@@ -9,7 +9,7 @@ import org.mapstruct.Mapping;
 @Mapper(componentModel = "spring", uses = {EmployeeMapper.class, CategoryMapper.class, CommentMapper.class, TicketRecordMapper.class})
 public interface TicketMapper {
     @Mapping(target = "state", ignore = true)
-    @Mapping(target = "creation_date", ignore = true)
+    @Mapping(target = "creationDate", ignore = true)
     TicketEntity toEntity(TicketCreateDTO ticketCreateDTO);
 
     TicketResponseDTO toResponseDTO(TicketEntity ticketEntity);
