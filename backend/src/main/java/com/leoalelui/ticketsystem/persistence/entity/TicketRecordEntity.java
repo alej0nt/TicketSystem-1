@@ -25,6 +25,6 @@ public class TicketRecordEntity {
     private String nextState;
 
     @CreationTimestamp
-    @Column(name = "change_date", nullable = false, updatable = false)
-    private LocalDateTime changeDate;
+    @Column(name = "changed_date", nullable = false, updatable = false)
+    private LocalDateTime changedDate;
 }

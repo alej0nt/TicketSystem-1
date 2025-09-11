@@ -14,11 +14,11 @@ import lombok.Data;
 @Schema(description = "Datos para crear una nueva asignación de ticket")
 public class AssignmentCreateDTO {
     @NotNull(message = "El id del ticket no puede ser nulo.")
-    @Schema(description = "ID del ticket a asignar", example = "123", required = true)
+    @Schema(description = "ID del ticket a asignar", example = "123")
     private Long ticketId;
 
     @NotNull(message = "El id del empleado no puede ser nulo.")
-    @Schema(description = "ID del empleado que recibe la asignación", example = "7", required = true)
+    @Schema(description = "ID del empleado que recibe la asignación", example = "7")
     private Long employeeId;
 }
 
