@@ -21,8 +21,14 @@ public class EmployeeServiceImpl implements EmployeeService {
     private final EmployeeMapper employeeMapper;
 
     @Override
-    public EmployeeResponseDTO createEmployee(EmployeeCreateDTO dto) {
-        EmployeeEntity employee = employeeMapper.toEntity(dto);
+    public EmployeeResponseDTO createEmployee(EmployeeCreateDTO employeeCreateDTO) {
+        boolean existEmail = employeeDAO.existsByEmail(employeeCreateDTO.getEmail());
+
+        if (existEmail) {
+            throw new RuntimeException("El email ya existe.");
+        }
+
+        EmployeeEntity employee = employeeMapper.toEntity(employeeCreateDTO);
 
         employee.setRole("USER");
 
@@ -31,14 +37,20 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
-    public EmployeeResponseDTO updateEmployee(Long id, EmployeeUpdateDTO dto) {
+    public EmployeeResponseDTO updateEmployee(Long id, EmployeeUpdateDTO employeeUpdateDTO) {
         EmployeeEntity employee = employeeDAO.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Empleado no encontrado"));
+                .orElseThrow(() -> new EntityNotFoundException("Empleado no encontrado."));
 
-        employee.setName(dto.getName());
-        employee.setEmail(dto.getEmail());
-        employee.setRole(dto.getRole());
-        employee.setDepartment(dto.getDepartment());
+        boolean existEmail = employeeDAO.existsByEmail(employeeUpdateDTO.getEmail());
+
+        if (existEmail) {
+            throw new RuntimeException("El email ya existe.");
+        }
+
+        employee.setName(employeeUpdateDTO.getName());
+        employee.setEmail(employeeUpdateDTO.getEmail());
+        employee.setRole(employeeUpdateDTO.getRole());
+        employee.setDepartment(employeeUpdateDTO.getDepartment());
 
         EmployeeEntity updated = employeeDAO.save(employee);
         return employeeMapper.toResponseDTO(updated);
@@ -46,13 +58,19 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public void deleteEmployee(Long id) {
+        boolean existId = employeeDAO.existsById(id);
+
+        if (!existId) {
+            throw new EntityNotFoundException("Empleado no encontrado.");
+        }
+
         employeeDAO.deleteById(id);
     }
 
     @Override
     public EmployeeResponseDTO getEmployeeById(Long id) {
         EmployeeEntity employee = employeeDAO.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Empleado no encontrado"));
+                .orElseThrow(() -> new EntityNotFoundException("Empleado no encontrado."));
         return employeeMapper.toResponseDTO(employee);
     }
 
@@ -67,7 +85,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     public EmployeeResponseDTO getEmployeeByEmail(String email) {
         EmployeeEntity employee = employeeDAO.findByEmail(email)
-                .orElseThrow(() -> new EntityNotFoundException("Empleado no encontrado"));
+                .orElseThrow(() -> new EntityNotFoundException("Empleado no encontrado."));
         return employeeMapper.toResponseDTO(employee);
     }
 

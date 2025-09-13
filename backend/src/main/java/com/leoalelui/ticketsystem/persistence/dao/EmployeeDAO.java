@@ -32,5 +32,13 @@ public class EmployeeDAO {
     public List<EmployeeEntity> findAll() {
         return employeeRepository.findAll();
     }
+
+    public boolean existsByEmail(String email) {
+        return employeeRepository.existsByEmail(email);
+    }
+
+    public boolean existsById(Long id) {
+        return employeeRepository.existsById(id);
+    }
 }
 

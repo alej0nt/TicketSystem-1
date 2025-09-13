@@ -18,7 +18,7 @@ import java.util.List;
 
 @RestController
 @AllArgsConstructor
-@RequestMapping("api/v1/employees")
+@RequestMapping("/api/v1/employees")
 @Tag(name = "Empleados", description = "API para la gestión de empleados.")
 public class EmployeeController {
 
