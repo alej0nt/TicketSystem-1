@@ -44,22 +44,5 @@ public interface AssignmentMapper {
     /**
      * Crea TicketEntity con solo el ID (referencia JPA)
      */
-    @Named("createTicketEntityFromId")
-    default TicketEntity createTicketEntityFromId(Long ticketId) {
-        if (ticketId == null) return null;
-        TicketEntity t = new TicketEntity();
-        t.setId(ticketId);
-        return t;
-    }
 
-    /**
-     * Crea EmployeeEntity con solo el ID (referencia JPA)
-     */
-    @Named("createEmployeeEntityFromId")
-    default EmployeeEntity createEmployeeEntityFromId(Long employeeId) {
-        if (employeeId == null) return null;
-        EmployeeEntity e = new EmployeeEntity();
-        e.setId(employeeId);
-        return e;
-    }
 }

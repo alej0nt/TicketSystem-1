@@ -10,7 +10,6 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Schema(description = "Representa la información de un ticket en el sistema")
 public class TicketResponseDTO {
-
     @Schema(description = "Identificador único del ticket", example = "5001")
     private Long id;
 
@@ -39,9 +38,6 @@ public class TicketResponseDTO {
     @Schema(description = "Fecha de cierre del ticket (puede ser null si no está cerrado)",
             example = "2025-09-12T18:00:00")
     private LocalDateTime closingDate;
-
-    // private List<CommentResponseDTO> comments;
-    // private List<TicketRecordResponseDTO> ticketRecords;
 }
 
 

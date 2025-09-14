@@ -13,4 +13,14 @@ public interface EmployeeMapper {
     EmployeeEntity toEntity(EmployeeCreateDTO employeeCreateDTO);
 
     EmployeeResponseDTO toResponseDTO(EmployeeEntity employeeEntity);
+
+    @Named("createEmployeeEntityFromId")
+    default EmployeeEntity createEmployeeEntityFromId(Long employeeId) {
+        if (employeeId == null) {
+            return null;
+        }
+        EmployeeEntity employee = new EmployeeEntity();
+        employee.setId(employeeId);
+        return employee;
+    }
 }

@@ -22,10 +22,10 @@ public class TicketServiceImpl implements TicketService {
     private final TicketMapper ticketMapper;
 
     @Override
-    public TicketResponseDTO createTicket(TicketCreateDTO dto) {
-        TicketEntity ticket = ticketMapper.toEntity(dto);
+    public TicketResponseDTO createTicket(TicketCreateDTO ticketCreateDTO) {
+        TicketEntity ticket = ticketMapper.toEntity(ticketCreateDTO);
 
-        ticket.setState("Abierto");
+        ticket.setState("ABIERTO");
         ticket.setCreationDate(LocalDateTime.now());
 
         TicketEntity saved = ticketDAO.save(ticket);
@@ -35,7 +35,7 @@ public class TicketServiceImpl implements TicketService {
     @Override
     public TicketResponseDTO updateState(Long id, TicketUpdateStateDTO ticketUpdateStateDTO) {
         TicketEntity ticket = ticketDAO.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Ticket no encontrado"));
+                .orElseThrow(() -> new EntityNotFoundException("Tiquete no encontrado"));
 
         ticket.setState(ticketUpdateStateDTO.getState());
 
@@ -51,7 +51,7 @@ public class TicketServiceImpl implements TicketService {
     @Override
     public TicketResponseDTO getTicketById(Long id) {
         TicketEntity ticket = ticketDAO.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Ticket no encontrado"));
+                .orElseThrow(() -> new EntityNotFoundException("Tiquete no encontrado"));
         return ticketMapper.toResponseDTO(ticket);
     }
 

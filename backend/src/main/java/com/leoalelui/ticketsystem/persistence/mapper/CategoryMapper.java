@@ -10,4 +10,14 @@ public interface CategoryMapper {
     CategoryCreateDTO toDTO(CategoryEntity category);
     CategoryEntity toEntity(CategoryCreateDTO categoryCreateDTO);
     CategoryResponseDTO toResponseDTO(CategoryEntity category);
+
+    @Named("createCategoryEntityFromId")
+    default CategoryEntity createCategoryEntityFromId(Long categoryId) {
+        if (categoryId == null) {
+            return null;
+        }
+        CategoryEntity category = new CategoryEntity();
+        category.setId(categoryId);
+        return category;
+    }
 }
