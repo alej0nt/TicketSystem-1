@@ -49,31 +49,6 @@ public class TicketRecordController {
         return ResponseEntity.status(HttpStatus.CREATED).body(null);
     }
 
-    @Operation(summary = "Obtener registro por ID", description = "Recupera un registro de ticket por su identificador.")
-    @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Registro encontrado",
-                content = @Content(schema = @Schema(implementation = TicketRecordResponseDTO.class))),
-        @ApiResponse(responseCode = "404", description = "Registro no encontrado"),
-        @ApiResponse(responseCode = "401", description = "No autorizado")
-    })
-    @GetMapping("/{id}")
-    public ResponseEntity<TicketRecordResponseDTO> getTicketRecordById(@PathVariable @Parameter(description = "ID del registro de ticket a buscar") Long id) {
-        // TicketRecordResponseDTO dto = ticketRecordService.getById(id);
-        return ResponseEntity.ok(null);
-    }
-
-    @Operation(summary = "Listar todos los registros", description = "Devuelve todos los registros/historiales registrados en el sistema.")
-    @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Lista de registros",
-                content = @Content(array = @ArraySchema(schema = @Schema(implementation = TicketRecordResponseDTO.class)))),
-        @ApiResponse(responseCode = "401", description = "No autorizado")
-    })
-    @GetMapping
-    public ResponseEntity<List<TicketRecordResponseDTO>> getAllTicketRecords() {
-        // List<TicketRecordResponseDTO> list = ticketRecordService.getAll();
-        return ResponseEntity.ok(null);
-    }
-
     @Operation(summary = "Listar registros por ticket", description = "Devuelve el historial de cambios asociados a un ticket específico.")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Registros del ticket",
@@ -100,18 +75,5 @@ public class TicketRecordController {
             @RequestParam("to") @Parameter(description = "Fecha de fin del rango (formato yyyy-MM-dd)") LocalDate to) {
         // List<TicketRecordResponseDTO> list = ticketRecordService.getByDateRange(from, to);
         return ResponseEntity.ok(null);
-    }
-
-    @Operation(summary = "Eliminar registro", description = "Elimina un registro por su ID (uso administrativo).")
-    @ApiResponses(value = {
-        @ApiResponse(responseCode = "204", description = "Registro eliminado exitosamente (sin contenido)"),
-        @ApiResponse(responseCode = "404", description = "Registro no encontrado"),
-        @ApiResponse(responseCode = "401", description = "No autorizado"),
-        @ApiResponse(responseCode = "403", description = "Prohibido - rol insuficiente")
-    })
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteTicketRecord(@PathVariable @Parameter(description = "ID del registro de cambio de un ticket a eliminar") Long id) {
-        // ticketRecordService.delete(id);
-        return ResponseEntity.noContent().build();
     }
 }

@@ -10,9 +10,11 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
- * @author leonardo Argoty
+ * DAO para gestionar asignaciones en la capa de persistencia.
+ * @author Leonardo
  */
 @Repository
 @RequiredArgsConstructor
@@ -29,32 +31,24 @@ public class AssignmentDAO {
     }
 
     @Transactional(readOnly = true)
-    public AssignmentResponseDTO getById(Long id) {
-        AssignmentEntity entity = assignmentRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Assignment not found with id: " + id));
-        return assignmentMapper.toDTO(entity);
-    }
-
-    @Transactional(readOnly = true)
-    public List<AssignmentResponseDTO> getAll() {
-        return assignmentMapper.toDTOList(assignmentRepository.findAll());
-    }
-
-    @Transactional(readOnly = true)
     public List<AssignmentResponseDTO> getByEmployeeId(Long employeeId) {
         return assignmentMapper.toDTOList(assignmentRepository.findByEmployeeId(employeeId));
     }
 
     @Transactional(readOnly = true)
-    public List<AssignmentResponseDTO> getByTicketId(Long ticketId) {
-        return assignmentMapper.toDTOList(assignmentRepository.findByTicketId(ticketId));
+    public AssignmentResponseDTO getByTicketId(Long ticketId) {
+        AssignmentEntity entity = assignmentRepository.findByTicketId(ticketId);
+        return entity != null ? assignmentMapper.toDTO(entity) : null;
+    }
+
+    @Transactional(readOnly = true)
+    public Optional<AssignmentEntity> findById(Long id) {
+        return assignmentRepository.findById(id);
     }
 
     @Transactional
-    public void deleteById(Long id) {
-        if (!assignmentRepository.existsById(id)) {
-            throw new RuntimeException("Assignment not found with id: " + id);
-        }
-        assignmentRepository.deleteById(id);
+    public AssignmentResponseDTO update(AssignmentEntity entity) {
+        AssignmentEntity updated = assignmentRepository.save(entity);
+        return assignmentMapper.toDTO(updated);
     }
 }

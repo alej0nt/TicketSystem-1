@@ -18,8 +18,8 @@ public class TicketRecordResponseDTO {
     @Schema(description = "ID único del registro de ticket", example = "45")
     private Long id;
 
-    @Schema(description = "Información del ticket asociado al registro")
-    private TicketResponseDTO ticket;
+    @Schema(description = "Id del ticket asociado al registro")
+    private Long ticketId;
 
     @Schema(description = "Estado previo del ticket antes del cambio", example = "Abierto")
     private String previousState;

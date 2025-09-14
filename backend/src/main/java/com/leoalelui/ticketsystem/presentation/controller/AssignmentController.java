@@ -21,9 +21,9 @@ import java.util.List;
 
 /**
  * Controller para manejar las asignaciones que se hagan en tickets.
+ *
  * @author Leonardo Argoty
  */
-
 @RestController
 @AllArgsConstructor
 @RequestMapping("api/assignments")
@@ -31,14 +31,13 @@ import java.util.List;
 public class AssignmentController {
 
     //private final AssignmentService assignmentService;
-
     @Operation(summary = "Crear asignación", description = "Crea una nueva asignación de un ticket a un empleado.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Asignación creada exitosamente",
-                    content = @Content(schema = @Schema(implementation = AssignmentResponseDTO.class))),
-            @ApiResponse(responseCode = "400", description = "Datos inválidos o request mal formado"),
-            @ApiResponse(responseCode = "401", description = "No autorizado"),
-            @ApiResponse(responseCode = "403", description = "Prohibido - rol insuficiente")
+        @ApiResponse(responseCode = "201", description = "Asignación creada exitosamente",
+                content = @Content(schema = @Schema(implementation = AssignmentResponseDTO.class))),
+        @ApiResponse(responseCode = "400", description = "Datos inválidos o request mal formado"),
+        @ApiResponse(responseCode = "401", description = "No autorizado"),
+        @ApiResponse(responseCode = "403", description = "Prohibido - rol insuficiente")
     })
     @PostMapping
     public ResponseEntity<AssignmentResponseDTO> createAssignment(
@@ -48,37 +47,12 @@ public class AssignmentController {
         return ResponseEntity.status(HttpStatus.CREATED).body(null);
     }
 
-    @Operation(summary = "Obtener asignación por ID", description = "Recupera una asignación por su identificador.")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Asignación encontrada",
-                    content = @Content(schema = @Schema(implementation = AssignmentResponseDTO.class))),
-            @ApiResponse(responseCode = "404", description = "Asignación no encontrada"),
-            @ApiResponse(responseCode = "401", description = "No autorizado")
-    })
-    @GetMapping("/{id}")
-    public ResponseEntity<AssignmentResponseDTO> getAssignmentById(@PathVariable @Parameter(description = "ID de la asignacion a buscar") Long id) {
-        //AssignmentResponseDTO dto = assignmentService.getById(id);
-        return ResponseEntity.ok(null);
-    }
-
-    @Operation(summary = "Listar todas las asignaciones", description = "Devuelve todas las asignaciones registradas.")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Lista de asignaciones",
-                    content = @Content(array = @ArraySchema(schema = @Schema(implementation = AssignmentResponseDTO.class)))),
-            @ApiResponse(responseCode = "401", description = "No autorizado")
-    })
-    @GetMapping
-    public ResponseEntity<List<AssignmentResponseDTO>> getAllAssignments() {
-        //List<AssignmentResponseDTO> list = assignmentService.getAll();
-        return ResponseEntity.ok(null);
-    }
-
     @Operation(summary = "Listar asignaciones por empleado agente", description = "Devuelve las asignaciones asociadas a un empleado agente.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Asignaciones del empleado agente",
-                    content = @Content(array = @ArraySchema(schema = @Schema(implementation = AssignmentResponseDTO.class)))),
-            @ApiResponse(responseCode = "404", description = "Agente no encontrado"),
-            @ApiResponse(responseCode = "401", description = "No autorizado")
+        @ApiResponse(responseCode = "200", description = "Asignaciones del empleado agente",
+                content = @Content(array = @ArraySchema(schema = @Schema(implementation = AssignmentResponseDTO.class)))),
+        @ApiResponse(responseCode = "404", description = "Agente no encontrado"),
+        @ApiResponse(responseCode = "401", description = "No autorizado")
     })
     @GetMapping("/employee/{employeeId}")
     public ResponseEntity<List<AssignmentResponseDTO>> getAssignmentsByEmployee(@PathVariable @Parameter(description = "ID del empleado agente con sus asignaciones") Long employeeId) {
@@ -86,30 +60,36 @@ public class AssignmentController {
         return ResponseEntity.ok(null);
     }
 
-    @Operation(summary = "Listar asignaciones por ticket", description = "Devuelve las asignaciones (histórico) relacionadas a un ticket.")
+    @Operation(summary = "Obtener asignación por ticket", description = "Devuelve la asignación actual asociada a un ticket.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Asignaciones del ticket",
-                    content = @Content(array = @ArraySchema(schema = @Schema(implementation = AssignmentResponseDTO.class)))),
-            @ApiResponse(responseCode = "404", description = "Ticket no encontrado"),
-            @ApiResponse(responseCode = "401", description = "No autorizado")
+        @ApiResponse(responseCode = "200", description = "Asignación encontrada",
+                content = @Content(schema = @Schema(implementation = AssignmentResponseDTO.class))),
+        @ApiResponse(responseCode = "404", description = "Ticket o asignación no encontrada"),
+        @ApiResponse(responseCode = "401", description = "No autorizado")
     })
     @GetMapping("/ticket/{ticketId}")
-    public ResponseEntity<List<AssignmentResponseDTO>> getAssignmentsByTicket(@PathVariable @Parameter(description = "ID del ticket con sus asignaciones") Long ticketId) {
-        //List<AssignmentResponseDTO> list = assignmentService.getByTicketId(ticketId);
+    public ResponseEntity<AssignmentResponseDTO> getAssignmentByTicket(
+            @PathVariable @Parameter(description = "ID del ticket para obtener su asignación actual") Long ticketId) {
+
+        // AssignmentResponseDTO dto = assignmentService.getByTicketId(ticketId);
         return ResponseEntity.ok(null);
     }
 
-    @Operation(summary = "Eliminar asignación", description = "Elimina una asignación por su ID (uso administrativo).")
+    @Operation(summary = "Reasignar agente", description = "Permite cambiar el empleado asignado a un ticket existente.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "204", description = "Asignación eliminada exitosamente (sin contenido)"),
-            @ApiResponse(responseCode = "404", description = "Asignación no encontrada"),
-            @ApiResponse(responseCode = "401", description = "No autorizado"),
-            @ApiResponse(responseCode = "403", description = "Prohibido - rol insuficiente")
+        @ApiResponse(responseCode = "200", description = "Asignación reasignada exitosamente",
+                content = @Content(schema = @Schema(implementation = AssignmentResponseDTO.class))),
+        @ApiResponse(responseCode = "400", description = "Datos inválidos o request mal formado"),
+        @ApiResponse(responseCode = "404", description = "Asignación o empleado no encontrado"),
+        @ApiResponse(responseCode = "401", description = "No autorizado"),
+        @ApiResponse(responseCode = "403", description = "Prohibido - rol insuficiente")
     })
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteAssignment(@PathVariable @Parameter(description = "ID de la asignacion a eliminar") Long id) {
-        //assignmentService.delete(id);
-        return ResponseEntity.noContent().build();
+    @PatchMapping("reassign/{id}")
+    public ResponseEntity<AssignmentResponseDTO> reassignEmployee(
+            @PathVariable @Parameter(description = "ID de la asignación a actualizar") Long id,
+            @RequestParam("employeeId") @Parameter(description = "Nuevo ID del empleado agente") Long employeeId) {
+
+        // AssignmentResponseDTO updated = assignmentService.reassignEmployee(id, employeeId);
+        return ResponseEntity.ok(null);
     }
 }
-

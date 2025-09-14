@@ -6,5 +6,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface AssignmentRepository extends JpaRepository<AssignmentEntity, Long> {
     List<AssignmentEntity> findByEmployeeId(Long employeeId);
-    List<AssignmentEntity> findByTicketId(Long ticketId);
+    AssignmentEntity findByTicketId(Long ticketId);
 }
