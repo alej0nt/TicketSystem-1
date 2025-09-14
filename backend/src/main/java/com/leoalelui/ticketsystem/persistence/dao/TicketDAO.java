@@ -32,4 +32,8 @@ public class TicketDAO {
     public List<TicketEntity> findByState(String state) {
         return ticketRepository.findByState(state);
     }
+
+    public boolean existsById(Long id) {
+        return ticketRepository.existsById(id);
+    }
 }

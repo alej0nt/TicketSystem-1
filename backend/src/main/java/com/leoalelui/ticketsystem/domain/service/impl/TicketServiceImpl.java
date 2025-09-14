@@ -4,6 +4,8 @@ import com.leoalelui.ticketsystem.domain.dto.request.TicketCreateDTO;
 import com.leoalelui.ticketsystem.domain.dto.request.TicketUpdateStateDTO;
 import com.leoalelui.ticketsystem.domain.dto.response.TicketResponseDTO;
 import com.leoalelui.ticketsystem.domain.service.TicketService;
+import com.leoalelui.ticketsystem.persistence.dao.CategoryDAO;
+import com.leoalelui.ticketsystem.persistence.dao.EmployeeDAO;
 import com.leoalelui.ticketsystem.persistence.dao.TicketDAO;
 import com.leoalelui.ticketsystem.persistence.entity.TicketEntity;
 import com.leoalelui.ticketsystem.persistence.mapper.TicketMapper;
@@ -19,10 +21,18 @@ import java.util.List;
 public class TicketServiceImpl implements TicketService {
 
     private final TicketDAO ticketDAO;
+    private final EmployeeDAO employeeDAO;
+    private final CategoryDAO categoryDAO;
     private final TicketMapper ticketMapper;
 
     @Override
     public TicketResponseDTO createTicket(TicketCreateDTO ticketCreateDTO) {
+        boolean existsEmployee = employeeDAO.existsById(ticketCreateDTO.getEmployeeId());
+        if (existsEmployee) throw new EntityNotFoundException("Empleado no encontrado.");
+
+        boolean existsCategory = categoryDAO.existsById(ticketCreateDTO.getCategoryId());
+        if (existsCategory) throw new EntityNotFoundException("Categoria no encontrada.");
+
         TicketEntity ticket = ticketMapper.toEntity(ticketCreateDTO);
 
         ticket.setState("ABIERTO");
@@ -45,6 +55,12 @@ public class TicketServiceImpl implements TicketService {
 
     @Override
     public void deleteTicket(Long id) {
+        boolean existId = ticketDAO.existsById(id);
+
+        if (!existId) {
+            throw new EntityNotFoundException("Tiquete no encontrado.");
+        }
+
         ticketDAO.deleteById(id);
     }
 

@@ -23,4 +23,8 @@ public class CategoryDAO {
         categoryRepository.save(c);
         return categoryMapper.toResponseDTO(c);
     }
+
+    public boolean existsById(Long id) {
+        return categoryRepository.existsById(id);
+    }
 }
