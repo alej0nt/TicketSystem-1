@@ -63,22 +63,6 @@ public class CommentController {
         return ResponseEntity.status(201).body(null);
     }
 
-    @Operation(summary = "Actualizar un comentario",
-            description = "Edita el contenido de un comentario existente mediante su ID.")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "El comentario fue actualizado correctamente."),
-            @ApiResponse(responseCode = "404", description = "No se encontró el comentario con el ID especificado."),
-            @ApiResponse(responseCode = "400", description = "Datos de la solicitud inválidos."),
-            @ApiResponse(responseCode = "401", description = "Token inválido o ausente.")
-    })
-    @PutMapping("/{id}")
-    public ResponseEntity<CommentResponseDTO> update(
-            @Parameter(description = "ID del comentario") @PathVariable Long id,
-            @Valid @RequestBody CommentUpdateDTO commentUpdateDTO,
-            @RequestHeader("Authorization") String token) {
-        return ResponseEntity.ok(null);
-    }
-
     @Operation(summary = "Eliminar un comentario",
             description = "Elimina un comentario específico mediante su ID.")
     @ApiResponses(value = {

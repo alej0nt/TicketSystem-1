@@ -28,7 +28,7 @@ import java.util.List;
  */
 @RestController
 @AllArgsConstructor
-@RequestMapping("api/ticket-records")
+@RequestMapping("api/v1/ticket-records")
 @Tag(name = "Cambios de estado de ticket", description = "Operaciones para manejar el historial (registros) de cambios de estado de tickets")
 public class TicketRecordController {
 

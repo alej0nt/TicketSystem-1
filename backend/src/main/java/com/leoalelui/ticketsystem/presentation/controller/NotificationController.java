@@ -29,7 +29,7 @@ import java.util.List;
  */
 @RestController
 @AllArgsConstructor
-@RequestMapping("api/notifications")
+@RequestMapping("api/v1/notifications")
 @Tag(name = "Notificaciones", description = "API para la gestión de notificaciones")
 public class NotificationController {
     // private final NotificationService notificationService;
