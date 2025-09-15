@@ -2,13 +2,15 @@ package com.leoalelui.ticketsystem.domain.service.impl;
 
 import com.leoalelui.ticketsystem.domain.dto.request.TicketCreateDTO;
 import com.leoalelui.ticketsystem.domain.dto.request.TicketUpdateStateDTO;
+import com.leoalelui.ticketsystem.domain.dto.response.CommentResponseDTO;
+import com.leoalelui.ticketsystem.domain.dto.response.TicketRecordResponseDTO;
 import com.leoalelui.ticketsystem.domain.dto.response.TicketResponseDTO;
 import com.leoalelui.ticketsystem.domain.service.TicketService;
-import com.leoalelui.ticketsystem.persistence.dao.CategoryDAO;
-import com.leoalelui.ticketsystem.persistence.dao.EmployeeDAO;
-import com.leoalelui.ticketsystem.persistence.dao.TicketDAO;
+import com.leoalelui.ticketsystem.persistence.dao.*;
 import com.leoalelui.ticketsystem.persistence.entity.TicketEntity;
+import com.leoalelui.ticketsystem.persistence.mapper.CommentMapper;
 import com.leoalelui.ticketsystem.persistence.mapper.TicketMapper;
+import com.leoalelui.ticketsystem.persistence.mapper.TicketRecordMapper;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -23,15 +25,19 @@ public class TicketServiceImpl implements TicketService {
     private final TicketDAO ticketDAO;
     private final EmployeeDAO employeeDAO;
     private final CategoryDAO categoryDAO;
+    private final CommentDAO commentDAO;
+    private final TicketRecordDAO ticketRecordDAO;
     private final TicketMapper ticketMapper;
+    private final CommentMapper commentMapper;
+    private final TicketRecordMapper ticketRecordMapper;
 
     @Override
     public TicketResponseDTO createTicket(TicketCreateDTO ticketCreateDTO) {
         boolean existsEmployee = employeeDAO.existsById(ticketCreateDTO.getEmployeeId());
-        if (existsEmployee) throw new EntityNotFoundException("Empleado no encontrado.");
+        if (!existsEmployee) throw new EntityNotFoundException("Empleado no encontrado.");
 
         boolean existsCategory = categoryDAO.existsById(ticketCreateDTO.getCategoryId());
-        if (existsCategory) throw new EntityNotFoundException("Categoria no encontrada.");
+        if (!existsCategory) throw new EntityNotFoundException("Categoria no encontrada.");
 
         TicketEntity ticket = ticketMapper.toEntity(ticketCreateDTO);
 
@@ -84,6 +90,22 @@ public class TicketServiceImpl implements TicketService {
         return ticketDAO.findByState(state)
                 .stream()
                 .map(ticketMapper::toResponseDTO)
+                .toList();
+    }
+
+    @Override
+    public List<CommentResponseDTO> getAllCommentsByTicketId(Long id) {
+        return commentDAO.findAllByTicketId(id)
+                .stream()
+                .map(commentMapper::toResponseDTO)
+                .toList();
+    }
+
+    @Override
+    public List<TicketRecordResponseDTO> getAllTicketRecordsByTicketId(Long id) {
+        return ticketRecordDAO.findTicketRecordByTicketId(id)
+                .stream()
+                .map(ticketRecordMapper::toResponseDTO)
                 .toList();
     }
 }

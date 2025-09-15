@@ -27,6 +27,6 @@ public class CommentResponseDTO {
     private String text;
 
     @Schema(description = "Fecha y hora de creación del comentario", example = "2025-09-13T14:30:00")
-    private LocalDateTime createdAt;
+    private LocalDateTime creationDate;
 }
 
