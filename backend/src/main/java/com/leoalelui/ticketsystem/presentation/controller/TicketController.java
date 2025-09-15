@@ -102,7 +102,8 @@ public class TicketController {
     })
     @GetMapping("/{id}/comments")
     public ResponseEntity<List<CommentResponseDTO>> getAllCommentsByTicketId(@PathVariable Long id) {
-        return ResponseEntity.ok().build(); // implementar el retorno real
+        List<CommentResponseDTO> comments = ticketService.getAllCommentsByTicketId(id);
+        return ResponseEntity.ok(comments);
     }
 
     @Operation(summary = "Listar registros de un tiquete", description = "Obtiene el historial de registros de un tiquete.")
@@ -110,8 +111,9 @@ public class TicketController {
             @ApiResponse(responseCode = "200", description = "Historial de registros obtenido exitosamente."),
             @ApiResponse(responseCode = "404", description = "Tiquete no encontrado.")
     })
-    @GetMapping("/{id}/ticket-records")
+    @GetMapping("/{id}/tickets-record")
     public ResponseEntity<List<TicketRecordResponseDTO>> getAllTicketRecordsByTicketId(@PathVariable Long id) {
-        return ResponseEntity.ok().build(); // implementar el retorno real
+        List<TicketRecordResponseDTO> ticketsRecord = ticketService.getAllTicketRecordsByTicketId(id);
+        return ResponseEntity.ok(ticketsRecord);
     }
 }
