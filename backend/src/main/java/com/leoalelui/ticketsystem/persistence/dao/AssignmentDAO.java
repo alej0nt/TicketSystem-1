@@ -14,6 +14,7 @@ import java.util.Optional;
 
 /**
  * DAO para gestionar asignaciones en la capa de persistencia.
+ *
  * @author Leonardo
  */
 @Repository
@@ -51,4 +52,10 @@ public class AssignmentDAO {
         AssignmentEntity updated = assignmentRepository.save(entity);
         return assignmentMapper.toDTO(updated);
     }
+
+    @Transactional(readOnly = true)
+    public Optional<AssignmentEntity> findEntityByTicketId(Long ticketId) {
+        return Optional.ofNullable(assignmentRepository.findByTicketId(ticketId));
+    }
+
 }
