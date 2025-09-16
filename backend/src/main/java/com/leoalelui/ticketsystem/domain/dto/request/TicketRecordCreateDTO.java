@@ -14,13 +14,12 @@ import lombok.Data;
 @AllArgsConstructor
 @Schema(description = "Datos para registrar un cambio de estado en un ticket")
 public class TicketRecordCreateDTO {
-
     @NotNull(message = "El id del ticket no puede ser nulo.")
     @Schema(description = "ID del ticket al que pertenece el registro",
             example = "123")
     private Long ticketId;
-
-    @NotBlank(message = "El estado previo no puede ser nulo o vacío.")
+    
+     @NotBlank(message = "El estado previo no puede ser nulo o vacío.")
     @Schema(description = "Estado previo del ticket antes del cambio",
             example = "Abierto")
     private String previousState;

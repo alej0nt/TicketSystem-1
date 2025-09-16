@@ -1,6 +1,7 @@
 package com.leoalelui.ticketsystem.domain.service.impl;
 
 import com.leoalelui.ticketsystem.domain.dto.request.TicketCreateDTO;
+import com.leoalelui.ticketsystem.domain.dto.request.TicketRecordCreateDTO;
 import com.leoalelui.ticketsystem.domain.dto.request.TicketUpdateStateDTO;
 import com.leoalelui.ticketsystem.domain.dto.response.CommentResponseDTO;
 import com.leoalelui.ticketsystem.domain.dto.response.TicketRecordResponseDTO;
@@ -23,6 +24,7 @@ public class TicketServiceImpl implements TicketService {
     private final CategoryDAO categoryDAO;
     private final CommentDAO commentDAO;
     private final TicketRecordDAO ticketRecordDAO;
+    private final TicketRecordServiceImpl ticketRecordService;
 
     @Override
     public TicketResponseDTO createTicket(TicketCreateDTO createDTO) {
@@ -37,8 +39,10 @@ public class TicketServiceImpl implements TicketService {
 
     @Override
     public TicketResponseDTO updateState(Long id, TicketUpdateStateDTO updateStateDTO) {
-        return ticketDAO.updateState(id, updateStateDTO)
+        TicketResponseDTO ticket = ticketDAO.updateState(id, updateStateDTO)
                 .orElseThrow(() -> new EntityNotFoundException("Tiquete no encontrado."));
+        ticketRecordService.create(new TicketRecordCreateDTO(ticket.getId(), ticket.getState(), updateStateDTO.getState()));
+        return ticket;
     }
 
     @Override

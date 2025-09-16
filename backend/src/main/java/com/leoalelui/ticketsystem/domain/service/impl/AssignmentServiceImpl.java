@@ -5,18 +5,16 @@ import com.leoalelui.ticketsystem.domain.dto.request.TicketUpdateStateDTO;
 import com.leoalelui.ticketsystem.domain.dto.response.AssignmentResponseDTO;
 import com.leoalelui.ticketsystem.domain.dto.response.EmployeeResponseDTO;
 import com.leoalelui.ticketsystem.domain.dto.response.TicketResponseDTO;
+import com.leoalelui.ticketsystem.domain.exception.EntityNotFoundException;
 import com.leoalelui.ticketsystem.domain.service.AssignmentService;
 import com.leoalelui.ticketsystem.domain.service.EmployeeService;
 import com.leoalelui.ticketsystem.domain.service.TicketService;
 import com.leoalelui.ticketsystem.persistence.dao.AssignmentDAO;
-import com.leoalelui.ticketsystem.persistence.entity.AssignmentEntity;
-import com.leoalelui.ticketsystem.persistence.entity.EmployeeEntity;
-import com.leoalelui.ticketsystem.persistence.entity.TicketEntity;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 /**
  * Implementación del servicio de asignaciones.
@@ -64,43 +62,32 @@ public class AssignmentServiceImpl implements AssignmentService {
         AssignmentResponseDTO assignment = assignmentDAO.getByTicketId(ticketId);
 
         if (assignment == null) {
-            throw new RuntimeException("El ticket con id " + ticketId + " no tiene una asignación activa.");
+            throw new EntityNotFoundException("El ticket con id " + ticketId + " no tiene una asignación activa.");
         }
 
         return assignment;
     }
 
     @Override
-public AssignmentResponseDTO reassignEmployee(Long ticketId, Long newEmployeeId) {
-    // Buscar asignación actual por ticket (entity)
-    AssignmentEntity assignment = assignmentDAO.findEntityByTicketId(ticketId)
-            .orElseThrow(() -> new RuntimeException("No existe una asignación para el ticket con id: " + ticketId));
+    public AssignmentResponseDTO reassignEmployee(Long ticketId, Long newEmployeeId) {
+        AssignmentResponseDTO currentAssignment = getByTicketId(ticketId);
 
-    TicketEntity ticket = assignment.getTicket();
-    if (ticket == null) {
-        throw new RuntimeException("El ticket asociado a la asignación no existe.");
+        // Validar ticket y estado usando DTOs
+        TicketResponseDTO ticket = currentAssignment.getTicket();
+//        if (ticket == null) {
+//            throw new RuntimeException("El ticket asociado a la asignación no existe.");
+//        }
+        String ticketState = ticket.getState() != null ? ticket.getState().trim() : "";
+        if (ticketState.equalsIgnoreCase("Resuelto") || ticketState.equalsIgnoreCase("Cerrado")) {
+            throw new RuntimeException("No se puede reasignar un ticket en estado finalizado (" + ticketState + ").");
+        }
+
+        // Validar nuevo empleado (DTO)
+        EmployeeResponseDTO newEmployee = employeeService.getEmployeeById(newEmployeeId);
+        validateEmployeeAgent(newEmployee);
+
+        return assignmentDAO.reassignByTicketId(ticketId, newEmployeeId);
     }
-
-    // Validar estado del ticket
-    String ticketState = ticket.getState() != null ? ticket.getState().trim() : "";
-    if (ticketState.equalsIgnoreCase("Resuelto") || ticketState.equalsIgnoreCase("Cerrado")) {
-        throw new RuntimeException("No se puede reasignar un ticket en estado finalizado (" + ticketState + ").");
-    }
-
-    // Verificar nuevo empleado
-    EmployeeResponseDTO newEmployee = employeeService.getEmployeeById(newEmployeeId);
-    validateEmployeeAgent(newEmployee);
-
-    // ESTO ME TOCA CAMBIARLO
-    EmployeeEntity newEmployeeEntity = new EmployeeEntity();
-    newEmployeeEntity.setId(newEmployee.getId());
-    newEmployeeEntity.setName(newEmployee.getName());
-    newEmployeeEntity.setRole(newEmployee.getRole());
-    
-    // Actualizar asignación
-    assignment.setEmployee(newEmployeeEntity);
-    return assignmentDAO.update(assignment);
-}
 
     private void validateEmployeeAgent(EmployeeResponseDTO employee) {
         String role = employee.getRole() != null ? employee.getRole().toString() : null;
