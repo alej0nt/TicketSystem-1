@@ -67,13 +67,15 @@ public class TicketRecordController {
         @ApiResponse(responseCode = "200", description = "Registros filtrados por rango de fechas",
                 content = @Content(array = @ArraySchema(schema = @Schema(implementation = TicketRecordResponseDTO.class)))),
         @ApiResponse(responseCode = "400", description = "Parámetros de fecha inválidos"),
+                @ApiResponse(responseCode = "404", description = "Ticket no encontrado"),
         @ApiResponse(responseCode = "401", description = "No autorizado")
     })
-    @GetMapping("/range")
+    @GetMapping("/range/{ticketId}")
     public ResponseEntity<List<TicketRecordResponseDTO>> getRecordsByDateRange(
+            @PathVariable @Parameter(description = "ID del ticket con su historial a buscar") Long ticketId,
             @RequestParam("from") @Parameter(description = "Fecha de inicio del rango (formato yyyy-MM-dd)") LocalDate from,
             @RequestParam("to") @Parameter(description = "Fecha de fin del rango (formato yyyy-MM-dd)") LocalDate to) {
-        // List<TicketRecordResponseDTO> list = ticketRecordService.getByDateRange(from, to);
+        // List<TicketRecordResponseDTO> list = ticketRecordService.getByDateRange(ticketId, from, to);
         return ResponseEntity.ok(null);
     }
 }

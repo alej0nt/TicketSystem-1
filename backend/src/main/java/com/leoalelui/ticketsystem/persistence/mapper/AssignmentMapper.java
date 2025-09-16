@@ -3,8 +3,6 @@ package com.leoalelui.ticketsystem.persistence.mapper;
 import com.leoalelui.ticketsystem.domain.dto.request.AssignmentCreateDTO;
 import com.leoalelui.ticketsystem.domain.dto.response.AssignmentResponseDTO;
 import com.leoalelui.ticketsystem.persistence.entity.AssignmentEntity;
-import com.leoalelui.ticketsystem.persistence.entity.EmployeeEntity;
-import com.leoalelui.ticketsystem.persistence.entity.TicketEntity;
 import org.mapstruct.*;
 
 import java.util.List;
@@ -19,15 +17,8 @@ import java.util.List;
         unmappedTargetPolicy = ReportingPolicy.WARN
 )
 public interface AssignmentMapper {
-
-    /**
-     * Convierte entidad a dto de respuesta para lectura
-     */
     AssignmentResponseDTO toDTO(AssignmentEntity entity);
 
-    /**
-     * Convierte lista de entidades a lista de dtos de respuesta para lectura
-     */
     List<AssignmentResponseDTO> toDTOList(List<AssignmentEntity> entities);
 
     /**
@@ -40,9 +31,5 @@ public interface AssignmentMapper {
     @Mapping(target = "ticket", source = "ticketId", qualifiedByName = "createTicketEntityFromId")
     @Mapping(target = "employee", source = "employeeId", qualifiedByName = "createEmployeeEntityFromId")
     AssignmentEntity toEntity(AssignmentCreateDTO createDTO);
-
-    /**
-     * Crea TicketEntity con solo el ID (referencia JPA)
-     */
 
 }
