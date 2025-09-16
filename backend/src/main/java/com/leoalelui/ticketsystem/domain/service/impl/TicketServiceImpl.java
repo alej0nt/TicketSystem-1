@@ -8,14 +8,10 @@ import com.leoalelui.ticketsystem.domain.dto.response.TicketResponseDTO;
 import com.leoalelui.ticketsystem.domain.service.TicketService;
 import com.leoalelui.ticketsystem.persistence.dao.*;
 import com.leoalelui.ticketsystem.persistence.entity.TicketEntity;
-import com.leoalelui.ticketsystem.persistence.mapper.CommentMapper;
-import com.leoalelui.ticketsystem.persistence.mapper.TicketMapper;
-import com.leoalelui.ticketsystem.persistence.mapper.TicketRecordMapper;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -27,85 +23,54 @@ public class TicketServiceImpl implements TicketService {
     private final CategoryDAO categoryDAO;
     private final CommentDAO commentDAO;
     private final TicketRecordDAO ticketRecordDAO;
-    private final TicketMapper ticketMapper;
-    private final CommentMapper commentMapper;
-    private final TicketRecordMapper ticketRecordMapper;
 
     @Override
-    public TicketResponseDTO createTicket(TicketCreateDTO ticketCreateDTO) {
-        boolean existsEmployee = employeeDAO.existsById(ticketCreateDTO.getEmployeeId());
+    public TicketResponseDTO createTicket(TicketCreateDTO createDTO) {
+        boolean existsEmployee = employeeDAO.existsById(createDTO.getEmployeeId());
         if (!existsEmployee) throw new EntityNotFoundException("Empleado no encontrado.");
 
-        boolean existsCategory = categoryDAO.existsById(ticketCreateDTO.getCategoryId());
+        boolean existsCategory = categoryDAO.existsById(createDTO.getCategoryId());
         if (!existsCategory) throw new EntityNotFoundException("Categoria no encontrada.");
 
-        TicketEntity ticket = ticketMapper.toEntity(ticketCreateDTO);
-
-        ticket.setState("ABIERTO");
-        ticket.setCreationDate(LocalDateTime.now());
-
-        TicketEntity saved = ticketDAO.save(ticket);
-        return ticketMapper.toResponseDTO(saved);
+        return ticketDAO.save(createDTO);
     }
 
     @Override
-    public TicketResponseDTO updateState(Long id, TicketUpdateStateDTO ticketUpdateStateDTO) {
-        TicketEntity ticket = ticketDAO.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Tiquete no encontrado"));
-
-        ticket.setState(ticketUpdateStateDTO.getState());
-
-        TicketEntity updated = ticketDAO.save(ticket);
-        return ticketMapper.toResponseDTO(updated);
+    public TicketResponseDTO updateState(Long id, TicketUpdateStateDTO updateStateDTO) {
+        return ticketDAO.updateState(id, updateStateDTO)
+                .orElseThrow(() -> new EntityNotFoundException("Tiquete no encontrado."));
     }
 
     @Override
     public void deleteTicket(Long id) {
         boolean existId = ticketDAO.existsById(id);
-
-        if (!existId) {
-            throw new EntityNotFoundException("Tiquete no encontrado.");
-        }
-
+        if (!existId) throw new EntityNotFoundException("Tiquete no encontrado.");
         ticketDAO.deleteById(id);
     }
 
     @Override
     public TicketResponseDTO getTicketById(Long id) {
-        TicketEntity ticket = ticketDAO.findById(id)
+        return ticketDAO.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Tiquete no encontrado"));
-        return ticketMapper.toResponseDTO(ticket);
     }
 
     @Override
     public List<TicketResponseDTO> getAllTickets() {
-        return ticketDAO.findAll()
-                .stream()
-                .map(ticketMapper::toResponseDTO)
-                .toList();
+        return ticketDAO.findAll();
     }
 
     @Override
     public List<TicketResponseDTO> getTicketsByState(String state) {
-        return ticketDAO.findByState(state)
-                .stream()
-                .map(ticketMapper::toResponseDTO)
-                .toList();
+        return ticketDAO.findByState(state);
     }
 
     @Override
     public List<CommentResponseDTO> getAllCommentsByTicketId(Long id) {
-        return commentDAO.findAllByTicketId(id)
-                .stream()
-                .map(commentMapper::toResponseDTO)
-                .toList();
+        return commentDAO.findAllByTicketId(id);
     }
 
     @Override
     public List<TicketRecordResponseDTO> getAllTicketRecordsByTicketId(Long id) {
-        return ticketRecordDAO.findTicketRecordByTicketId(id)
-                .stream()
-                .map(ticketRecordMapper::toResponseDTO)
-                .toList();
+        return ticketRecordDAO.findTicketRecordByTicketId(id);
     }
 }
