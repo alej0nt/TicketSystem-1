@@ -1,6 +1,9 @@
 package com.leoalelui.ticketsystem.persistence.dao;
 
+import com.leoalelui.ticketsystem.domain.dto.request.CommentCreateDTO;
 import com.leoalelui.ticketsystem.domain.dto.response.CommentResponseDTO;
+import com.leoalelui.ticketsystem.domain.dto.response.TicketResponseDTO;
+import com.leoalelui.ticketsystem.persistence.entity.CommentEntity;
 import com.leoalelui.ticketsystem.persistence.mapper.CommentMapper;
 import com.leoalelui.ticketsystem.persistence.repository.CommentRepository;
 import lombok.RequiredArgsConstructor;
@@ -19,5 +22,19 @@ public class CommentDAO {
                 .stream()
                 .map(commentMapper::toResponseDTO)
                 .toList();
+    }
+
+    public CommentResponseDTO save (CommentCreateDTO commentCreateDTO) {
+        CommentEntity commentEntity = commentMapper.toEntity(commentCreateDTO);
+        CommentEntity commentEntitySaved = commentRepository.save(commentEntity);
+        return commentMapper.toResponseDTO(commentEntitySaved);
+    }
+
+    public boolean delete (Long id) {
+        if (commentRepository.existsById(id)) {
+            commentRepository.deleteById(id);
+            return true;
+        }
+        return false;
     }
 }
