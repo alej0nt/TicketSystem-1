@@ -3,6 +3,7 @@ package com.leoalelui.ticketsystem.presentation.controller;
 import com.leoalelui.ticketsystem.domain.dto.request.CommentCreateDTO;
 import com.leoalelui.ticketsystem.domain.dto.request.CommentUpdateDTO;
 import com.leoalelui.ticketsystem.domain.dto.response.CommentResponseDTO;
+import com.leoalelui.ticketsystem.domain.service.CommentService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -21,6 +22,7 @@ import java.util.List;
 @Tag(name = "Comentarios", description = "API para la gestión de comentarios en los tickets.")
 public class CommentController {
 
+    private final CommentService commentService;
     @Operation(summary = "Obtener todos los comentarios de un ticket",
             description = "Devuelve una lista con todos los comentarios asociados a un ticket específico.")
     @ApiResponses(value = {
@@ -30,23 +32,8 @@ public class CommentController {
     })
     @GetMapping("/ticket/{ticketId}")
     public ResponseEntity<List<CommentResponseDTO>> getAllByTicket(
-            @Parameter(description = "ID del ticket") @PathVariable Long ticketId,
-            @RequestHeader("Authorization") String token) {
-        return ResponseEntity.ok(null);
-    }
-
-    @Operation(summary = "Obtener un comentario por su ID",
-            description = "Devuelve la información de un comentario específico mediante su ID.")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Se devuelve el comentario correctamente."),
-            @ApiResponse(responseCode = "404", description = "No se encontró el comentario con el ID especificado."),
-            @ApiResponse(responseCode = "401", description = "Token inválido o ausente.")
-    })
-    @GetMapping("/{id}")
-    public ResponseEntity<CommentResponseDTO> getById(
-            @Parameter(description = "ID del comentario") @PathVariable Long id,
-            @RequestHeader("Authorization") String token) {
-        return ResponseEntity.ok(null);
+            @Parameter(description = "ID del ticket") @PathVariable Long ticketId) {
+        return ResponseEntity.ok(commentService.findAllByTicketId(ticketId));
     }
 
     @Operation(summary = "Crear un nuevo comentario",
@@ -57,10 +44,9 @@ public class CommentController {
             @ApiResponse(responseCode = "401", description = "Token inválido o ausente.")
     })
     @PostMapping
-    public ResponseEntity<CommentResponseDTO> create(
-            @Valid @RequestBody CommentCreateDTO commentCreateDTO,
-            @RequestHeader("Authorization") String token) {
-        return ResponseEntity.status(201).body(null);
+    public ResponseEntity<CommentResponseDTO> save(
+            @Valid @RequestBody CommentCreateDTO commentCreateDTO) {
+        return ResponseEntity.ok(commentService.save(commentCreateDTO));
     }
 
     @Operation(summary = "Eliminar un comentario",
@@ -72,8 +58,8 @@ public class CommentController {
     })
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(
-            @Parameter(description = "ID del comentario") @PathVariable Long id,
-            @RequestHeader("Authorization") String token) {
+            @Parameter(description = "ID del comentario") @PathVariable Long id) {
+        commentService.delete(id);
         return ResponseEntity.noContent().build();
     }
 }
