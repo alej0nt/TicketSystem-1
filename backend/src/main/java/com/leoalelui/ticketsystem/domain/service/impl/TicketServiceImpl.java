@@ -6,9 +6,9 @@ import com.leoalelui.ticketsystem.domain.dto.request.TicketUpdateStateDTO;
 import com.leoalelui.ticketsystem.domain.dto.response.CommentResponseDTO;
 import com.leoalelui.ticketsystem.domain.dto.response.TicketRecordResponseDTO;
 import com.leoalelui.ticketsystem.domain.dto.response.TicketResponseDTO;
+import com.leoalelui.ticketsystem.domain.service.TicketRecordService;
 import com.leoalelui.ticketsystem.domain.service.TicketService;
 import com.leoalelui.ticketsystem.persistence.dao.*;
-import com.leoalelui.ticketsystem.persistence.entity.TicketEntity;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -24,7 +24,8 @@ public class TicketServiceImpl implements TicketService {
     private final CategoryDAO categoryDAO;
     private final CommentDAO commentDAO;
     private final TicketRecordDAO ticketRecordDAO;
-    private final TicketRecordServiceImpl ticketRecordService;
+    
+    private final TicketRecordService ticketRecordService;
 
     @Override
     public TicketResponseDTO createTicket(TicketCreateDTO createDTO) {
@@ -41,7 +42,13 @@ public class TicketServiceImpl implements TicketService {
     public TicketResponseDTO updateState(Long id, TicketUpdateStateDTO updateStateDTO) {
         TicketResponseDTO ticket = ticketDAO.updateState(id, updateStateDTO)
                 .orElseThrow(() -> new EntityNotFoundException("Tiquete no encontrado."));
-        ticketRecordService.create(new TicketRecordCreateDTO(ticket.getId(), ticket.getState(), updateStateDTO.getState()));
+
+        ticketRecordService.create(new TicketRecordCreateDTO(
+                ticket.getId(),
+                ticket.getState(),
+                updateStateDTO.getState()
+        ));
+
         return ticket;
     }
 

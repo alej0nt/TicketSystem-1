@@ -3,7 +3,9 @@ package com.leoalelui.ticketsystem.domain.service.impl;
 import com.leoalelui.ticketsystem.domain.dto.request.TicketRecordCreateDTO;
 import com.leoalelui.ticketsystem.domain.dto.response.TicketRecordResponseDTO;
 import com.leoalelui.ticketsystem.domain.service.TicketRecordService;
+import com.leoalelui.ticketsystem.persistence.dao.TicketDAO;
 import com.leoalelui.ticketsystem.persistence.dao.TicketRecordDAO;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -13,48 +15,41 @@ import java.time.LocalTime;
 import java.util.List;
 
 /**
- * Servicio para TicketRecord
+ * Implementación del servicio para manejar registros de cambios en tickets.
+ * @author Leonardo Argoty
  */
 @RequiredArgsConstructor
 @Service
 public class TicketRecordServiceImpl implements TicketRecordService {
 
     private final TicketRecordDAO ticketRecordDAO;
-    private final TicketServiceImpl ticketService;
+    private final TicketDAO ticketDAO;
 
     @Override
     public TicketRecordResponseDTO create(TicketRecordCreateDTO ticketRecordCreateDTO) {
         Long ticketId = ticketRecordCreateDTO.getTicketId();
 
-        ticketService.getTicketById(ticketId);
+        validateTicketEntityById(ticketId);
 
-        String previousState = ticketRecordCreateDTO.getPreviousState();
-        String nextState = ticketRecordCreateDTO.getNextState();
-
-//        if (previousState == null || nextState == null) {
-//            throw new IllegalArgumentException("previousState y nextState son requeridos.");
-//        }
-        if (previousState.equalsIgnoreCase(nextState)) {
+        // Validar cambio de estado distinto
+        if (ticketRecordCreateDTO.getPreviousState().equalsIgnoreCase(ticketRecordCreateDTO.getNextState())) {
             throw new IllegalArgumentException("El ticket no puede cambiar al mismo estado que el anterior.");
         }
 
-        // Crear el registro (DAO hace la persistencia)
         return ticketRecordDAO.create(ticketRecordCreateDTO);
     }
 
     @Override
     public List<TicketRecordResponseDTO> getByTicketId(Long ticketId) {
-        ticketService.getTicketById(ticketId);
+        validateTicketEntityById(ticketId);
+
         return ticketRecordDAO.findTicketRecordByTicketId(ticketId);
     }
 
     @Override
     public List<TicketRecordResponseDTO> getByDateRange(Long ticketId, LocalDate from, LocalDate to) {
-        ticketService.getTicketById(ticketId);
+        validateTicketEntityById(ticketId);
 
-//        if (from == null || to == null) {
-//            throw new IllegalArgumentException("Las fechas 'from' y 'to' son requeridas.");
-//        }
         if (from.isAfter(to)) {
             throw new IllegalArgumentException("'from' no puede ser posterior a 'to'.");
         }
@@ -62,7 +57,12 @@ public class TicketRecordServiceImpl implements TicketRecordService {
         LocalDateTime start = from.atStartOfDay();
         LocalDateTime end = to.atTime(LocalTime.MAX);
 
-        // Petición directa al DAO que ya hace la consulta filtrada en BD
         return ticketRecordDAO.findTicketRecordByTicketIdAndDateRange(ticketId, start, end);
     }
+    
+    private void validateTicketEntityById(Long ticketId) {
+        ticketDAO.findById(ticketId)
+                .orElseThrow(() -> new EntityNotFoundException("Ticket no encontrado con id: " + ticketId));
+    }
 }
+
