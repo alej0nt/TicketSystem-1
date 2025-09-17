@@ -10,6 +10,7 @@ import com.leoalelui.ticketsystem.domain.exception.ResourceNotFoundException;
 import com.leoalelui.ticketsystem.domain.service.TicketRecordService;
 import com.leoalelui.ticketsystem.domain.service.TicketService;
 import com.leoalelui.ticketsystem.persistence.dao.*;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -28,28 +29,19 @@ public class TicketServiceImpl implements TicketService {
     private final TicketRecordService ticketRecordService;
 
     @Override
+    @Transactional
     public TicketResponseDTO createTicket(TicketCreateDTO createDTO) {
-        boolean existsEmployee = employeeDAO.existsById(createDTO.getEmployeeId());
-        if (!existsEmployee) throw new ResourceNotFoundException("Empleado no encontrado.");
-
-        boolean existsCategory = categoryDAO.existsById(createDTO.getCategoryId());
-        if (!existsCategory) throw new ResourceNotFoundException("Categoria no encontrada.");
-
+        validateEmployeeExists(createDTO.getEmployeeId());
+        validateCategoryExists(createDTO.getCategoryId());
         return ticketDAO.save(createDTO);
     }
 
     @Override
+    @Transactional
     public TicketResponseDTO updateState(Long id, TicketUpdateStateDTO updateStateDTO) {
-        TicketResponseDTO ticket = ticketDAO.updateState(id, updateStateDTO)
-                .orElseThrow(() -> new ResourceNotFoundException("Tiquete no encontrado."));
-
-        ticketRecordService.create(new TicketRecordCreateDTO(
-                ticket.getId(),
-                ticket.getState(),
-                updateStateDTO.getState()
-        ));
-
-        return ticket;
+        TicketResponseDTO currentTicket = getTicketById(id);
+        createStateChangeRecord(currentTicket, updateStateDTO.getState());
+        return updateTicketState(id, updateStateDTO);
     }
 
     @Override
@@ -77,12 +69,46 @@ public class TicketServiceImpl implements TicketService {
     }
 
     @Override
-    public List<CommentResponseDTO> getAllCommentsByTicketId(Long id) {
-        return commentDAO.findAllByTicketId(id);
+    public List<CommentResponseDTO> getAllCommentsByTicketId(Long ticketId) {
+        validateTicketExists(ticketId);
+        return commentDAO.findAllByTicketId(ticketId);
     }
 
     @Override
-    public List<TicketRecordResponseDTO> getAllTicketRecordsByTicketId(Long id) {
-        return ticketRecordDAO.findTicketRecordByTicketId(id);
+    public List<TicketRecordResponseDTO> getAllTicketRecordsByTicketId(Long ticketId) {
+        validateTicketExists(ticketId);
+        return ticketRecordDAO.findTicketRecordByTicketId(ticketId);
+    }
+
+    private void validateEmployeeExists(Long employeeId) {
+        if (!employeeDAO.existsById(employeeId)) {
+            throw new ResourceNotFoundException("Empleado no encontrado con ID: " + employeeId);
+        }
+    }
+
+    private void validateCategoryExists(Long categoryId) {
+        if (!categoryDAO.existsById(categoryId)) {
+            throw new ResourceNotFoundException("Categoría no encontrada con ID: " + categoryId);
+        }
+    }
+
+    private void validateTicketExists(Long ticketId) {
+        if (!ticketDAO.existsById(ticketId)) {
+            throw new ResourceNotFoundException("Ticket no encontrado con ID: " + ticketId);
+        }
+    }
+
+    private void createStateChangeRecord(TicketResponseDTO ticket, String newState) {
+        TicketRecordCreateDTO recordDTO = new TicketRecordCreateDTO(
+                ticket.getId(),
+                ticket.getState(),
+                newState
+        );
+        ticketRecordService.create(recordDTO);
+    }
+
+    private TicketResponseDTO updateTicketState(Long id, TicketUpdateStateDTO updateStateDTO) {
+        return ticketDAO.updateState(id, updateStateDTO)
+                .orElseThrow(() -> new ResourceNotFoundException("Error al actualizar ticket con ID: " + id));
     }
 }
