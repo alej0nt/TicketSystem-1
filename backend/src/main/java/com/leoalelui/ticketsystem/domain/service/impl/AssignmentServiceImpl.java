@@ -5,6 +5,8 @@ import com.leoalelui.ticketsystem.domain.dto.request.TicketUpdateStateDTO;
 import com.leoalelui.ticketsystem.domain.dto.response.AssignmentResponseDTO;
 import com.leoalelui.ticketsystem.domain.dto.response.EmployeeResponseDTO;
 import com.leoalelui.ticketsystem.domain.dto.response.TicketResponseDTO;
+import com.leoalelui.ticketsystem.domain.exception.InvalidRoleException;
+import com.leoalelui.ticketsystem.domain.exception.InvalidStateException;
 import com.leoalelui.ticketsystem.domain.exception.ResourceNotFoundException;
 import com.leoalelui.ticketsystem.domain.service.AssignmentService;
 import com.leoalelui.ticketsystem.domain.service.EmployeeService;
@@ -43,7 +45,7 @@ public class AssignmentServiceImpl implements AssignmentService {
         // Valida que el ticket esté en estado "Abierto"
         String ticketState = ticket.getState() != null ? ticket.getState().toString() : null;
         if (ticketState == null || !ticketState.equalsIgnoreCase("Abierto")) {
-            throw new RuntimeException("Solo se pueden asignar tickets en estado 'Abierto'. Estado actual: " + ticketState);
+            throw new InvalidStateException("Solo se pueden asignar tickets en estado 'Abierto'. Estado actual: " + ticketState);
         }
 
         ticketService.updateState(ticketId, new TicketUpdateStateDTO("En progreso"));
@@ -79,7 +81,7 @@ public class AssignmentServiceImpl implements AssignmentService {
 //        }
         String ticketState = ticket.getState() != null ? ticket.getState().trim() : "";
         if (ticketState.equalsIgnoreCase("Resuelto") || ticketState.equalsIgnoreCase("Cerrado")) {
-            throw new RuntimeException("No se puede reasignar un ticket en estado finalizado (" + ticketState + ").");
+            throw new InvalidStateException("No se puede reasignar un ticket en estado finalizado (" + ticketState + ").");
         }
 
         // Validar nuevo empleado (DTO)
@@ -92,7 +94,7 @@ public class AssignmentServiceImpl implements AssignmentService {
     private void validateEmployeeAgent(EmployeeResponseDTO employee) {
         String role = employee.getRole() != null ? employee.getRole().toString() : null;
         if (role == null || !role.equalsIgnoreCase("AGENTE")) {
-            throw new RuntimeException("El empleado con id " + employee.getId() + " no tiene el rol de AGENTE.");
+            throw new InvalidRoleException("El empleado con id " + employee.getId() + " no tiene el rol de AGENTE.");
         }
     }
 

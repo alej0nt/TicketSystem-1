@@ -13,8 +13,8 @@ import java.util.List;
  */
 @Mapper(
         componentModel = "spring",
-        uses = {TicketMapper.class, EmployeeMapper.class},
-        unmappedTargetPolicy = ReportingPolicy.WARN
+        uses = {TicketMapper.class, EmployeeMapper.class}
+        //unmappedTargetPolicy = ReportingPolicy.WARN
 )
 public interface AssignmentMapper {
     AssignmentResponseDTO toDTO(AssignmentEntity entity);

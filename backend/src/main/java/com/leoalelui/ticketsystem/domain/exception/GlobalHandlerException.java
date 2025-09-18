@@ -28,7 +28,7 @@ public class GlobalHandlerException {
     }
 
     @ExceptionHandler(DataIntegrityViolationException.class)
-    public ResponseEntity<ErrorMessage> handleDataIntegrityViolationException(){
+    public ResponseEntity<ErrorMessage> handleDataIntegrityViolationException() {
         ErrorMessage errorMessage = new ErrorMessage("Datos de entrada incorrectos.");
         return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);
     }
@@ -36,7 +36,19 @@ public class GlobalHandlerException {
     @ExceptionHandler(ResourceNotFoundException.class)
     public ResponseEntity<ErrorMessage> handleEntityNotFoundException(ResourceNotFoundException e) {
         ErrorMessage errorMessage = new ErrorMessage(e.getMessage());
-        return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(errorMessage, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(InvalidStateException.class)
+    public ResponseEntity<ErrorMessage> handleInvalidStateException(InvalidStateException e) {
+        ErrorMessage errorMessage = new ErrorMessage(e.getMessage());
+        return new ResponseEntity<>(errorMessage, HttpStatus.CONFLICT);
+    }
+
+    @ExceptionHandler(InvalidRoleException.class)
+    public ResponseEntity<ErrorMessage> handleInvalidRoleException(InvalidRoleException e) {
+        ErrorMessage errorMessage = new ErrorMessage(e.getMessage());
+        return new ResponseEntity<>(errorMessage, HttpStatus.FORBIDDEN);
     }
 
 }
