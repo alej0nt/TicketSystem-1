@@ -2,6 +2,7 @@ package com.leoalelui.ticketsystem.domain.service.impl;
 
 import com.leoalelui.ticketsystem.domain.dto.request.TicketRecordCreateDTO;
 import com.leoalelui.ticketsystem.domain.dto.response.TicketRecordResponseDTO;
+import com.leoalelui.ticketsystem.domain.exception.InvalidStateException;
 import com.leoalelui.ticketsystem.domain.exception.ResourceNotFoundException;
 import com.leoalelui.ticketsystem.domain.service.TicketRecordService;
 import com.leoalelui.ticketsystem.persistence.dao.TicketDAO;
@@ -33,7 +34,7 @@ public class TicketRecordServiceImpl implements TicketRecordService {
 
         // Validar cambio de estado distinto
         if (ticketRecordCreateDTO.getPreviousState().equalsIgnoreCase(ticketRecordCreateDTO.getNextState())) {
-            throw new IllegalArgumentException("El ticket no puede cambiar al mismo estado que el anterior.");
+            throw new InvalidStateException("El ticket no puede cambiar al mismo estado que el anterior.");
         }
 
         return ticketRecordDAO.create(ticketRecordCreateDTO);
@@ -51,7 +52,7 @@ public class TicketRecordServiceImpl implements TicketRecordService {
         validateTicketEntityById(ticketId);
 
         if (from.isAfter(to)) {
-            throw new IllegalArgumentException("'from' no puede ser posterior a 'to'.");
+            throw new InvalidStateException("'from' no puede ser posterior a 'to'.");
         }
 
         LocalDateTime start = from.atStartOfDay();
