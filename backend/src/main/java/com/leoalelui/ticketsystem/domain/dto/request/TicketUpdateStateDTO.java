@@ -1,12 +1,13 @@
 package com.leoalelui.ticketsystem.domain.dto.request;
 
-import jakarta.validation.constraints.NotBlank;
+import com.leoalelui.ticketsystem.persistence.enums.State;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data
 @AllArgsConstructor
 public class TicketUpdateStateDTO {
-    @NotBlank(message = "El estado no puede estar vacío")
-    private String state;
+    @NotNull(message = "El estado no puede ser nulo")
+    private State state;
 }

@@ -4,6 +4,7 @@ import com.leoalelui.ticketsystem.domain.dto.request.TicketCreateDTO;
 import com.leoalelui.ticketsystem.domain.dto.request.TicketUpdateStateDTO;
 import com.leoalelui.ticketsystem.domain.dto.response.TicketResponseDTO;
 import com.leoalelui.ticketsystem.persistence.entity.TicketEntity;
+import com.leoalelui.ticketsystem.persistence.enums.State;
 import com.leoalelui.ticketsystem.persistence.mapper.TicketMapper;
 import com.leoalelui.ticketsystem.persistence.repository.TicketRepository;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +23,7 @@ public class TicketDAO {
 
     public TicketResponseDTO save(TicketCreateDTO createDTO) {
         TicketEntity entity = ticketMapper.toEntity(createDTO);
-        entity.setState("ABIERTO");
+        entity.setState(State.ABIERTO);
         entity.setCreationDate(LocalDateTime.now());
         TicketEntity saved = ticketRepository.save(entity);
         return ticketMapper.toResponseDTO(saved);
@@ -53,7 +54,7 @@ public class TicketDAO {
                 .toList();
     }
 
-    public List<TicketResponseDTO> findByState(String state) {
+    public List<TicketResponseDTO> findByState(State state) {
         return ticketRepository.findByState(state)
                 .stream()
                 .map(ticketMapper::toResponseDTO)

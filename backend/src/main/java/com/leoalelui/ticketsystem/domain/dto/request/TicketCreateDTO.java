@@ -1,5 +1,6 @@
 package com.leoalelui.ticketsystem.domain.dto.request;
 
+import com.leoalelui.ticketsystem.persistence.enums.Priority;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -24,7 +25,7 @@ public class TicketCreateDTO {
     @NotNull(message = "El id de la categoría no puede ser nulo.")
     private Long categoryId;
 
-    @NotBlank(message = "La prioridad no puede ser nula o vacía.")
-    private String priority;
+    @NotNull(message = "La prioridad no puede ser nula.")
+    private Priority priority;
 }
 

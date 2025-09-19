@@ -12,6 +12,7 @@ import com.leoalelui.ticketsystem.domain.service.NotificationService;
 import com.leoalelui.ticketsystem.domain.service.TicketRecordService;
 import com.leoalelui.ticketsystem.domain.service.TicketService;
 import com.leoalelui.ticketsystem.persistence.dao.*;
+import com.leoalelui.ticketsystem.persistence.enums.State;
 import jakarta.transaction.Transactional;
 import java.time.LocalDate;
 import lombok.RequiredArgsConstructor;
@@ -71,7 +72,7 @@ public class TicketServiceImpl implements TicketService {
     }
 
     @Override
-    public List<TicketResponseDTO> getTicketsByState(String state) {
+    public List<TicketResponseDTO> getTicketsByState(State state) {
         return ticketDAO.findByState(state);
     }
 
@@ -105,7 +106,7 @@ public class TicketServiceImpl implements TicketService {
         }
     }
 
-    private void createStateChangeRecord(TicketResponseDTO ticket, String newState) {
+    private void createStateChangeRecord(TicketResponseDTO ticket, State newState) {
         TicketRecordCreateDTO recordDTO = new TicketRecordCreateDTO(
                 ticket.getId(),
                 ticket.getState(),

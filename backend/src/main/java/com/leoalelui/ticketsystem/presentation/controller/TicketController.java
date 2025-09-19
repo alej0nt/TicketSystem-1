@@ -6,6 +6,7 @@ import com.leoalelui.ticketsystem.domain.dto.response.CommentResponseDTO;
 import com.leoalelui.ticketsystem.domain.dto.response.TicketRecordResponseDTO;
 import com.leoalelui.ticketsystem.domain.dto.response.TicketResponseDTO;
 import com.leoalelui.ticketsystem.domain.service.TicketService;
+import com.leoalelui.ticketsystem.persistence.enums.State;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -92,7 +93,7 @@ public class TicketController {
         @ApiResponse(responseCode = "404", description = "No se encontraron tiquetes con ese estado.")
     })
     @GetMapping("/state/{state}")
-    public ResponseEntity<List<TicketResponseDTO>> getTicketsByState(@PathVariable String state) {
+    public ResponseEntity<List<TicketResponseDTO>> getTicketsByState(@PathVariable State state) {
         List<TicketResponseDTO> tickets = ticketService.getTicketsByState(state);
         return ResponseEntity.ok(tickets); // 200 OK
     }
