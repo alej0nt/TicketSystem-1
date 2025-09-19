@@ -15,5 +15,5 @@ public interface AssignmentService {
 
     AssignmentResponseDTO getByTicketId(Long ticketId);
 
-    AssignmentResponseDTO reassignEmployee(Long assignmentId, Long newEmployeeId);
+    AssignmentResponseDTO reassignEmployee(Long ticketId, Long newEmployeeId);
  }

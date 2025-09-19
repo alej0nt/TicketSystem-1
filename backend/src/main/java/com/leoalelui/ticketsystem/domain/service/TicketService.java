@@ -5,6 +5,7 @@ import com.leoalelui.ticketsystem.domain.dto.request.TicketUpdateStateDTO;
 import com.leoalelui.ticketsystem.domain.dto.response.CommentResponseDTO;
 import com.leoalelui.ticketsystem.domain.dto.response.TicketRecordResponseDTO;
 import com.leoalelui.ticketsystem.domain.dto.response.TicketResponseDTO;
+import java.time.LocalDate;
 
 import java.util.List;
 
@@ -16,5 +17,5 @@ public interface TicketService {
     List<TicketResponseDTO> getAllTickets();
     List<TicketResponseDTO> getTicketsByState(String state);
     List<CommentResponseDTO> getAllCommentsByTicketId(Long id);
-    List<TicketRecordResponseDTO> getAllTicketRecordsByTicketId(Long id);
+    List<TicketRecordResponseDTO> getAllTicketRecordsByTicketId(Long id, LocalDate from, LocalDate to);
 }

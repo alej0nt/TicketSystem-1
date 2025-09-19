@@ -1,7 +1,7 @@
 package com.leoalelui.ticketsystem.presentation.controller;
 
-import com.leoalelui.ticketsystem.domain.dto.request.NotificationCreateDTO;
 import com.leoalelui.ticketsystem.domain.dto.response.NotificationResponseDTO;
+import com.leoalelui.ticketsystem.domain.service.NotificationService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -9,15 +9,11 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
@@ -32,7 +28,7 @@ import java.util.List;
 @RequestMapping("api/v1/notifications")
 @Tag(name = "Notificaciones", description = "API para la gestión de notificaciones")
 public class NotificationController {
-    // private final NotificationService notificationService;
+    private final NotificationService notificationService;
 //    @Operation(summary = "Crear notificación", description = "Crea una nueva notificación a un empleado.")
 //    @ApiResponses(value ={
 //        @ApiResponse(responseCode = "201", description = "Notificación creada exitosamente",
@@ -58,8 +54,8 @@ public class NotificationController {
     @GetMapping("/employee/{employeeId}")
     public ResponseEntity<List<NotificationResponseDTO>> getNotificationsByEmployee(
             @PathVariable @Parameter(description = "ID del empleado con sus notificaciones") Long employeeId) {
-        //List<NotificationResponseDTO> notifications = notificationService.getByEmployee(employeeId);
-        return ResponseEntity.ok(null);
+        List<NotificationResponseDTO> notifications = notificationService.getNotificationsByEmployee(employeeId);
+        return ResponseEntity.ok(notifications);
     }
 
     @Operation(summary = "Marcar notificación como leída",
@@ -73,7 +69,7 @@ public class NotificationController {
     })
     @PatchMapping("/{notificationId}/read")
     public ResponseEntity<NotificationResponseDTO> markAsRead(@PathVariable @Parameter(description = "ID de la notificación a marcar") Long notificationId) {
-        //NotificationResponseDTO updated = notificationService.markAsRead(notificationId);
-        return ResponseEntity.ok(null);
+        NotificationResponseDTO updated = notificationService.markAsRead(notificationId);
+        return ResponseEntity.ok(updated);
     }
 }

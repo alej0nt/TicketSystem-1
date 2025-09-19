@@ -1,5 +1,6 @@
 package com.leoalelui.ticketsystem.domain.service.impl;
 
+import com.leoalelui.ticketsystem.domain.dto.request.NotificationCreateDTO;
 import com.leoalelui.ticketsystem.domain.dto.request.TicketCreateDTO;
 import com.leoalelui.ticketsystem.domain.dto.request.TicketRecordCreateDTO;
 import com.leoalelui.ticketsystem.domain.dto.request.TicketUpdateStateDTO;
@@ -7,10 +8,12 @@ import com.leoalelui.ticketsystem.domain.dto.response.CommentResponseDTO;
 import com.leoalelui.ticketsystem.domain.dto.response.TicketRecordResponseDTO;
 import com.leoalelui.ticketsystem.domain.dto.response.TicketResponseDTO;
 import com.leoalelui.ticketsystem.domain.exception.ResourceNotFoundException;
+import com.leoalelui.ticketsystem.domain.service.NotificationService;
 import com.leoalelui.ticketsystem.domain.service.TicketRecordService;
 import com.leoalelui.ticketsystem.domain.service.TicketService;
 import com.leoalelui.ticketsystem.persistence.dao.*;
 import jakarta.transaction.Transactional;
+import java.time.LocalDate;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -24,9 +27,9 @@ public class TicketServiceImpl implements TicketService {
     private final EmployeeDAO employeeDAO;
     private final CategoryDAO categoryDAO;
     private final CommentDAO commentDAO;
-    private final TicketRecordDAO ticketRecordDAO;
-    
+
     private final TicketRecordService ticketRecordService;
+    private final NotificationService notificationService;
 
     @Override
     @Transactional
@@ -41,7 +44,11 @@ public class TicketServiceImpl implements TicketService {
     public TicketResponseDTO updateState(Long id, TicketUpdateStateDTO updateStateDTO) {
         TicketResponseDTO currentTicket = getTicketById(id);
         createStateChangeRecord(currentTicket, updateStateDTO.getState());
-        return updateTicketState(id, updateStateDTO);
+
+        TicketResponseDTO ticketActualizado = updateTicketState(id, updateStateDTO);
+        notificationService.create(new NotificationCreateDTO("El estado del ticket: '" + currentTicket.getTitle() + "' acaba de ser actualizado a '" + ticketActualizado.getState() + "'", currentTicket.getEmployeeId()));
+
+        return ticketActualizado;
     }
 
     @Override
@@ -75,9 +82,9 @@ public class TicketServiceImpl implements TicketService {
     }
 
     @Override
-    public List<TicketRecordResponseDTO> getAllTicketRecordsByTicketId(Long ticketId) {
+    public List<TicketRecordResponseDTO> getAllTicketRecordsByTicketId(Long ticketId, LocalDate from, LocalDate to) {
         validateTicketExists(ticketId);
-        return ticketRecordDAO.findTicketRecordByTicketId(ticketId);
+        return ticketRecordService.getByDateRange(ticketId, from, to);
     }
 
     private void validateEmployeeExists(Long employeeId) {
