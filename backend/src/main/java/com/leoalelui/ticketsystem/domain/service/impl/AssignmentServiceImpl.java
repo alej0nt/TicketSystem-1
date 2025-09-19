@@ -1,6 +1,7 @@
 package com.leoalelui.ticketsystem.domain.service.impl;
 
 import com.leoalelui.ticketsystem.domain.dto.request.AssignmentCreateDTO;
+import com.leoalelui.ticketsystem.domain.dto.request.NotificationCreateDTO;
 import com.leoalelui.ticketsystem.domain.dto.request.TicketUpdateStateDTO;
 import com.leoalelui.ticketsystem.domain.dto.response.AssignmentResponseDTO;
 import com.leoalelui.ticketsystem.domain.dto.response.EmployeeResponseDTO;
@@ -11,12 +12,14 @@ import com.leoalelui.ticketsystem.domain.exception.ResourceNotFoundException;
 import com.leoalelui.ticketsystem.domain.service.AssignmentService;
 import com.leoalelui.ticketsystem.domain.service.EmployeeService;
 import com.leoalelui.ticketsystem.domain.service.TicketService;
+import com.leoalelui.ticketsystem.domain.service.NotificationService;
 import com.leoalelui.ticketsystem.persistence.dao.AssignmentDAO;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import org.springframework.dao.DataIntegrityViolationException;
 
 /**
  * Implementación del servicio de asignaciones.
@@ -30,6 +33,7 @@ public class AssignmentServiceImpl implements AssignmentService {
     private final AssignmentDAO assignmentDAO;
     private final TicketService ticketService;
     private final EmployeeService employeeService;
+    private final NotificationService notificationService;
 
     @Override
     public AssignmentResponseDTO create(AssignmentCreateDTO assignmentCreateDTO) {
@@ -49,13 +53,15 @@ public class AssignmentServiceImpl implements AssignmentService {
         }
 
         ticketService.updateState(ticketId, new TicketUpdateStateDTO("En progreso"));
-
+        sendNotificationToEmployees(ticket, employee);
+        
         // Guarda la asignación
         return assignmentDAO.save(assignmentCreateDTO);
     }
 
     @Override
     public List<AssignmentResponseDTO> getByEmployeeId(Long employeeId) {
+        validateEmployeeAgent(employeeService.getEmployeeById(employeeId));
         return assignmentDAO.getByEmployeeId(employeeId);
     }
 
@@ -72,6 +78,9 @@ public class AssignmentServiceImpl implements AssignmentService {
 
     @Override
     public AssignmentResponseDTO reassignEmployee(Long ticketId, Long newEmployeeId) {
+        if (newEmployeeId == null || newEmployeeId == 0) {
+            throw new DataIntegrityViolationException("Debes ingresar algun id del empleado agente");
+        }
         AssignmentResponseDTO currentAssignment = getByTicketId(ticketId);
 
         // Validar ticket y estado usando DTOs
@@ -87,6 +96,9 @@ public class AssignmentServiceImpl implements AssignmentService {
         // Validar nuevo empleado (DTO)
         EmployeeResponseDTO newEmployee = employeeService.getEmployeeById(newEmployeeId);
         validateEmployeeAgent(newEmployee);
+        
+        notificationService.create(new NotificationCreateDTO("Ya el ticket '" + ticket.getTitle() + "' acaba de ser reasignado a otro agente, ya no trabajas en el.", currentAssignment.getEmployee().getId()));
+        sendNotificationToEmployees(ticket, newEmployee);
 
         return assignmentDAO.reassignByTicketId(ticketId, newEmployeeId);
     }
@@ -96,6 +108,11 @@ public class AssignmentServiceImpl implements AssignmentService {
         if (role == null || !role.equalsIgnoreCase("AGENTE")) {
             throw new InvalidRoleException("El empleado con id " + employee.getId() + " no tiene el rol de AGENTE.");
         }
+    }
+    
+    private void sendNotificationToEmployees(TicketResponseDTO ticket, EmployeeResponseDTO agent) {
+        notificationService.create(new NotificationCreateDTO("Acaban de asignar tu ticket '" + ticket.getTitle() + "' al agente '" + agent.getName() + "'", ticket.getEmployeeId()));
+        notificationService.create(new NotificationCreateDTO("Acaban de asignarte el ticket '" + ticket.getTitle() + "' con prioridad " + ticket.getPriority(), agent.getId()));
     }
 
 }

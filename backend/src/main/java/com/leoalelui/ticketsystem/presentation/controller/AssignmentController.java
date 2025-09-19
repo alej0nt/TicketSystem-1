@@ -2,6 +2,7 @@ package com.leoalelui.ticketsystem.presentation.controller;
 
 import com.leoalelui.ticketsystem.domain.dto.request.AssignmentCreateDTO;
 import com.leoalelui.ticketsystem.domain.dto.response.AssignmentResponseDTO;
+import com.leoalelui.ticketsystem.domain.service.AssignmentService;
 //import com.leoalelui.ticketsystem.domain.service.AssignmentService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -26,11 +27,11 @@ import java.util.List;
  */
 @RestController
 @AllArgsConstructor
-@RequestMapping("api/assignments")
+@RequestMapping("api/v1/assignments")
 @Tag(name = "Asignaciones", description = "Operaciones para manejar asignaciones de tickets a empleados")
 public class AssignmentController {
 
-    //private final AssignmentService assignmentService;
+    private final AssignmentService assignmentService;
     @Operation(summary = "Crear asignación", description = "Crea una nueva asignación de un ticket a un empleado.")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "201", description = "Asignación creada exitosamente",
@@ -43,8 +44,8 @@ public class AssignmentController {
     public ResponseEntity<AssignmentResponseDTO> createAssignment(
             @Valid @RequestBody AssignmentCreateDTO assignmentCreateDTO) {
 
-        //AssignmentResponseDTO created = assignmentService.create(assignmentCreateDTO);
-        return ResponseEntity.status(HttpStatus.CREATED).body(null);
+        AssignmentResponseDTO created = assignmentService.create(assignmentCreateDTO);
+        return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
 
     @Operation(summary = "Listar asignaciones por empleado agente", description = "Devuelve las asignaciones asociadas a un empleado agente.")
@@ -56,8 +57,8 @@ public class AssignmentController {
     })
     @GetMapping("/employee/{employeeId}")
     public ResponseEntity<List<AssignmentResponseDTO>> getAssignmentsByEmployee(@PathVariable @Parameter(description = "ID del empleado agente con sus asignaciones") Long employeeId) {
-        //List<AssignmentResponseDTO> list = assignmentService.getByEmployeeId(employeeId);
-        return ResponseEntity.ok(null);
+        List<AssignmentResponseDTO> list = assignmentService.getByEmployeeId(employeeId);
+        return ResponseEntity.ok(list);
     }
 
     @Operation(summary = "Obtener asignación por ticket", description = "Devuelve la asignación actual asociada a un ticket.")
@@ -71,8 +72,8 @@ public class AssignmentController {
     public ResponseEntity<AssignmentResponseDTO> getAssignmentByTicket(
             @PathVariable @Parameter(description = "ID del ticket para obtener su asignación actual") Long ticketId) {
 
-        // AssignmentResponseDTO dto = assignmentService.getByTicketId(ticketId);
-        return ResponseEntity.ok(null);
+        AssignmentResponseDTO dto = assignmentService.getByTicketId(ticketId);
+        return ResponseEntity.ok(dto);
     }
 
     @Operation(summary = "Reasignar agente", description = "Permite cambiar el empleado asignado a un ticket existente.")
@@ -84,12 +85,12 @@ public class AssignmentController {
         @ApiResponse(responseCode = "401", description = "No autorizado"),
         @ApiResponse(responseCode = "403", description = "Prohibido - rol insuficiente")
     })
-    @PatchMapping("reassign/{id}")
+    @PatchMapping("reassign/{ticketId}")
     public ResponseEntity<AssignmentResponseDTO> reassignEmployee(
-            @PathVariable @Parameter(description = "ID de la asignación a actualizar") Long id,
+            @PathVariable @Parameter(description = "ID de la asignación a actualizar") Long ticketId,
             @RequestParam("employeeId") @Parameter(description = "Nuevo ID del empleado agente") Long employeeId) {
 
-        // AssignmentResponseDTO updated = assignmentService.reassignEmployee(id, employeeId);
-        return ResponseEntity.ok(null);
+        AssignmentResponseDTO updated = assignmentService.reassignEmployee(ticketId, employeeId);
+        return ResponseEntity.ok(updated);
     }
 }

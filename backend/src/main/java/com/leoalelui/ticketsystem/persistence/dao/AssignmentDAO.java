@@ -26,14 +26,16 @@ public class AssignmentDAO {
 
     private final AssignmentRepository assignmentRepository;
     private final AssignmentMapper assignmentMapper;
-    
-     @PersistenceContext
+
+    @PersistenceContext
     private EntityManager entityManager;
 
     @Transactional
     public AssignmentResponseDTO save(AssignmentCreateDTO createDTO) {
         AssignmentEntity entity = assignmentMapper.toEntity(createDTO);
         AssignmentEntity saved = assignmentRepository.save(entity);
+        entityManager.flush();
+        entityManager.refresh(saved);
         return assignmentMapper.toDTO(saved);
     }
 
@@ -63,10 +65,10 @@ public class AssignmentDAO {
     public Optional<AssignmentEntity> findEntityByTicketId(Long ticketId) {
         return Optional.ofNullable(assignmentRepository.findByTicketId(ticketId));
     }
-    
+
     /**
-     * Reasigna la asignación asociada a ticketId al empleado newEmployeeId.
-     * - Usa getReference para evitar cargar el Employee completo.
+     * Reasigna la asignación asociada a ticketId al empleado newEmployeeId. -
+     * Usa getReference para evitar cargar el Employee completo.
      */
     @Transactional
     public AssignmentResponseDTO reassignByTicketId(Long ticketId, Long newEmployeeId) {
