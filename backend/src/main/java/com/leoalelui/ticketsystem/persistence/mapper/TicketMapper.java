@@ -2,13 +2,10 @@ package com.leoalelui.ticketsystem.persistence.mapper;
 
 import com.leoalelui.ticketsystem.domain.dto.request.TicketCreateDTO;
 import com.leoalelui.ticketsystem.domain.dto.response.TicketResponseDTO;
-import com.leoalelui.ticketsystem.persistence.entity.CategoryEntity;
-import com.leoalelui.ticketsystem.persistence.entity.EmployeeEntity;
 import com.leoalelui.ticketsystem.persistence.entity.TicketEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
-import org.mapstruct.ReportingPolicy;
 
 @Mapper(
         componentModel = "spring",

@@ -1,8 +1,8 @@
 package com.leoalelui.ticketsystem.domain.dto.request;
 
+import com.leoalelui.ticketsystem.persistence.enums.State;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 /**
@@ -19,15 +19,15 @@ public class TicketRecordCreateDTO {
             example = "123")
     private Long ticketId;
     
-     @NotBlank(message = "El estado previo no puede ser nulo o vacío.")
+    @NotNull(message = "El estado previo no puede ser nulo.")
     @Schema(description = "Estado previo del ticket antes del cambio",
-            example = "Abierto")
-    private String previousState;
+            example = "ABIERTO")
+    private State previousState;
 
-    @NotBlank(message = "El estado siguiente no puede ser nulo o vacío.")
+    @NotNull(message = "El estado siguiente no puede ser nulo.")
     @Schema(description = "Nuevo estado del ticket después del cambio",
-            example = "En progreso")
-    private String nextState;
+            example = "EN_PROGRESO")
+    private State nextState;
 }
 
 

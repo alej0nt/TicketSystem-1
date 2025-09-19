@@ -14,6 +14,7 @@ import com.leoalelui.ticketsystem.domain.service.EmployeeService;
 import com.leoalelui.ticketsystem.domain.service.TicketService;
 import com.leoalelui.ticketsystem.domain.service.NotificationService;
 import com.leoalelui.ticketsystem.persistence.dao.AssignmentDAO;
+import com.leoalelui.ticketsystem.persistence.enums.State;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -47,12 +48,11 @@ public class AssignmentServiceImpl implements AssignmentService {
         validateEmployeeAgent(employee);
 
         // Valida que el ticket esté en estado "Abierto"
-        String ticketState = ticket.getState() != null ? ticket.getState().toString() : null;
-        if (ticketState == null || !ticketState.equalsIgnoreCase("Abierto")) {
-            throw new InvalidStateException("Solo se pueden asignar tickets en estado 'Abierto'. Estado actual: " + ticketState);
+        if (ticket.getState() != State.ABIERTO) {
+            throw new InvalidStateException("Solo se pueden asignar tickets en estado 'Abierto'. Estado actual: " + ticket.getState());
         }
 
-        ticketService.updateState(ticketId, new TicketUpdateStateDTO("En progreso"));
+        ticketService.updateState(ticketId, new TicketUpdateStateDTO(State.EN_PROGRESO));
         sendNotificationToEmployees(ticket, employee);
         
         // Guarda la asignación
@@ -88,9 +88,8 @@ public class AssignmentServiceImpl implements AssignmentService {
 //        if (ticket == null) {
 //            throw new RuntimeException("El ticket asociado a la asignación no existe.");
 //        }
-        String ticketState = ticket.getState() != null ? ticket.getState().trim() : "";
-        if (ticketState.equalsIgnoreCase("Resuelto") || ticketState.equalsIgnoreCase("Cerrado")) {
-            throw new InvalidStateException("No se puede reasignar un ticket en estado finalizado (" + ticketState + ").");
+        if (ticket.getState() == State.RESUELTO || ticket.getState() == State.CERRADO) {
+            throw new InvalidStateException("No se puede reasignar un ticket en estado finalizado (" + ticket.getState() + ").");
         }
 
         // Validar nuevo empleado (DTO)

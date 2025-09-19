@@ -2,7 +2,6 @@ package com.leoalelui.ticketsystem.persistence.dao;
 
 import com.leoalelui.ticketsystem.domain.dto.request.CommentCreateDTO;
 import com.leoalelui.ticketsystem.domain.dto.response.CommentResponseDTO;
-import com.leoalelui.ticketsystem.domain.dto.response.TicketResponseDTO;
 import com.leoalelui.ticketsystem.persistence.entity.CommentEntity;
 import com.leoalelui.ticketsystem.persistence.mapper.CommentMapper;
 import com.leoalelui.ticketsystem.persistence.repository.CommentRepository;

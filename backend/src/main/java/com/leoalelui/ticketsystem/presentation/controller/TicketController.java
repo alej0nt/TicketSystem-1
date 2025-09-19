@@ -6,6 +6,7 @@ import com.leoalelui.ticketsystem.domain.dto.response.CommentResponseDTO;
 import com.leoalelui.ticketsystem.domain.dto.response.TicketRecordResponseDTO;
 import com.leoalelui.ticketsystem.domain.dto.response.TicketResponseDTO;
 import com.leoalelui.ticketsystem.domain.service.TicketService;
+import com.leoalelui.ticketsystem.persistence.enums.State;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -39,7 +40,7 @@ public class TicketController {
         return ResponseEntity.status(HttpStatus.CREATED).body(ticketCreated); // 201 Created
     }
 
-    @Operation(summary = "Actualizar estado de un tiquete.", description = "Modifica el estado de un tiquete existente (ej: ABIERTO, EN_PROCESO, CERRADO).")
+    @Operation(summary = "Actualizar estado de un tiquete.", description = "Modifica el estado de un tiquete existente (ej: ABIERTO, EN_PROCESO, RESUELTO, CERRADO).")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Estado del tiquete actualizado."),
         @ApiResponse(responseCode = "400", description = "Datos de entrada inválidos."),
@@ -92,7 +93,7 @@ public class TicketController {
         @ApiResponse(responseCode = "404", description = "No se encontraron tiquetes con ese estado.")
     })
     @GetMapping("/state/{state}")
-    public ResponseEntity<List<TicketResponseDTO>> getTicketsByState(@PathVariable String state) {
+    public ResponseEntity<List<TicketResponseDTO>> getTicketsByState(@PathVariable State state) {
         List<TicketResponseDTO> tickets = ticketService.getTicketsByState(state);
         return ResponseEntity.ok(tickets); // 200 OK
     }

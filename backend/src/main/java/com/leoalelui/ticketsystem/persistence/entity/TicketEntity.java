@@ -1,5 +1,7 @@
 package com.leoalelui.ticketsystem.persistence.entity;
 
+import com.leoalelui.ticketsystem.persistence.enums.Priority;
+import com.leoalelui.ticketsystem.persistence.enums.State;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import lombok.Data;
@@ -26,8 +28,13 @@ public class TicketEntity {
     @JoinColumn(name = "category_id", nullable = false)
     private CategoryEntity category;
 
-    private String priority;
-    private String state;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Priority priority;
+    
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private State state;
     
     @CreationTimestamp
     @Column(name = "creation_date", nullable = false, updatable = false)

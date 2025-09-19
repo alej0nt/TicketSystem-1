@@ -26,7 +26,7 @@ public class TicketRecordServiceImpl implements TicketRecordService {
     @Override
     public TicketRecordResponseDTO create(TicketRecordCreateDTO ticketRecordCreateDTO) {
         // Validar cambio de estado distinto
-        if (ticketRecordCreateDTO.getPreviousState().equalsIgnoreCase(ticketRecordCreateDTO.getNextState())) {
+        if (ticketRecordCreateDTO.getPreviousState().equals(ticketRecordCreateDTO.getNextState())) {
             throw new InvalidStateException("El ticket no puede cambiar al mismo estado que el anterior.");
         }
 

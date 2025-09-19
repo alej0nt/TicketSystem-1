@@ -1,5 +1,7 @@
 package com.leoalelui.ticketsystem.domain.dto.response;
 
+import com.leoalelui.ticketsystem.persistence.enums.Priority;
+import com.leoalelui.ticketsystem.persistence.enums.State;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -27,10 +29,10 @@ public class TicketResponseDTO {
     private String description;
 
     @Schema(description = "Prioridad del ticket", example = "ALTA")
-    private String priority;
+    private Priority priority;
 
     @Schema(description = "Estado actual del ticket", example = "ABIERTO")
-    private String state;
+    private State state;
 
     @Schema(description = "Fecha de creación del ticket", example = "2025-09-11T14:30:00")
     private LocalDateTime creationDate;
