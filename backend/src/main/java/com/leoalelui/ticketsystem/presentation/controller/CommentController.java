@@ -1,7 +1,6 @@
 package com.leoalelui.ticketsystem.presentation.controller;
 
 import com.leoalelui.ticketsystem.domain.dto.request.CommentCreateDTO;
-import com.leoalelui.ticketsystem.domain.dto.request.CommentUpdateDTO;
 import com.leoalelui.ticketsystem.domain.dto.response.CommentResponseDTO;
 import com.leoalelui.ticketsystem.domain.service.CommentService;
 import io.swagger.v3.oas.annotations.Operation;

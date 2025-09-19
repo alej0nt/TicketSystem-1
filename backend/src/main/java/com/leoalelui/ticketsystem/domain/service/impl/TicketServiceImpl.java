@@ -7,6 +7,7 @@ import com.leoalelui.ticketsystem.domain.dto.request.TicketUpdateStateDTO;
 import com.leoalelui.ticketsystem.domain.dto.response.CommentResponseDTO;
 import com.leoalelui.ticketsystem.domain.dto.response.TicketRecordResponseDTO;
 import com.leoalelui.ticketsystem.domain.dto.response.TicketResponseDTO;
+import com.leoalelui.ticketsystem.domain.exception.InvalidStateException;
 import com.leoalelui.ticketsystem.domain.exception.ResourceNotFoundException;
 import com.leoalelui.ticketsystem.domain.service.NotificationService;
 import com.leoalelui.ticketsystem.domain.service.TicketRecordService;
@@ -44,26 +45,27 @@ public class TicketServiceImpl implements TicketService {
     @Transactional
     public TicketResponseDTO updateState(Long id, TicketUpdateStateDTO updateStateDTO) {
         TicketResponseDTO currentTicket = getTicketById(id);
+        
+        validateStateTransition(currentTicket.getState(), updateStateDTO.getState());
+        
         createStateChangeRecord(currentTicket, updateStateDTO.getState());
 
-        TicketResponseDTO ticketActualizado = updateTicketState(id, updateStateDTO);
-        notificationService.create(new NotificationCreateDTO("El estado del ticket: '" + currentTicket.getTitle() + "' acaba de ser actualizado a '" + ticketActualizado.getState() + "'", currentTicket.getEmployeeId()));
+        TicketResponseDTO ticketUpdated = updateTicketState(id, updateStateDTO);
+        notificationService.create(new NotificationCreateDTO("El estado del tiquete: '" + currentTicket.getTitle() + "' acaba de ser actualizado a '" + ticketUpdated.getState() + "'", currentTicket.getEmployeeId()));
 
-        return ticketActualizado;
+        return ticketUpdated;
     }
 
     @Override
     public void deleteTicket(Long id) {
-        if (!ticketDAO.existsById(id)) {
-            throw new ResourceNotFoundException("Tiquete no encontrado.");
-        }
+        validateTicketExists(id);
         ticketDAO.deleteById(id);
     }
 
     @Override
     public TicketResponseDTO getTicketById(Long id) {
-        return ticketDAO.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Tiquete no encontrado"));
+        validateTicketExists(id);
+        return ticketDAO.findById(id).get();
     }
 
     @Override
@@ -102,7 +104,7 @@ public class TicketServiceImpl implements TicketService {
 
     private void validateTicketExists(Long ticketId) {
         if (!ticketDAO.existsById(ticketId)) {
-            throw new ResourceNotFoundException("Ticket no encontrado con ID: " + ticketId);
+            throw new ResourceNotFoundException("Tiquete no encontrado con ID: " + ticketId);
         }
     }
 
@@ -118,5 +120,52 @@ public class TicketServiceImpl implements TicketService {
     private TicketResponseDTO updateTicketState(Long id, TicketUpdateStateDTO updateStateDTO) {
         return ticketDAO.updateState(id, updateStateDTO)
                 .orElseThrow(() -> new ResourceNotFoundException("Error al actualizar ticket con ID: " + id));
+    }
+
+    private void validateStateTransition(State currentState, State newState) {
+        if (currentState.equals(newState)) {
+            throw new InvalidStateException("El tiquete ya está en el estado: " + currentState.getDisplayName());
+        }
+
+        switch (currentState) {
+            case ABIERTO:
+                if (newState != State.EN_PROGRESO) {
+                    throw new InvalidStateException(
+                        "Desde estado '" + currentState.getDisplayName() + "' solo se puede cambiar a 'En progreso'. " +
+                        "Estado solicitado: '" + newState.getDisplayName() + "'"
+                    );
+                }
+                break;
+                
+            case EN_PROGRESO:
+                if (newState != State.RESUELTO && newState != State.ABIERTO) {
+                    throw new InvalidStateException(
+                        "Desde estado '" + currentState.getDisplayName() + "' solo se puede cambiar a 'Resuelto' o 'Abierto'. " +
+                        "Estado solicitado: '" + newState.getDisplayName() + "'"
+                    );
+                }
+                break;
+                
+            case RESUELTO:
+                if (newState != State.CERRADO && newState != State.EN_PROGRESO) {
+                    throw new InvalidStateException(
+                        "Desde estado '" + currentState.getDisplayName() + "' solo se puede cambiar a 'Cerrado' o 'En progreso'. " +
+                        "Estado solicitado: '" + newState.getDisplayName() + "'"
+                    );
+                }
+                break;
+                
+            case CERRADO:
+                if (newState != State.RESUELTO) {
+                    throw new InvalidStateException(
+                        "Desde estado '" + currentState.getDisplayName() + "' solo se puede reabrir a 'Resuelto'. " +
+                        "Estado solicitado: '" + newState.getDisplayName() + "'"
+                    );
+                }
+                break;
+                
+            default:
+                throw new InvalidStateException("Estado actual no reconocido: " + currentState);
+        }
     }
 }

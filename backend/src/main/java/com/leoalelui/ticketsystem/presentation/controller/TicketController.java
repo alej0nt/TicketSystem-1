@@ -40,7 +40,7 @@ public class TicketController {
         return ResponseEntity.status(HttpStatus.CREATED).body(ticketCreated); // 201 Created
     }
 
-    @Operation(summary = "Actualizar estado de un tiquete.", description = "Modifica el estado de un tiquete existente (ej: ABIERTO, EN_PROCESO, CERRADO).")
+    @Operation(summary = "Actualizar estado de un tiquete.", description = "Modifica el estado de un tiquete existente (ej: ABIERTO, EN_PROCESO, RESUELTO, CERRADO).")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Estado del tiquete actualizado."),
         @ApiResponse(responseCode = "400", description = "Datos de entrada inválidos."),
