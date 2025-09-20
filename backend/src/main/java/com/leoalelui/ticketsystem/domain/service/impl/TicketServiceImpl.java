@@ -57,6 +57,7 @@ public class TicketServiceImpl implements TicketService {
     }
 
     @Override
+    @Transactional
     public void deleteTicket(Long id) {
         validateTicketExists(id);
         ticketDAO.deleteById(id);
