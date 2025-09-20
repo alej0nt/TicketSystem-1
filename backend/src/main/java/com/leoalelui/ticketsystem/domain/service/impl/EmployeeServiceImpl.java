@@ -27,9 +27,13 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public EmployeeResponseDTO updateEmployee(Long id, EmployeeUpdateDTO employeeUpdateDTO) {
-        if (employeeDAO.existsByEmail(employeeUpdateDTO.getEmail())) {
-            throw new RuntimeException("El email ya existe.");
+        EmployeeResponseDTO existingEmployee = employeeDAO.findByEmail(employeeUpdateDTO.getEmail())
+                .orElse(null);
+        
+        if (existingEmployee != null && !existingEmployee.getId().equals(id)) {
+            throw new RuntimeException("El email ya existe en otro empleado.");
         }
+        
         return employeeDAO.update(id, employeeUpdateDTO)
                 .orElseThrow(() -> new ResourceNotFoundException("Empleado no encontrado."));
     }
