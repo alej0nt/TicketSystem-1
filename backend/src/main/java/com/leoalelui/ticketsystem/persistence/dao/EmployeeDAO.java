@@ -4,6 +4,7 @@ import com.leoalelui.ticketsystem.domain.dto.request.EmployeeCreateDTO;
 import com.leoalelui.ticketsystem.domain.dto.request.EmployeeUpdateDTO;
 import com.leoalelui.ticketsystem.domain.dto.response.EmployeeResponseDTO;
 import com.leoalelui.ticketsystem.persistence.entity.EmployeeEntity;
+import com.leoalelui.ticketsystem.persistence.enums.Role;
 import com.leoalelui.ticketsystem.persistence.mapper.EmployeeMapper;
 import com.leoalelui.ticketsystem.persistence.repository.EmployeeRepository;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +23,7 @@ public class EmployeeDAO {
     // Crear
     public EmployeeResponseDTO save(EmployeeCreateDTO createDTO) {
         EmployeeEntity entity = employeeMapper.toEntity(createDTO);
-        entity.setRole("USER"); // valor por defecto
+        entity.setRole(Role.USER); // valor por defecto
         return employeeMapper.toResponseDTO(employeeRepository.save(entity));
     }
 

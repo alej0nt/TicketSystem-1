@@ -1,5 +1,7 @@
 package com.leoalelui.ticketsystem.domain.dto.request;
 
+import com.leoalelui.ticketsystem.persistence.enums.Role;
+
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -20,7 +22,7 @@ public class EmployeeUpdateDTO {
 
     @NotBlank(message = "El role del empleado no puede ser nulo o vacío.")
     @Size(min = 2, max = 20, message = "El role debe tener entre 2 y 20 caracteres.")
-    private String role;
+    private Role role;
 
     @NotBlank(message = "El departamento del empleado no puede ser nulo o vacío.")
     @Size(min = 2, max = 50, message = "El departamento debe tener entre 2 y 50 caracteres.")

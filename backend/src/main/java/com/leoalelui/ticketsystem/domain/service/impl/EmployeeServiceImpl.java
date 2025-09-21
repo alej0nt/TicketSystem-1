@@ -6,15 +6,19 @@ import com.leoalelui.ticketsystem.domain.dto.response.EmployeeResponseDTO;
 import com.leoalelui.ticketsystem.domain.exception.ResourceNotFoundException;
 import com.leoalelui.ticketsystem.domain.service.EmployeeService;
 import com.leoalelui.ticketsystem.persistence.dao.EmployeeDAO;
+import com.leoalelui.ticketsystem.security.EmployeeUserDetails;
+
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.security.core.userdetails.*;
+
 
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class EmployeeServiceImpl implements EmployeeService {
+public class EmployeeServiceImpl implements EmployeeService, UserDetailsService {
 
     private final EmployeeDAO employeeDAO;
 
@@ -78,5 +82,12 @@ public class EmployeeServiceImpl implements EmployeeService {
         if (existingEmployee != null && !existingEmployee.getId().equals(currentEmployeeId)) {
             throw new RuntimeException("El email ya existe en otro empleado.");
         }
+    }
+
+    @Override
+    public UserDetails loadUserByEmail(String email) throws UsernameNotFoundException {
+        return employeeDAO.findByEmail(email)
+                .map(EmployeeUserDetails::new)
+                .orElseThrow(() -> new UsernameNotFoundException("Empleado no encontrado con email: " + email));
     }
 }

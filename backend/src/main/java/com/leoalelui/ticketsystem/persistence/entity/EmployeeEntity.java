@@ -2,13 +2,14 @@ package com.leoalelui.ticketsystem.persistence.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import com.leoalelui.ticketsystem.persistence.enums.Role;
 
 import java.util.List;
 
 @Data
 @Entity
 @Table(name = "employee")
-public class EmployeeEntity {
+public class EmployeeEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -19,7 +20,11 @@ public class EmployeeEntity {
     private String email;
 
     private String password;
-    private String role;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Role role;
+
     private String department;
 
     @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL, orphanRemoval = true)
