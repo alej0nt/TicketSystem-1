@@ -1,8 +1,19 @@
 package com.leoalelui.ticketsystem.security;
 
-import org.springframework.stereotype.Component;
+import java.io.IOException;
 
-import com.leoalelui.ticketsystem.domain.service.EmployeeService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
+import org.springframework.stereotype.Component;
+import org.springframework.web.filter.OncePerRequestFilter;
+
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 @Component
 public class AuthTokenFilter extends OncePerRequestFilter {
@@ -10,7 +21,7 @@ public class AuthTokenFilter extends OncePerRequestFilter {
     private JwtUtil jwtUtil;
 
     @Autowired
-    private EmployeeService employeeService;
+    private CustomUserDetailsService customUserDetailsService;
 
     private static final String BEARER_PREFIX = "Bearer ";
 
@@ -19,7 +30,7 @@ public class AuthTokenFilter extends OncePerRequestFilter {
         String token = parseJwt(request);
         if (token != null && jwtUtil.validateToken(token)) {
             final String email = jwtUtil.getEmailFromToken(token);
-            final UserDetails userDetails = employeeService.loadUserByEmail(email);
+            final UserDetails userDetails = customUserDetailsService.loadUserByUsername(email);
             UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails,
                     null, userDetails.getAuthorities());
             authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));

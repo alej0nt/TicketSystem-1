@@ -1,4 +1,3 @@
-// EmployeeUserDetails.java
 package com.leoalelui.ticketsystem.security;
 
 import com.leoalelui.ticketsystem.persistence.entity.EmployeeEntity;
@@ -10,7 +9,6 @@ import java.util.Collection;
 import java.util.List;
 
 public class EmployeeUserDetails implements UserDetails {
-
     private final EmployeeEntity employee;
 
     public EmployeeUserDetails(EmployeeEntity employee) {
@@ -19,7 +17,6 @@ public class EmployeeUserDetails implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        // Si tu enum Role tiene USER, ADMIN, AGENTE, mapeamos a "ROLE_..."
         return List.of(new SimpleGrantedAuthority("ROLE_" + employee.getRole().name()));
     }
 
@@ -45,7 +42,6 @@ public class EmployeeUserDetails implements UserDetails {
     @Override
     public boolean isEnabled() { return true; }
 
-    // Getter para id / name si los necesitas
     public Long getId() { return employee.getId(); }
 }
 

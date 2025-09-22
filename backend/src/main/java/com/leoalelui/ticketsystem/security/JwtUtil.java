@@ -1,5 +1,6 @@
 package com.leoalelui.ticketsystem.security;
 
+import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
 import java.nio.charset.StandardCharsets;
@@ -26,12 +27,12 @@ public class JwtUtil {
 
     public String generateToken(String email) {
         return Jwts.builder()
-                .setSubject(email)
-                .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + expiration))
-                .signWith(key)
+                .subject(email)
+                .issuedAt(new Date()) 
+                .expiration(new Date(System.currentTimeMillis() + expiration)) 
                 .compact();
     }
+    
 
     public String getEmailFromToken(String token) {
         return Jwts.parser()
@@ -50,8 +51,7 @@ public class JwtUtil {
                 .parseSignedClaims(token);
             return true;
         } catch (Exception e) {
-            throw new RuntimeException("Token inválido");
+            return false;
         }
-        return false;
     }
 }

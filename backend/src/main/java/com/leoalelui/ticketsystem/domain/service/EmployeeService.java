@@ -6,6 +6,8 @@ import com.leoalelui.ticketsystem.domain.dto.response.EmployeeResponseDTO;
 
 import java.util.List;
 
+import org.springframework.security.core.userdetails.UserDetails;
+
 public interface EmployeeService {
     EmployeeResponseDTO createEmployee(EmployeeCreateDTO employeeCreateDTO);
     EmployeeResponseDTO updateEmployee(Long id, EmployeeUpdateDTO employeeUpdateDTO);
