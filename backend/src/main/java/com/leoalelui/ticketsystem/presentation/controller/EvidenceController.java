@@ -2,6 +2,7 @@ package com.leoalelui.ticketsystem.presentation.controller;
 
 import com.leoalelui.ticketsystem.domain.dto.request.EvidenceCreateDTO;
 import com.leoalelui.ticketsystem.domain.dto.response.EvidenceResponseDTO;
+import com.leoalelui.ticketsystem.domain.service.EvidenceService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -20,6 +21,7 @@ import java.util.List;
 @Tag(name = "Evidencias", description = "API para la gestión de evidencias (imágenes) asociadas a los tickets.")
 public class EvidenceController {
 
+    private final EvidenceService evidenceService;
     @Operation(summary = "Obtener todas las evidencias de un ticket",
             description = "Devuelve una lista con todas las evidencias asociadas a un ticket específico.")
     @ApiResponses(value = {
@@ -31,7 +33,7 @@ public class EvidenceController {
     public ResponseEntity<List<EvidenceResponseDTO>> getAllByTicket(
             @Parameter(description = "ID del ticket") @PathVariable Long ticketId,
             @RequestHeader("Authorization") String token) {
-        return ResponseEntity.ok(null);
+        return ResponseEntity.ok(evidenceService.findAllByTicketId(ticketId));
     }
 
     @Operation(summary = "Obtener una evidencia por su ID",
@@ -45,7 +47,7 @@ public class EvidenceController {
     public ResponseEntity<EvidenceResponseDTO> getById(
             @Parameter(description = "ID de la evidencia") @PathVariable Long id,
             @RequestHeader("Authorization") String token) {
-        return ResponseEntity.ok(null);
+        return ResponseEntity.ok(evidenceService.findById(id));
     }
 
     @Operation(summary = "Crear una nueva evidencia",
@@ -59,7 +61,7 @@ public class EvidenceController {
     public ResponseEntity<EvidenceResponseDTO> create(
             @Valid @RequestBody EvidenceCreateDTO evidenceCreateDTO,
             @RequestHeader("Authorization") String token) {
-        return ResponseEntity.status(201).body(null);
+        return ResponseEntity.status(201).body(evidenceService.save(evidenceCreateDTO));
     }
 
     @Operation(summary = "Eliminar una evidencia",
@@ -73,6 +75,7 @@ public class EvidenceController {
     public ResponseEntity<Void> delete(
             @Parameter(description = "ID de la evidencia") @PathVariable Long id,
             @RequestHeader("Authorization") String token) {
+        evidenceService.delete(id);
         return ResponseEntity.noContent().build();
     }
 }
