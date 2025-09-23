@@ -15,11 +15,11 @@ public class JwtResponseDTO {
     @Schema(description = "Tipo de token", example = "Bearer")
     private String type = "Bearer";
     
-    @Schema(description = "Información del usuario autenticado")
-    private EmployeeResponseDTO user;
+    @Schema(description = "Información del empleado autenticado")
+    private EmployeeResponseDTO employee;
 
-    public JwtResponseDTO(String token, EmployeeResponseDTO user) {
+    public JwtResponseDTO(String token, EmployeeResponseDTO employee) {
         this.token = token;
-        this.user = user;
+        this.employee = employee;
     }
 }

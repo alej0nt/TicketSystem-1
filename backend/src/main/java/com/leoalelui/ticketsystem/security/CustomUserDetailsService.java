@@ -1,6 +1,7 @@
 package com.leoalelui.ticketsystem.security;
 
 import java.util.Optional;
+import java.util.Collections;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.User;
@@ -11,8 +12,6 @@ import org.springframework.stereotype.Service;
 
 import com.leoalelui.ticketsystem.persistence.entity.EmployeeEntity;
 import com.leoalelui.ticketsystem.persistence.repository.EmployeeRepository;
-
-import io.jsonwebtoken.lang.Collections;
 
 @Service
 public class CustomUserDetailsService implements UserDetailsService {

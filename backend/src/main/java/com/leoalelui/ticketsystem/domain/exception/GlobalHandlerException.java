@@ -3,6 +3,7 @@ package com.leoalelui.ticketsystem.domain.exception;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -49,6 +50,12 @@ public class GlobalHandlerException {
     public ResponseEntity<ErrorMessage> handleInvalidRoleException(InvalidRoleException e) {
         ErrorMessage errorMessage = new ErrorMessage(e.getMessage());
         return new ResponseEntity<>(errorMessage, HttpStatus.FORBIDDEN);
+    }
+
+    @ExceptionHandler(BadCredentialsException.class)
+    public ResponseEntity<ErrorMessage> handleBadCredentialsException(BadCredentialsException e) {
+        ErrorMessage errorMessage = new ErrorMessage("Credenciales inválidas");
+        return new ResponseEntity<>(errorMessage, HttpStatus.UNAUTHORIZED);
     }
 
 }

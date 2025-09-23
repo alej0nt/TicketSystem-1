@@ -30,10 +30,10 @@ public class JwtUtil {
                 .subject(email)
                 .issuedAt(new Date()) 
                 .expiration(new Date(System.currentTimeMillis() + expiration)) 
+                .signWith(key)
                 .compact();
     }
     
-
     public String getEmailFromToken(String token) {
         return Jwts.parser()
                 .verifyWith(key)
