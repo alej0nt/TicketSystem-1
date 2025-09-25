@@ -37,7 +37,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         validateEmailNotExistsInOtherEmployee(employeeUpdateDTO.getEmail(), id);
         
         return employeeDAO.update(id, employeeUpdateDTO)
-                .orElseThrow(() -> new ResourceNotFoundException("Empleado no encontrado."));
+                .orElseThrow(() -> new ResourceNotFoundException("Empleado no encontrado con ID: " + id));
     }
 
     @Override
@@ -50,7 +50,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     public EmployeeResponseDTO getEmployeeById(Long id) {
         return employeeDAO.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Empleado no encontrado."));
+                .orElseThrow(() -> new ResourceNotFoundException("Empleado no encontrado con ID: " + id));
     }
 
     @Override
@@ -61,7 +61,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     public EmployeeResponseDTO getEmployeeByEmail(String email) {
         return employeeDAO.findByEmail(email)
-                .orElseThrow(() -> new ResourceNotFoundException("Empleado no encontrado."));
+                .orElseThrow(() -> new ResourceNotFoundException("Empleado no encontrado con el email: " + email));
     }
 
     private void validateEmployeeExists(Long id) {
