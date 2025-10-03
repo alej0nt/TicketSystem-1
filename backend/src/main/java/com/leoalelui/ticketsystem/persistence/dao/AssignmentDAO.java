@@ -77,7 +77,7 @@ public class AssignmentDAO {
             throw new RuntimeException("No existe una asignación para el ticket con id: " + ticketId);
         }
 
-        // Consigue una referencia al Employee (no hace SELECT del employee a menos que se lea)
+        // Consigue una referencia al Employee 
         EmployeeEntity employeeRef = entityManager.getReference(EmployeeEntity.class, newEmployeeId);
 
         // Asigna y guarda

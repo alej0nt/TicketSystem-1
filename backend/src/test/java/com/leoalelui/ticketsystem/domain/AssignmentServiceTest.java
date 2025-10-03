@@ -75,7 +75,6 @@ public class AssignmentServiceTest {
         validTicketId = 1L;
         validEmployeeId = 10L;
 
-        // Categoría válida
         validCategory = new CategoryResponseDTO(
                 1L,
                 "Soporte Técnico",
@@ -89,11 +88,10 @@ public class AssignmentServiceTest {
                 "Error en inicio de sesión",
                 "El usuario no puede iniciar sesión correctamente",
                 Priority.ALTA,
-                State.ABIERTO, // Estado inicial
+                State.ABIERTO, 
                 LocalDateTime.now(),
                 null);
 
-        // Empleado válido con rol AGENT
         validAgentResponse = new EmployeeResponseDTO(
                 validEmployeeId,
                 "Juan Pérez",
@@ -101,7 +99,6 @@ public class AssignmentServiceTest {
                 Role.AGENT,
                 "Soporte Técnico");
 
-        // DTO de entrada para crear asignación
         validAssignmentCreateDTO = new AssignmentCreateDTO(
                 validTicketId,
                 validEmployeeId);
@@ -117,7 +114,7 @@ public class AssignmentServiceTest {
     @Test
     @DisplayName("CREATE - Asignación válida debe crear asignación y cambiar estado del ticket a EN_PROGRESO")
     void createAssignment_ValidData_ShouldCreateAssignmentAndUpdateTicketState() {
-        // ARRANGE (Given) - Preparar el escenario
+        // ARRANGE Preparar el escenario
         when(ticketService.getTicketById(validTicketId))
                 .thenReturn(validTicketResponse);
 
@@ -127,10 +124,10 @@ public class AssignmentServiceTest {
         when(assignmentDAO.save(any(AssignmentCreateDTO.class)))
                 .thenReturn(expectedAssignmentResponse);
 
-        // ACT (When) - Ejecutar el método bajo prueba
+        // ACT Ejecutar el método bajo prueba
         AssignmentResponseDTO result = assignmentService.create(validAssignmentCreateDTO);
 
-        // ASSERT (Then) - Verificar los resultados
+        // ASSERT Verificar los resultados
         assertThat(result).isNotNull();
         assertThat(result.getId()).isEqualTo(1L);
         assertThat(result.getTicket().getId()).isEqualTo(validTicketId);

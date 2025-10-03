@@ -56,7 +56,6 @@ public class AssignmentServiceImpl implements AssignmentService {
         ticketService.updateState(ticketId, new TicketUpdateStateDTO(State.EN_PROGRESO));
         sendNotificationToEmployees(ticket, employee);
         
-        // Guarda la asignación
         return assignmentDAO.save(assignmentCreateDTO);
     }
 

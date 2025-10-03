@@ -29,19 +29,6 @@ import java.util.List;
 @Tag(name = "Notificaciones", description = "API para la gestión de notificaciones")
 public class NotificationController {
     private final NotificationService notificationService;
-//    @Operation(summary = "Crear notificación", description = "Crea una nueva notificación a un empleado.")
-//    @ApiResponses(value ={
-//        @ApiResponse(responseCode = "201", description = "Notificación creada exitosamente",
-//                    content= @Content( schema=@Schema(implementation=NotificationResponseDTO.class))),
-//        @ApiResponse(responseCode = "400", description = "Datos inválidos o request mal formado"),
-//        @ApiResponse(responseCode = "401", description = "No autorizado"),
-//        @ApiResponse(responseCode = "403", description = "Prohibido - rol insuficiente")
-//    })
-//    @PostMapping
-//    public ResponseEntity<NotificationResponseDTO> createNotification(@Valid @RequestBody NotificationCreateDTO notificationCreateDTO) {
-//        // notificationService.create(notificationCreateDTO)
-//        return ResponseEntity.status(HttpStatus.CREATED).body(null);
-//    }
     
     @Operation(summary = "Obtener notificaciones de un empleado",
             description = "Devuelve todas las notificaciones de un empleado específico.")
