@@ -9,6 +9,9 @@ import com.leoalelui.ticketsystem.persistence.repository.CategoryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+import java.util.Optional;
+
 /**
  * @author: alej0nt
  */
@@ -46,5 +49,16 @@ public class CategoryDAO {
 
     public CategoryResponseDTO getByName(String categoryName) {
         return categoryMapper.toResponseDTO(categoryRepository.findByName(categoryName));
+    }
+
+    public Optional<CategoryResponseDTO> getById(Long id) {
+        return categoryRepository.findById(id).map(categoryMapper::toResponseDTO);
+    }
+
+    public List<CategoryResponseDTO> getAll() {
+        return categoryRepository.findAll().
+                stream().
+                map(categoryMapper :: toResponseDTO).
+                toList();
     }
 }

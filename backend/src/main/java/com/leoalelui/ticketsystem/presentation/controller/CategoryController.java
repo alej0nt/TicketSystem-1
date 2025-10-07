@@ -12,8 +12,10 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import javax.naming.ldap.HasControls;
 import java.util.List;
 
 @RestController
@@ -33,9 +35,8 @@ public class CategoryController {
             @ApiResponse(responseCode = "401", description = "Token inválido o no presente.")
     })
     @GetMapping
-    public ResponseEntity<List<CategoryResponseDTO>> getAllCategories(
-            @Parameter(hidden = true) @RequestHeader(name = "Authorization") String token) {
-        return ResponseEntity.ok(null);
+    public ResponseEntity<List<CategoryResponseDTO>> getAllCategories() {
+        return ResponseEntity.ok(categoryService.findAll());
     }
 
     @Operation(
@@ -49,9 +50,8 @@ public class CategoryController {
     })
     @GetMapping("/{id}")
     public ResponseEntity<CategoryResponseDTO> getCategoryById(
-            @Parameter(hidden = true) @RequestHeader(name = "Authorization") String token,
             @PathVariable @Parameter(description = "ID de la categoría a buscar") Long id) {
-        return ResponseEntity.ok(null);
+        return ResponseEntity.ok(categoryService.findById(id));
     }
 
     @Operation(
@@ -63,9 +63,10 @@ public class CategoryController {
             @ApiResponse(responseCode = "409", description = "Conflicto, ya existe una categoría con ese nombre."),
             @ApiResponse(responseCode = "401", description = "Token inválido o no presente.")
     })
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public ResponseEntity<CategoryResponseDTO> save(
-            @Valid @RequestBody CategoryCreateDTO categoryCreateDTO) {
+            @RequestBody CategoryCreateDTO categoryCreateDTO) {
         return ResponseEntity.ok(categoryService.save(categoryCreateDTO));
     }
 
@@ -78,6 +79,7 @@ public class CategoryController {
             @ApiResponse(responseCode = "404", description = "No se encontró la categoría con el ID especificado."),
             @ApiResponse(responseCode = "401", description = "Token inválido o no presente.")
     })
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(
             @PathVariable @Parameter(description = "ID de la categoría a eliminar") Long id) {
@@ -94,9 +96,9 @@ public class CategoryController {
             @ApiResponse(responseCode = "404", description = "No se encontró la categoría con el ID especificado."),
             @ApiResponse(responseCode = "401", description = "Token inválido o no presente.")
     })
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}")
     public ResponseEntity<CategoryResponseDTO> update(
-            @Parameter(hidden = true) @RequestHeader(name = "Authorization") String token,
             @PathVariable @Parameter(description = "ID de la categoría a actualizar") Long id,
             @Valid @RequestBody CategoryUpdateDTO categoryUpdateDTO) {
         return ResponseEntity.ok(categoryService.update(id, categoryUpdateDTO));

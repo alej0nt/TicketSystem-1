@@ -8,11 +8,12 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.util.HashMap;
 import java.util.Map;
 
-@ControllerAdvice
+@RestControllerAdvice
 public class GlobalHandlerException {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -56,6 +57,12 @@ public class GlobalHandlerException {
     public ResponseEntity<ErrorMessage> handleBadCredentialsException(BadCredentialsException e) {
         ErrorMessage errorMessage = new ErrorMessage("Credenciales inválidas");
         return new ResponseEntity<>(errorMessage, HttpStatus.UNAUTHORIZED);
+    }
+
+    @ExceptionHandler(ResourceAlreadyExistsException.class)
+    public ResponseEntity<ErrorMessage> handleResourceAlreadyExistsException(ResourceAlreadyExistsException e) {
+        ErrorMessage errorMessage = new ErrorMessage(e.getMessage());
+        return new ResponseEntity<>(errorMessage, HttpStatus.CONFLICT);
     }
 
 }

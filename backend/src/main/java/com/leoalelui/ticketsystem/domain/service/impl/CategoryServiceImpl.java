@@ -10,6 +10,8 @@ import com.leoalelui.ticketsystem.persistence.dao.CategoryDAO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class CategoryServiceImpl implements CategoryService {
@@ -34,11 +36,22 @@ public class CategoryServiceImpl implements CategoryService {
         return categoryDAO.update(id, categoryUpdateDTO);
     }
 
+    @Override
+    public CategoryResponseDTO findById(Long id) {
+        return categoryDAO.getById(id).orElseThrow(() -> new ResourceNotFoundException("No se encontro la categoria con el id: " + id));
+    }
+
+    @Override
+    public List<CategoryResponseDTO> findAll() {
+        return categoryDAO.getAll();
+    }
+
+
     // private methods
 
     private void ensureExists(Long id) {
         if (!categoryDAO.existsById(id)) {
-            throw new ResourceNotFoundException("No se ha encontrado la categoría con id: " + id);
+            throw new ResourceAlreadyExistsException("No se ha encontrado la categoría con id: " + id);
         }
     }
 
