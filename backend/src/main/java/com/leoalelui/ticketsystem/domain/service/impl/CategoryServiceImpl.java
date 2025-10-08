@@ -51,7 +51,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     private void ensureExists(Long id) {
         if (!categoryDAO.existsById(id)) {
-            throw new ResourceAlreadyExistsException("No se ha encontrado la categoría con id: " + id);
+            throw new ResourceNotFoundException("No se ha encontrado la categoría con id: " + id);
         }
     }
 
