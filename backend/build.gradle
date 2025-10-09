@@ -88,8 +88,10 @@ allure {
 }
 
 
-//docker run -d --name sonarqube -p 9000:9000 -e SONAR_ES_BOOTSTRAP_CHECKS_DISABLE=true sonarqube:community
-//gradlew clean test sonarqube
+// "docker run -d --name sonarqube -p 9000:9000 -e SONAR_ES_BOOTSTRAP_CHECKS_DISABLE=true sonarqube:community" PARA LEVANTAR SONARQUBE EN DOCKER
+// Debe crearse un proyecto en SonarQube con key "ticket-system" y generar un token para usarlo en la configuración
+// "gradlew clean test sonarqube" PARA EJECUTAR SONARQUBE Y QUE HAGA ANALISIS
+
 // Configuración SonarQube
 sonarqube {
 	properties {
