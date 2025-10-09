@@ -1,5 +1,6 @@
 package com.leoalelui.ticketsystem.domain.exception;
 
+import java.time.format.DateTimeParseException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -63,5 +64,12 @@ public class GlobalHandlerException {
     public ResponseEntity<ErrorMessage> handleResourceAlreadyExistsException(ResourceAlreadyExistsException e) {
         ErrorMessage errorMessage = new ErrorMessage(e.getMessage());
         return new ResponseEntity<>(errorMessage, HttpStatus.CONFLICT);
+    }
+
+    // Para validar fechas que vienen en las query params de un controlador endpoint
+    @ExceptionHandler(DateTimeParseException.class)
+    public ResponseEntity<ErrorMessage> handleDateTimeParseException(DateTimeParseException ex) {
+        ErrorMessage errorMessage = new ErrorMessage("Formato de fecha inválido. Usa el formato yyyy-MM-dd.");
+        return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);
     }
 }
