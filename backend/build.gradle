@@ -4,6 +4,7 @@ plugins {
 	id 'io.spring.dependency-management' version '1.1.7'
 	id 'jacoco'                                 // Genera cobertura de pruebas
 	id "io.qameta.allure" version "2.11.2"      // Plugin Allure Reports
+        id "org.sonarqube" version "4.4.1.3373"     // Plugin SonarQube
 }
 
 group = 'com.leoalelui'
@@ -84,6 +85,25 @@ allure {
 	version = "2.24.0"     // versión de Allure Report
 	autoconfigure = true   // configura automáticamente JUnit 5 listener
 	aspectjweaver = true   // necesario para anotaciones @Step, @Attachment
+}
+
+
+//docker run -d --name sonarqube -p 9000:9000 -e SONAR_ES_BOOTSTRAP_CHECKS_DISABLE=true sonarqube:community
+//gradlew clean test sonarqube
+// Configuración SonarQube
+sonarqube {
+	properties {
+		property "sonar.projectKey", "ticket-system"
+		property "sonar.projectName", "Ticket System"
+		property "sonar.host.url", "http://localhost:9000"
+		property "sonar.login", "sqa_57dda66134a370c356d7ff12748113f0cc1fb762"
+		property "sonar.sources", "src/main/java"
+		property "sonar.tests", "src/test/java"
+		property "sonar.java.binaries", "build/classes/java/main"
+		property "sonar.coverage.jacoco.xmlReportPaths", "build/reports/jacoco/test/jacocoTestReport.xml"
+
+		property "sonar.gradle.skipCompile", "true"
+	}
 }
 
 // Tarea extra para abrir el reporte de Allure en navegador automáticamente

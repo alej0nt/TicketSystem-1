@@ -30,6 +30,7 @@ import com.leoalelui.ticketsystem.domain.dto.response.CategoryResponseDTO;
 import com.leoalelui.ticketsystem.domain.dto.response.EmployeeResponseDTO;
 import com.leoalelui.ticketsystem.domain.dto.response.TicketResponseDTO;
 import com.leoalelui.ticketsystem.domain.exception.InvalidRoleException;
+import com.leoalelui.ticketsystem.domain.exception.InvalidStateException;
 import com.leoalelui.ticketsystem.domain.exception.ResourceNotFoundException;
 import com.leoalelui.ticketsystem.domain.service.EmployeeService;
 import com.leoalelui.ticketsystem.domain.service.NotificationService;
@@ -46,244 +47,360 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 @ExtendWith(MockitoExtension.class)
 @DisplayName("AssignmentService - Unit Tests ")
 public class AssignmentServiceTest {
-    @Mock
-    private AssignmentDAO assignmentDAO;
+        @Mock
+        private AssignmentDAO assignmentDAO;
 
-    @Mock
-    private TicketService ticketService;
+        @Mock
+        private TicketService ticketService;
 
-    @Mock
-    private EmployeeService employeeService;
+        @Mock
+        private EmployeeService employeeService;
 
-    @Mock
-    private NotificationService notificationService;
+        @Mock
+        private NotificationService notificationService;
 
-    @InjectMocks
-    private AssignmentServiceImpl assignmentService;
+        @InjectMocks
+        private AssignmentServiceImpl assignmentService;
 
-    // DATOS DE PRUEBA
-    private AssignmentCreateDTO validAssignmentCreateDTO;
-    private TicketResponseDTO validTicketResponse;
-    private EmployeeResponseDTO validAgentResponse;
-    private AssignmentResponseDTO expectedAssignmentResponse;
-    private CategoryResponseDTO validCategory;
-    private Long validTicketId;
-    private Long validEmployeeId;
+        // DATOS DE PRUEBA
+        private AssignmentCreateDTO validAssignmentCreateDTO;
+        private TicketResponseDTO validTicketResponse;
+        private EmployeeResponseDTO validAgentResponse;
+        private AssignmentResponseDTO expectedAssignmentResponse;
+        private CategoryResponseDTO validCategory;
+        private Long validTicketId;
+        private Long validEmployeeId;
 
-    @BeforeEach
-    public void setUp() {
-        validTicketId = 1L;
-        validEmployeeId = 10L;
+        @BeforeEach
+        public void setUp() {
+                validTicketId = 1L;
+                validEmployeeId = 10L;
 
-        validCategory = new CategoryResponseDTO(
-                1L,
-                "Soporte Técnico",
-                "Problemas técnicos generales");
+                validCategory = new CategoryResponseDTO(
+                                1L,
+                                "Soporte Técnico",
+                                "Problemas técnicos generales");
 
-        // Ticket válido en estado ABIERTO
-        validTicketResponse = new TicketResponseDTO(
-                validTicketId,
-                5L,
-                validCategory,
-                "Error en inicio de sesión",
-                "El usuario no puede iniciar sesión correctamente",
-                Priority.ALTA,
-                State.ABIERTO, 
-                LocalDateTime.now(),
-                null);
+                // Ticket válido en estado ABIERTO
+                validTicketResponse = new TicketResponseDTO(
+                                validTicketId,
+                                5L,
+                                validCategory,
+                                "Error en inicio de sesión",
+                                "El usuario no puede iniciar sesión correctamente",
+                                Priority.ALTA,
+                                State.ABIERTO,
+                                LocalDateTime.now(),
+                                null);
 
-        validAgentResponse = new EmployeeResponseDTO(
-                validEmployeeId,
-                "Juan Pérez",
-                "juan.perez@empresa.com",
-                Role.AGENT,
-                "Soporte Técnico");
+                validAgentResponse = new EmployeeResponseDTO(
+                                validEmployeeId,
+                                "Juan Pérez",
+                                "juan.perez@empresa.com",
+                                Role.AGENT,
+                                "Soporte Técnico");
 
-        validAssignmentCreateDTO = new AssignmentCreateDTO(
-                validTicketId,
-                validEmployeeId);
+                validAssignmentCreateDTO = new AssignmentCreateDTO(
+                                validTicketId,
+                                validEmployeeId);
 
-        // Respuesta esperada después de crear la asignación
-        expectedAssignmentResponse = new AssignmentResponseDTO(
-                1L,
-                validTicketResponse,
-                validAgentResponse,
-                LocalDateTime.now());
-    }
-     // ==================== CREATE ASSIGNMENT TESTS ====================
-    @Test
-    @DisplayName("CREATE - Asignación válida debe crear asignación y cambiar estado del ticket a EN_PROGRESO")
-    void createAssignment_ValidData_ShouldCreateAssignmentAndUpdateTicketState() {
-        // ARRANGE Preparar el escenario
-        when(ticketService.getTicketById(validTicketId))
-                .thenReturn(validTicketResponse);
+                // Respuesta esperada después de crear la asignación
+                expectedAssignmentResponse = new AssignmentResponseDTO(
+                                1L,
+                                validTicketResponse,
+                                validAgentResponse,
+                                LocalDateTime.now());
+        }
 
-        when(employeeService.getEmployeeById(validEmployeeId))
-                .thenReturn(validAgentResponse);
+        // ==================== CREATE ASSIGNMENT TESTS ====================
+        @Test
+        @DisplayName("CREATE - Asignación válida debe crear asignación y cambiar estado del ticket a EN_PROGRESO")
+        void createAssignment_ValidData_ShouldCreateAssignmentAndUpdateTicketState() {
+                // ARRANGE Preparar el escenario
+                when(ticketService.getTicketById(validTicketId))
+                                .thenReturn(validTicketResponse);
 
-        when(assignmentDAO.save(any(AssignmentCreateDTO.class)))
-                .thenReturn(expectedAssignmentResponse);
+                when(employeeService.getEmployeeById(validEmployeeId))
+                                .thenReturn(validAgentResponse);
 
-        // ACT Ejecutar el método bajo prueba
-        AssignmentResponseDTO result = assignmentService.create(validAssignmentCreateDTO);
+                when(assignmentDAO.save(any(AssignmentCreateDTO.class)))
+                                .thenReturn(expectedAssignmentResponse);
 
-        // ASSERT Verificar los resultados
-        assertThat(result).isNotNull();
-        assertThat(result.getId()).isEqualTo(1L);
-        assertThat(result.getTicket().getId()).isEqualTo(validTicketId);
-        assertThat(result.getEmployee().getId()).isEqualTo(validEmployeeId);
-        assertThat(result.getEmployee().getRole()).isEqualTo(Role.AGENT);
+                // ACT Ejecutar el método bajo prueba
+                AssignmentResponseDTO result = assignmentService.create(validAssignmentCreateDTO);
 
-        // Verificar que se llamaron los métodos correctos en el orden esperado
-        verify(ticketService, times(1)).getTicketById(validTicketId);
-        verify(employeeService, times(1)).getEmployeeById(validEmployeeId);
+                // ASSERT Verificar los resultados
+                assertThat(result).isNotNull();
+                assertThat(result.getId()).isEqualTo(1L);
+                assertThat(result.getTicket().getId()).isEqualTo(validTicketId);
+                assertThat(result.getEmployee().getId()).isEqualTo(validEmployeeId);
+                assertThat(result.getEmployee().getRole()).isEqualTo(Role.AGENT);
 
-        // Verificar que se actualizó el estado del ticket a EN_PROGRESO
-        verify(ticketService, times(1)).updateState(
-                eq(validTicketId),
-                argThat(dto -> dto.getState() == State.EN_PROGRESO));
-        verify(notificationService, times(2)).create(any(NotificationCreateDTO.class));
+                // Verificar que se llamaron los métodos correctos en el orden esperado
+                verify(ticketService, times(1)).getTicketById(validTicketId);
+                verify(employeeService, times(1)).getEmployeeById(validEmployeeId);
 
-        verify(assignmentDAO, times(1)).save(any(AssignmentCreateDTO.class));
-    }
+                // Verificar que se actualizó el estado del ticket a EN_PROGRESO
+                verify(ticketService, times(1)).updateState(
+                                eq(validTicketId),
+                                argThat(dto -> dto.getState() == State.EN_PROGRESO));
+                verify(notificationService, times(2)).create(any(NotificationCreateDTO.class));
 
-    @Test
-    @DisplayName("CREATE - TicketId null debe lanzar excepción al intentar obtener el ticket")
-    void createAssignment_NullTicketId_ShouldThrowException() {
-        AssignmentCreateDTO assignmentWithNullTicketId = new AssignmentCreateDTO(
-                null, 
-                validEmployeeId);
+                verify(assignmentDAO, times(1)).save(any(AssignmentCreateDTO.class));
+        }
 
-        when(ticketService.getTicketById(null))
-                .thenThrow(new ResourceNotFoundException("Tiquete no encontrado"));
+        @Test
+        @DisplayName("CREATE - TicketId null debe lanzar excepción al intentar obtener el ticket")
+        void createAssignment_NullTicketId_ShouldThrowException() {
+                AssignmentCreateDTO assignmentWithNullTicketId = new AssignmentCreateDTO(
+                                null,
+                                validEmployeeId);
 
-        assertThatThrownBy(() -> assignmentService.create(assignmentWithNullTicketId))
-                .isInstanceOf(ResourceNotFoundException.class)
-                .hasMessageContaining("Tiquete no encontrado");
+                when(ticketService.getTicketById(null))
+                                .thenThrow(new ResourceNotFoundException("Tiquete no encontrado"));
 
-        // Verificar que NO se llamaron los métodos posteriores
-        verify(ticketService, times(1)).getTicketById(null);
-        verify(employeeService, never()).getEmployeeById(anyLong());
-        verify(ticketService, never()).updateState(anyLong(), any(TicketUpdateStateDTO.class));
-        verify(notificationService, never()).create(any(NotificationCreateDTO.class));
-        verify(assignmentDAO, never()).save(any(AssignmentCreateDTO.class));
-    }
-    // ==================== GET BY EMPLOYEE TESTS ====================
+                assertThatThrownBy(() -> assignmentService.create(assignmentWithNullTicketId))
+                                .isInstanceOf(ResourceNotFoundException.class)
+                                .hasMessageContaining("Tiquete no encontrado");
 
-    @Test
-    @DisplayName("GET BY EMPLOYEE - Debe retornar lista de asignaciones del agente")
-    void getByEmployeeId_ValidAgent_ShouldReturnAssignments() {
-        List<AssignmentResponseDTO> expectedList = Arrays.asList(
-                new AssignmentResponseDTO(1L, validTicketResponse, validAgentResponse, LocalDateTime.now()),
-                new AssignmentResponseDTO(2L, validTicketResponse, validAgentResponse, LocalDateTime.now())
-        );
+                // Verificar que NO se llamaron los métodos posteriores
+                verify(ticketService, times(1)).getTicketById(null);
+                verify(employeeService, never()).getEmployeeById(anyLong());
+                verify(ticketService, never()).updateState(anyLong(), any(TicketUpdateStateDTO.class));
+                verify(notificationService, never()).create(any(NotificationCreateDTO.class));
+                verify(assignmentDAO, never()).save(any(AssignmentCreateDTO.class));
+        }
 
-        when(employeeService.getEmployeeById(validEmployeeId)).thenReturn(validAgentResponse);
-        when(assignmentDAO.getByEmployeeId(validEmployeeId)).thenReturn(expectedList);
+        @Test
+        @DisplayName("CREATE - EmployeeId null debe lanzar excepción al intentar obtener el empleado")
+        void createAssignment_NullEmployeeId_ShouldThrowException() {
+                AssignmentCreateDTO assignmentWithNullEmployeeId = new AssignmentCreateDTO(
+                                validTicketId,
+                                null);
 
-        List<AssignmentResponseDTO> result = assignmentService.getByEmployeeId(validEmployeeId);
+                when(ticketService.getTicketById(validTicketId))
+                                .thenReturn(validTicketResponse);
 
-        assertThat(result).hasSize(2);
-        assertThat(result).isEqualTo(expectedList);
-        verify(employeeService, times(1)).getEmployeeById(validEmployeeId);
-        verify(assignmentDAO, times(1)).getByEmployeeId(validEmployeeId);
-    }
+                when(employeeService.getEmployeeById(null))
+                                .thenThrow(new ResourceNotFoundException("Empleado no encontrado"));
 
-    @Test
-    @DisplayName("GET BY EMPLOYEE - Empleado no AGENT debe lanzar InvalidRoleException")
-    void getByEmployeeId_EmployeeNotAgent_ShouldThrowInvalidRoleException() {
-        EmployeeResponseDTO userEmployee = new EmployeeResponseDTO(
-                validEmployeeId, "User", "user@empresa.com", Role.USER, "Operaciones"
-        );
+                assertThatThrownBy(() -> assignmentService.create(assignmentWithNullEmployeeId))
+                                .isInstanceOf(ResourceNotFoundException.class)
+                                .hasMessageContaining("Empleado no encontrado");
 
-        when(employeeService.getEmployeeById(validEmployeeId)).thenReturn(userEmployee);
+                verify(ticketService, times(1)).getTicketById(validTicketId);
+                verify(employeeService, times(1)).getEmployeeById(null);
+                verify(ticketService, never()).updateState(anyLong(), any(TicketUpdateStateDTO.class));
+                verify(notificationService, never()).create(any(NotificationCreateDTO.class));
+                verify(assignmentDAO, never()).save(any(AssignmentCreateDTO.class));
+        }
 
-        assertThatThrownBy(() -> assignmentService.getByEmployeeId(validEmployeeId))
-                .isInstanceOf(InvalidRoleException.class)
-                .hasMessageContaining("no tiene el rol de AGENTE");
+        @Test
+        @DisplayName("CREATE - Empleado con rol USER debe lanzar InvalidRoleException")
+        void createAssignment_EmployeeNotAgent_ShouldThrowInvalidRoleException() {
+                EmployeeResponseDTO userEmployee = new EmployeeResponseDTO(
+                                validEmployeeId,
+                                "Usuario Normal",
+                                "user@empresa.com",
+                                Role.USER,
+                                "Operaciones");
 
-        verify(assignmentDAO, never()).getByEmployeeId(anyLong());
-    }
+                when(ticketService.getTicketById(validTicketId))
+                                .thenReturn(validTicketResponse);
 
-    // ==================== GET BY TICKET TESTS ====================
+                when(employeeService.getEmployeeById(validEmployeeId))
+                                .thenReturn(userEmployee);
 
-    @Test
-    @DisplayName("GET BY TICKET - Debe retornar asignación del ticket")
-    void getByTicketId_ExistingAssignment_ShouldReturnAssignment() {
-        when(assignmentDAO.getByTicketId(validTicketId)).thenReturn(expectedAssignmentResponse);
+                assertThatThrownBy(() -> assignmentService.create(validAssignmentCreateDTO))
+                                .isInstanceOf(InvalidRoleException.class)
+                                .hasMessageContaining("no tiene el rol de AGENTE");
 
-        AssignmentResponseDTO result = assignmentService.getByTicketId(validTicketId);
+                verify(ticketService, times(1)).getTicketById(validTicketId);
+                verify(employeeService, times(1)).getEmployeeById(validEmployeeId);
+                verify(ticketService, never()).updateState(anyLong(), any(TicketUpdateStateDTO.class));
+                verify(notificationService, never()).create(any(NotificationCreateDTO.class));
+                verify(assignmentDAO, never()).save(any(AssignmentCreateDTO.class));
+        }
 
-        assertThat(result).isNotNull();
-        assertThat(result.getId()).isEqualTo(1L);
-        assertThat(result.getTicket().getId()).isEqualTo(validTicketId);
-        verify(assignmentDAO, times(1)).getByTicketId(validTicketId);
-    }
+        @Test
+        @DisplayName("CREATE - Ticket en estado EN_PROGRESO debe lanzar InvalidStateException")
+        void createAssignment_TicketInProgress_ShouldThrowInvalidStateException() {
+                TicketResponseDTO ticketInProgress = new TicketResponseDTO(
+                                validTicketId,
+                                5L,
+                                validCategory,
+                                "Ticket en progreso",
+                                "Descripción",
+                                Priority.ALTA,
+                                State.EN_PROGRESO,
+                                LocalDateTime.now(),
+                                null);
 
-    @Test
-    @DisplayName("GET BY TICKET - Ticket sin asignación debe lanzar ResourceNotFoundException")
-    void getByTicketId_NoAssignment_ShouldThrowResourceNotFoundException() {
-        when(assignmentDAO.getByTicketId(validTicketId)).thenReturn(null);
+                when(ticketService.getTicketById(validTicketId))
+                                .thenReturn(ticketInProgress);
 
-        assertThatThrownBy(() -> assignmentService.getByTicketId(validTicketId))
-                .isInstanceOf(ResourceNotFoundException.class)
-                .hasMessageContaining("no tiene una asignación activa");
+                when(employeeService.getEmployeeById(validEmployeeId))
+                                .thenReturn(validAgentResponse);
 
-        verify(assignmentDAO, times(1)).getByTicketId(validTicketId);
-    }
+                assertThatThrownBy(() -> assignmentService.create(validAssignmentCreateDTO))
+                                .isInstanceOf(InvalidStateException.class)
+                                .hasMessageContaining("Solo se pueden asignar tickets en estado 'Abierto'");
 
-    // ==================== REASSIGN EMPLOYEE TESTS ====================
+                verify(ticketService, times(1)).getTicketById(validTicketId);
+                verify(employeeService, times(1)).getEmployeeById(validEmployeeId);
+                verify(ticketService, never()).updateState(anyLong(), any(TicketUpdateStateDTO.class));
+                verify(notificationService, never()).create(any(NotificationCreateDTO.class));
+                verify(assignmentDAO, never()).save(any(AssignmentCreateDTO.class));
+        }
 
-    @Test
-    @DisplayName("REASSIGN - Reasignación válida debe actualizar agente")
-    void reassignEmployee_ValidData_ShouldReassign() {
-        Long newEmployeeId = 20L;
-        EmployeeResponseDTO newAgent = new EmployeeResponseDTO(
-                newEmployeeId, "María López", "maria@empresa.com", Role.AGENT, "Soporte"
-        );
-        AssignmentResponseDTO updatedAssignment = new AssignmentResponseDTO(
-                1L, validTicketResponse, newAgent, LocalDateTime.now()
-        );
+        // ==================== GET BY EMPLOYEE TESTS ====================
 
-        when(assignmentDAO.getByTicketId(validTicketId)).thenReturn(expectedAssignmentResponse);
-        when(employeeService.getEmployeeById(newEmployeeId)).thenReturn(newAgent);
-        when(assignmentDAO.reassignByTicketId(validTicketId, newEmployeeId)).thenReturn(updatedAssignment);
+        @Test
+        @DisplayName("GET BY EMPLOYEE - Debe retornar lista de asignaciones del agente")
+        void getByEmployeeId_ValidAgent_ShouldReturnAssignments() {
+                List<AssignmentResponseDTO> expectedList = Arrays.asList(
+                                new AssignmentResponseDTO(1L, validTicketResponse, validAgentResponse,
+                                                LocalDateTime.now()),
+                                new AssignmentResponseDTO(2L, validTicketResponse, validAgentResponse,
+                                                LocalDateTime.now()));
 
-        AssignmentResponseDTO result = assignmentService.reassignEmployee(validTicketId, newEmployeeId);
+                when(employeeService.getEmployeeById(validEmployeeId)).thenReturn(validAgentResponse);
+                when(assignmentDAO.getByEmployeeId(validEmployeeId)).thenReturn(expectedList);
 
-        assertThat(result).isNotNull();
-        assertThat(result.getEmployee().getId()).isEqualTo(newEmployeeId);
-        verify(assignmentDAO, times(1)).getByTicketId(validTicketId);
-        verify(employeeService, times(1)).getEmployeeById(newEmployeeId);
-        verify(notificationService, times(3)).create(any(NotificationCreateDTO.class));
-        verify(assignmentDAO, times(1)).reassignByTicketId(validTicketId, newEmployeeId);
-    }
+                List<AssignmentResponseDTO> result = assignmentService.getByEmployeeId(validEmployeeId);
 
-    @Test
-    @DisplayName("REASSIGN - NewEmployeeId null debe lanzar DataIntegrityViolationException")
-    void reassignEmployee_NullEmployeeId_ShouldThrowDataIntegrityViolationException() {
-        assertThatThrownBy(() -> assignmentService.reassignEmployee(validTicketId, null))
-                .isInstanceOf(DataIntegrityViolationException.class)
-                .hasMessageContaining("Debes ingresar algun id del empleado agente");
+                assertThat(result).hasSize(2);
+                assertThat(result).isEqualTo(expectedList);
+                verify(employeeService, times(1)).getEmployeeById(validEmployeeId);
+                verify(assignmentDAO, times(1)).getByEmployeeId(validEmployeeId);
+        }
 
-        verify(assignmentDAO, never()).reassignByTicketId(anyLong(), anyLong());
-    }
+        @Test
+        @DisplayName("GET BY EMPLOYEE - Empleado no AGENT debe lanzar InvalidRoleException")
+        void getByEmployeeId_EmployeeNotAgent_ShouldThrowInvalidRoleException() {
+                EmployeeResponseDTO userEmployee = new EmployeeResponseDTO(
+                                validEmployeeId, "User", "user@empresa.com", Role.USER, "Operaciones");
 
-    @Test
-    @DisplayName("REASSIGN - Nuevo empleado no AGENT debe lanzar InvalidRoleException")
-    void reassignEmployee_NewEmployeeNotAgent_ShouldThrowInvalidRoleException() {
-        Long newEmployeeId = 20L;
-        EmployeeResponseDTO adminEmployee = new EmployeeResponseDTO(
-                newEmployeeId, "Admin", "admin@empresa.com", Role.ADMIN, "Administración"
-        );
+                when(employeeService.getEmployeeById(validEmployeeId)).thenReturn(userEmployee);
 
-        when(assignmentDAO.getByTicketId(validTicketId)).thenReturn(expectedAssignmentResponse);
-        when(employeeService.getEmployeeById(newEmployeeId)).thenReturn(adminEmployee);
+                assertThatThrownBy(() -> assignmentService.getByEmployeeId(validEmployeeId))
+                                .isInstanceOf(InvalidRoleException.class)
+                                .hasMessageContaining("no tiene el rol de AGENTE");
 
-        assertThatThrownBy(() -> assignmentService.reassignEmployee(validTicketId, newEmployeeId))
-                .isInstanceOf(InvalidRoleException.class)
-                .hasMessageContaining("no tiene el rol de AGENTE");
+                verify(assignmentDAO, never()).getByEmployeeId(anyLong());
+        }
 
-        verify(assignmentDAO, never()).reassignByTicketId(anyLong(), anyLong());
-    }
+        // ==================== GET BY TICKET TESTS ====================
+
+        @Test
+        @DisplayName("GET BY TICKET - Debe retornar asignación del ticket")
+        void getByTicketId_ExistingAssignment_ShouldReturnAssignment() {
+                when(assignmentDAO.getByTicketId(validTicketId)).thenReturn(expectedAssignmentResponse);
+
+                AssignmentResponseDTO result = assignmentService.getByTicketId(validTicketId);
+
+                assertThat(result).isNotNull();
+                assertThat(result.getId()).isEqualTo(1L);
+                assertThat(result.getTicket().getId()).isEqualTo(validTicketId);
+                verify(assignmentDAO, times(1)).getByTicketId(validTicketId);
+        }
+
+        @Test
+        @DisplayName("GET BY TICKET - Ticket sin asignación debe lanzar ResourceNotFoundException")
+        void getByTicketId_NoAssignment_ShouldThrowResourceNotFoundException() {
+                when(assignmentDAO.getByTicketId(validTicketId)).thenReturn(null);
+
+                assertThatThrownBy(() -> assignmentService.getByTicketId(validTicketId))
+                                .isInstanceOf(ResourceNotFoundException.class)
+                                .hasMessageContaining("no tiene una asignación activa");
+
+                verify(assignmentDAO, times(1)).getByTicketId(validTicketId);
+        }
+
+        // ==================== REASSIGN EMPLOYEE TESTS ====================
+
+        @Test
+        @DisplayName("REASSIGN - Reasignación válida debe actualizar agente")
+        void reassignEmployee_ValidData_ShouldReassign() {
+                Long newEmployeeId = 20L;
+                EmployeeResponseDTO newAgent = new EmployeeResponseDTO(
+                                newEmployeeId, "María López", "maria@empresa.com", Role.AGENT, "Soporte");
+                AssignmentResponseDTO updatedAssignment = new AssignmentResponseDTO(
+                                1L, validTicketResponse, newAgent, LocalDateTime.now());
+
+                when(assignmentDAO.getByTicketId(validTicketId)).thenReturn(expectedAssignmentResponse);
+                when(employeeService.getEmployeeById(newEmployeeId)).thenReturn(newAgent);
+                when(assignmentDAO.reassignByTicketId(validTicketId, newEmployeeId)).thenReturn(updatedAssignment);
+
+                AssignmentResponseDTO result = assignmentService.reassignEmployee(validTicketId, newEmployeeId);
+
+                assertThat(result).isNotNull();
+                assertThat(result.getEmployee().getId()).isEqualTo(newEmployeeId);
+                verify(assignmentDAO, times(1)).getByTicketId(validTicketId);
+                verify(employeeService, times(1)).getEmployeeById(newEmployeeId);
+                verify(notificationService, times(3)).create(any(NotificationCreateDTO.class));
+                verify(assignmentDAO, times(1)).reassignByTicketId(validTicketId, newEmployeeId);
+        }
+
+        @Test
+        @DisplayName("REASSIGN - NewEmployeeId null debe lanzar DataIntegrityViolationException")
+        void reassignEmployee_NullEmployeeId_ShouldThrowDataIntegrityViolationException() {
+                assertThatThrownBy(() -> assignmentService.reassignEmployee(validTicketId, null))
+                                .isInstanceOf(DataIntegrityViolationException.class)
+                                .hasMessageContaining("Debes ingresar algun id del empleado agente");
+
+                verify(assignmentDAO, never()).reassignByTicketId(anyLong(), anyLong());
+        }
+
+        @Test
+        @DisplayName("REASSIGN - Ticket en estado RESUELTO debe lanzar InvalidStateException")
+        void reassignEmployee_TicketResolved_ShouldThrowInvalidStateException() {
+                Long newEmployeeId = 20L;
+
+                TicketResponseDTO resolvedTicket = new TicketResponseDTO(
+                                validTicketId,
+                                5L,
+                                validCategory,
+                                "Ticket resuelto",
+                                "Descripción",
+                                Priority.ALTA,
+                                State.RESUELTO,
+                                LocalDateTime.now(),
+                                LocalDateTime.now());
+
+                AssignmentResponseDTO assignmentWithResolvedTicket = new AssignmentResponseDTO(
+                                1L,
+                                resolvedTicket,
+                                validAgentResponse,
+                                LocalDateTime.now());
+
+                when(assignmentDAO.getByTicketId(validTicketId))
+                                .thenReturn(assignmentWithResolvedTicket);
+
+                assertThatThrownBy(() -> assignmentService.reassignEmployee(validTicketId, newEmployeeId))
+                                .isInstanceOf(InvalidStateException.class)
+                                .hasMessageContaining("No se puede reasignar un ticket en estado finalizado");
+
+                verify(assignmentDAO, times(1)).getByTicketId(validTicketId);
+                verify(employeeService, never()).getEmployeeById(anyLong());
+                verify(notificationService, never()).create(any(NotificationCreateDTO.class));
+                verify(assignmentDAO, never()).reassignByTicketId(anyLong(), anyLong());
+        }
+
+        @Test
+        @DisplayName("REASSIGN - Nuevo empleado no AGENT debe lanzar InvalidRoleException")
+        void reassignEmployee_NewEmployeeNotAgent_ShouldThrowInvalidRoleException() {
+                Long newEmployeeId = 20L;
+                EmployeeResponseDTO adminEmployee = new EmployeeResponseDTO(
+                                newEmployeeId, "Admin", "admin@empresa.com", Role.ADMIN, "Administración");
+
+                when(assignmentDAO.getByTicketId(validTicketId)).thenReturn(expectedAssignmentResponse);
+                when(employeeService.getEmployeeById(newEmployeeId)).thenReturn(adminEmployee);
+
+                assertThatThrownBy(() -> assignmentService.reassignEmployee(validTicketId, newEmployeeId))
+                                .isInstanceOf(InvalidRoleException.class)
+                                .hasMessageContaining("no tiene el rol de AGENTE");
+
+                verify(assignmentDAO, never()).reassignByTicketId(anyLong(), anyLong());
+        }
 }
