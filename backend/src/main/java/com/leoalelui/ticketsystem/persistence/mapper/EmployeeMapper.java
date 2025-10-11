@@ -9,6 +9,10 @@ import org.mapstruct.*;
 public interface EmployeeMapper {
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "role", ignore = true)
+    @Mapping(target = "tickets", ignore = true)
+    @Mapping(target = "assignments", ignore = true)
+    @Mapping(target = "comments", ignore = true)
+    @Mapping(target = "notifications", ignore = true)
     EmployeeEntity toEntity(EmployeeCreateDTO employeeCreateDTO);
 
     EmployeeResponseDTO toResponseDTO(EmployeeEntity employeeEntity);

@@ -19,6 +19,7 @@ public interface NotificationMapper {
     @Mapping(target = "read", ignore = true)
     NotificationEntity toEntity(NotificationCreateDTO notificationCreateDTO);
 
+    @Mapping(target = "isRead", source = "read")
     NotificationResponseDTO toResponseDTO(NotificationEntity commentEntity);
     List<NotificationResponseDTO> toDTOList(List<NotificationEntity> commentEntity);
 }

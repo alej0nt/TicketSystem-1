@@ -55,7 +55,7 @@ dependencies {
 
 tasks.named('test') {
 	useJUnitPlatform()
-	finalizedBy jacocoTestReport, allureReport  // tras los test se generan los reportes con JaCoCo + Allure
+	finalizedBy jacocoTestReport  // tras los test se generan los reportes con JaCoCo
 }
 
 jacoco {
