@@ -11,6 +11,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -31,8 +32,7 @@ public class EvidenceController {
     })
     @GetMapping("/ticket/{ticketId}")
     public ResponseEntity<List<EvidenceResponseDTO>> getAllByTicket(
-            @Parameter(description = "ID del ticket") @PathVariable Long ticketId,
-            @RequestHeader("Authorization") String token) {
+            @Parameter(description = "ID del ticket") @PathVariable Long ticketId) {
         return ResponseEntity.ok(evidenceService.findAllByTicketId(ticketId));
     }
 
@@ -45,8 +45,7 @@ public class EvidenceController {
     })
     @GetMapping("/{id}")
     public ResponseEntity<EvidenceResponseDTO> getById(
-            @Parameter(description = "ID de la evidencia") @PathVariable Long id,
-            @RequestHeader("Authorization") String token) {
+            @Parameter(description = "ID de la evidencia") @PathVariable Long id) {
         return ResponseEntity.ok(evidenceService.findById(id));
     }
 
@@ -59,8 +58,7 @@ public class EvidenceController {
     })
     @PostMapping
     public ResponseEntity<EvidenceResponseDTO> create(
-            @Valid @RequestBody EvidenceCreateDTO evidenceCreateDTO,
-            @RequestHeader("Authorization") String token) {
+            @Valid @RequestBody EvidenceCreateDTO evidenceCreateDTO) {
         return ResponseEntity.status(201).body(evidenceService.save(evidenceCreateDTO));
     }
 
@@ -73,8 +71,7 @@ public class EvidenceController {
     })
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(
-            @Parameter(description = "ID de la evidencia") @PathVariable Long id,
-            @RequestHeader("Authorization") String token) {
+            @Parameter(description = "ID de la evidencia") @PathVariable Long id) {
         evidenceService.delete(id);
         return ResponseEntity.noContent().build();
     }

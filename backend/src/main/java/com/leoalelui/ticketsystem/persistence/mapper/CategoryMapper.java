@@ -5,10 +5,14 @@ import com.leoalelui.ticketsystem.domain.dto.response.CategoryResponseDTO;
 import com.leoalelui.ticketsystem.persistence.entity.CategoryEntity;
 import org.mapstruct.*;
 
-@Mapper (componentModel = "spring")
+@Mapper(componentModel = "spring")
 public interface CategoryMapper {
     CategoryCreateDTO toDTO(CategoryEntity category);
+
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "tickets", ignore = true)
     CategoryEntity toEntity(CategoryCreateDTO categoryCreateDTO);
+
     CategoryResponseDTO toResponseDTO(CategoryEntity category);
 
     @Named("createCategoryEntityFromId")
