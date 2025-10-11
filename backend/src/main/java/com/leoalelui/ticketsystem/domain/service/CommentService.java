@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface CommentService {
     CommentResponseDTO save (CommentCreateDTO commentCreateDTO);
-    boolean delete (long id);
+    void delete (long id);
     List<CommentResponseDTO> findAllByTicketId(long id);
 
 }
