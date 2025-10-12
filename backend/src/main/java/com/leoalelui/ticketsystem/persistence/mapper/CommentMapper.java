@@ -1,6 +1,3 @@
-// ============================================
-// CommentMapper.java - CORREGIDO
-// ============================================
 package com.leoalelui.ticketsystem.persistence.mapper;
 
 import com.leoalelui.ticketsystem.domain.dto.request.CommentCreateDTO;

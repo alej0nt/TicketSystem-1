@@ -60,9 +60,9 @@ public class AssignmentServiceImpl implements AssignmentService {
     }
 
     @Override
-    public List<AssignmentResponseDTO> getByEmployeeId(Long employeeId) {
+    public List<AssignmentResponseDTO> getByEmployeeId(Long employeeId, String query) {
         validateEmployeeAgent(employeeService.getEmployeeById(employeeId));
-        return assignmentDAO.getByEmployeeId(employeeId);
+        return assignmentDAO.getByEmployeeId(employeeId, query);
     }
 
     @Override

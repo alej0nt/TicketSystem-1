@@ -59,4 +59,3 @@ public class TicketRecordServiceImpl implements TicketRecordService {
         return ticketRecordDAO.findTicketRecordByTicketIdAndDateRange(ticketId, start, end);
     }
 }
-

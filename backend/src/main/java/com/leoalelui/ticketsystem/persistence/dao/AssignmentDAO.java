@@ -40,8 +40,11 @@ public class AssignmentDAO {
     }
 
     @Transactional(readOnly = true)
-    public List<AssignmentResponseDTO> getByEmployeeId(Long employeeId) {
-        return assignmentMapper.toDTOList(assignmentRepository.findByEmployeeId(employeeId));
+    public List<AssignmentResponseDTO> getByEmployeeId(Long employeeId, String query) {
+        if (query == null || query.isEmpty()) {
+            return assignmentMapper.toDTOList(assignmentRepository.findByEmployeeId(employeeId));
+        }
+        return assignmentMapper.toDTOList(assignmentRepository.findByEmployeeIdAndQuery(employeeId, query));
     }
 
     @Transactional(readOnly = true)

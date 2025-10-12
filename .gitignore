@@ -29,7 +29,6 @@ report.*
 /backend/bin/
 /backend/build/
 /backend/out/
-/backend/build/
 /backend/.gradle/
 
 # IDE y archivos compilados
@@ -51,6 +50,7 @@ report.*
 /backend/nb-configuration.xml
 
 /backend/ajcore.*.txt
+/backend/allure-results/
 
 # =====================================================
 # Frontend – Angular (npm)

@@ -60,8 +60,9 @@ public class AssignmentController {
         @ApiResponse(responseCode = "401", description = "No autorizado")
     })
     @GetMapping("/employee/{employeeId}")
-    public ResponseEntity<List<AssignmentResponseDTO>> getAssignmentsByEmployee(@PathVariable @Parameter(description = "ID del empleado agente con sus asignaciones") Long employeeId) {
-        List<AssignmentResponseDTO> list = assignmentService.getByEmployeeId(employeeId);
+    public ResponseEntity<List<AssignmentResponseDTO>> getAssignmentsByEmployee(@PathVariable @Parameter(description = "ID del empleado agente con sus asignaciones") Long employeeId,
+    @RequestParam(value="query", required = false) @Parameter(description = "Parámetro de búsqueda opcional para filtrar asignaciones") String query) {
+        List<AssignmentResponseDTO> list = assignmentService.getByEmployeeId(employeeId, query);
         return ResponseEntity.ok(list);
     }
 

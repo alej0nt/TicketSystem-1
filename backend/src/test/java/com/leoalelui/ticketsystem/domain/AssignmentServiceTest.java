@@ -4,6 +4,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -43,6 +44,7 @@ import com.leoalelui.ticketsystem.persistence.enums.State;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import org.mockito.ArgumentMatchers;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("AssignmentService - Unit Tests ")
@@ -265,14 +267,14 @@ public class AssignmentServiceTest {
                                                 LocalDateTime.now()));
 
                 when(employeeService.getEmployeeById(validEmployeeId)).thenReturn(validAgentResponse);
-                when(assignmentDAO.getByEmployeeId(validEmployeeId)).thenReturn(expectedList);
+                when(assignmentDAO.getByEmployeeId(validEmployeeId, null)).thenReturn(expectedList);
 
-                List<AssignmentResponseDTO> result = assignmentService.getByEmployeeId(validEmployeeId);
+                List<AssignmentResponseDTO> result = assignmentService.getByEmployeeId(validEmployeeId, null);
 
                 assertThat(result).hasSize(2);
                 assertThat(result).isEqualTo(expectedList);
                 verify(employeeService, times(1)).getEmployeeById(validEmployeeId);
-                verify(assignmentDAO, times(1)).getByEmployeeId(validEmployeeId);
+                verify(assignmentDAO, times(1)).getByEmployeeId(validEmployeeId, null);
         }
 
         @Test
@@ -283,11 +285,11 @@ public class AssignmentServiceTest {
 
                 when(employeeService.getEmployeeById(validEmployeeId)).thenReturn(userEmployee);
 
-                assertThatThrownBy(() -> assignmentService.getByEmployeeId(validEmployeeId))
+                assertThatThrownBy(() -> assignmentService.getByEmployeeId(validEmployeeId, null))
                                 .isInstanceOf(InvalidRoleException.class)
                                 .hasMessageContaining("no tiene el rol de AGENTE");
 
-                verify(assignmentDAO, never()).getByEmployeeId(anyLong());
+                verify(assignmentDAO, never()).getByEmployeeId(anyLong(), anyString());
         }
 
         // ==================== GET BY TICKET TESTS ====================

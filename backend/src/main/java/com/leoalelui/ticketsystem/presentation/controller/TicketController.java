@@ -129,12 +129,12 @@ public class TicketController {
     })
     @GetMapping("/{id}/tickets-record")
     public ResponseEntity<List<TicketRecordResponseDTO>> getAllTicketRecordsByTicketId(
-            @PathVariable @Positive Long id, 
-            @RequestParam(value = "from", required = false) 
-            @Parameter(description = "Fecha de inicio del rango (formato yyyy-MM-dd)") 
+            @PathVariable @Positive Long id,
+            @RequestParam(value = "from", required = false)
+            @Parameter(description = "Fecha de inicio del rango (formato yyyy-MM-dd)")
             @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate from,
-            @RequestParam(value = "to", required = false) 
-            @Parameter(description = "Fecha de fin del rango (formato yyyy-MM-dd)") 
+            @RequestParam(value = "to", required = false)
+            @Parameter(description = "Fecha de fin del rango (formato yyyy-MM-dd)")
             @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate to) {
         List<TicketRecordResponseDTO> ticketsRecord = ticketService.getAllTicketRecordsByTicketId(id, from, to);
         return ResponseEntity.ok(ticketsRecord);
