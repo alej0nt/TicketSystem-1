@@ -17,6 +17,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration
 @EnableMethodSecurity(prePostEnabled = true)
 public class SecurityConfig {
+
     @Autowired
     CustomUserDetailsService customUserDetailsService;
 
@@ -29,32 +30,38 @@ public class SecurityConfig {
     }
 
     @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception{
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
     }
 
     @Bean
-    public PasswordEncoder passwordEncoder (){
+    public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity
-            .csrf(AbstractHttpConfigurer::disable)
-            .cors(AbstractHttpConfigurer::disable)
-            .exceptionHandling(e -> 
-                e.authenticationEntryPoint(unauthorizedHandler)
-            )
-            .sessionManagement(s -> 
-                s.sessionCreationPolicy(SessionCreationPolicy.STATELESS) 
-            )
-            // Configure the UserDetailsService so Spring registers a suitable AuthenticationProvider internally
-             .userDetailsService(customUserDetailsService)
-            .authorizeHttpRequests(a -> 
-                a.requestMatchers("/api/v1/auth/**").permitAll()
-                 .anyRequest().authenticated() 
-            );  
+                .csrf(AbstractHttpConfigurer::disable)
+                .cors(AbstractHttpConfigurer::disable)
+                .exceptionHandling(e
+                        -> e.authenticationEntryPoint(unauthorizedHandler)
+                )
+                .sessionManagement(s
+                        -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                )
+                // Configure the UserDetailsService so Spring registers a suitable AuthenticationProvider internally
+                .userDetailsService(customUserDetailsService)
+                .authorizeHttpRequests(a
+                        -> a.requestMatchers("/api/v1/auth/**",
+                        // Permisos para Swagger/OpenAPI
+                        "/swagger-ui/**",
+                        "/v3/api-docs/**",
+                        "/swagger-ui.html",
+                        "/swagger-resources/**",
+                        "/webjars/**").permitAll()
+                        .anyRequest().authenticated()
+                );
 
         httpSecurity.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
 

@@ -11,7 +11,7 @@ public interface AssignmentService {
 
     AssignmentResponseDTO create(AssignmentCreateDTO assignmentCreateDTO);
 
-    List<AssignmentResponseDTO> getByEmployeeId(Long employeeId);
+    List<AssignmentResponseDTO> getByEmployeeId(Long employeeId, String query);
 
     AssignmentResponseDTO getByTicketId(Long ticketId);
 

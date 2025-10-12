@@ -52,7 +52,6 @@ public class NotificationController {
                 content = @Content(schema = @Schema(implementation = NotificationResponseDTO.class))),
         @ApiResponse(responseCode = "404", description = "Notificación no encontrada"),
         @ApiResponse(responseCode = "401", description = "No autorizado"),
-        @ApiResponse(responseCode = "403", description = "Prohibido - rol insuficiente")
     })
     @PatchMapping("/{notificationId}/read")
     public ResponseEntity<NotificationResponseDTO> markAsRead(@PathVariable @Parameter(description = "ID de la notificación a marcar") Long notificationId) {

@@ -13,5 +13,4 @@ public interface TicketRecordService {
     TicketRecordResponseDTO create(TicketRecordCreateDTO ticketRecordCreateDTO);
     List<TicketRecordResponseDTO> getByTicketId(Long ticketId);
     List<TicketRecordResponseDTO> getByDateRange(Long ticketId, LocalDate from, LocalDate to);
-
 }
