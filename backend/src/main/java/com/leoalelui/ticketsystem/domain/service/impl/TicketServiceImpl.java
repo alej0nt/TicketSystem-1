@@ -65,8 +65,8 @@ public class TicketServiceImpl implements TicketService {
 
     @Override
     public TicketResponseDTO getTicketById(Long id) {
-        validateTicketExists(id);
-        return ticketDAO.findById(id).get();
+        return ticketDAO.findById(id)
+            .orElseThrow(() -> new ResourceNotFoundException("Tiquete no encontrado con ID: " + id));
     }
 
     @Override

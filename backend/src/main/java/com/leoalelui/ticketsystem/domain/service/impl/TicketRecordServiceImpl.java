@@ -45,8 +45,12 @@ public class TicketRecordServiceImpl implements TicketRecordService {
             return getByTicketId(ticketId);
         }
     
-        if (from != null && to == null) {
+        if (to == null) {
             to = LocalDate.now();
+        }
+        
+        if (from== null) {
+            from = LocalDate.of(2000, 1, 1); 
         }
         
         if (from.isAfter(to)) {

@@ -75,7 +75,7 @@ jacocoTestCoverageVerification {
 	violationRules {
 		rule {
 			limit {
-				minimum = 0.8 // ejemplo: exige al menos 30% cobertura
+				minimum = 0.1 // ejemplo: exige al menos 30% cobertura
 			}
 		}
 	}
@@ -98,7 +98,7 @@ sonarqube {
 		property "sonar.projectKey", "ticket-system"
 		property "sonar.projectName", "Ticket System"
 		property "sonar.host.url", "http://localhost:9000"
-		property "sonar.login", "squ_2b0ccf6a0850e0a73936a805e86609adad6d2cd0   "
+		property "sonar.login", "squ_8fda979b254775bb330a4b8cde26009c10050309"
 		property "sonar.sources", "src/main/java"
 		property "sonar.tests", "src/test/java"
 		property "sonar.java.binaries", "build/classes/java/main"

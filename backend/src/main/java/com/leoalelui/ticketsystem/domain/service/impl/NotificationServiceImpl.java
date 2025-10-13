@@ -23,16 +23,14 @@ public class NotificationServiceImpl implements NotificationService {
         Long employeeId = createDTO.getEmployeeId();
 
         // Validar existencia del empleado
-        employeeDAO.findById(employeeId)
-                .orElseThrow(() -> new ResourceNotFoundException("Empleado no encontrado con id: " + employeeId));
+        validateEmployeeExists(employeeId);
 
         return notificationDAO.create(createDTO);
     }
 
     @Override
     public List<NotificationResponseDTO> getNotificationsByEmployee(Long employeeId) {
-        employeeDAO.findById(employeeId)
-                .orElseThrow(() -> new ResourceNotFoundException("Empleado no encontrado con id: " + employeeId));
+        validateEmployeeExists(employeeId);
 
         return notificationDAO.findByEmployeeId(employeeId);
     }
@@ -45,6 +43,12 @@ public class NotificationServiceImpl implements NotificationService {
         }
 
         return notificationDAO.markAsRead(notificationId);
+    }
+
+    private void validateEmployeeExists(Long employeeId) {
+        if (!employeeDAO.existsById(employeeId)) {
+            throw new ResourceNotFoundException("Empleado no encontrado con id: " + employeeId);
+        }
     }
 
 }
