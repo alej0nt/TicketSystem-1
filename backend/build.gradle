@@ -98,7 +98,7 @@ sonarqube {
 		property "sonar.projectKey", "ticket-system"
 		property "sonar.projectName", "Ticket System"
 		property "sonar.host.url", "http://localhost:9000"
-		property "sonar.login", "squ_8fda979b254775bb330a4b8cde26009c10050309"
+		property "sonar.login", "squ_bc55cfd164baedddf61ce86bf269ce3bd619256d"
 		property "sonar.sources", "src/main/java"
 		property "sonar.tests", "src/test/java"
 		property "sonar.java.binaries", "build/classes/java/main"

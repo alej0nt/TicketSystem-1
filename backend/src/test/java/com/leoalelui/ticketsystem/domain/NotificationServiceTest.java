@@ -12,7 +12,6 @@ import static org.mockito.ArgumentMatchers.any;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -23,7 +22,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.leoalelui.ticketsystem.domain.dto.request.NotificationCreateDTO;
-import com.leoalelui.ticketsystem.domain.dto.response.EmployeeResponseDTO;
 import com.leoalelui.ticketsystem.domain.dto.response.NotificationResponseDTO;
 import com.leoalelui.ticketsystem.domain.exception.ResourceNotFoundException;
 import com.leoalelui.ticketsystem.domain.service.impl.NotificationServiceImpl;
@@ -56,11 +54,12 @@ public class NotificationServiceTest {
         validNotificationResponse = new NotificationResponseDTO(validNotificationId, "Acaba de agregar un nuevo ticket",
                 LocalDateTime.now(), false);
     }
+
     // ==================== CREATE NOTIFICATION TESTS ====================
     @Test
     @DisplayName("CREATE - Notificación válida debe crear notificación")
     void createNotification_ValidData_ShouldCreateNotification() {
-        when(employeeDAO.findById(validEmployeeId)).thenReturn(Optional.ofNullable(mock(EmployeeResponseDTO.class)));
+        when(employeeDAO.existsById(validEmployeeId)).thenReturn(true);
         when(notificationDAO.create(any(NotificationCreateDTO.class))).thenReturn(validNotificationResponse);
 
         NotificationResponseDTO result = notificationService.create(validNotificationCreateDTO);
@@ -70,19 +69,20 @@ public class NotificationServiceTest {
         assertThat(result.getMessage()).isEqualTo("Acaba de agregar un nuevo ticket");
         assertThat(result.isRead()).isFalse();
 
-        verify(employeeDAO, times(1)).findById(validEmployeeId);
+        verify(employeeDAO, times(1)).existsById(validEmployeeId);
         verify(notificationDAO, times(1)).create(any(NotificationCreateDTO.class));
     }
 
     @Test
     @DisplayName("CREATE - Empleado no existente debe lanzar ResourceNotFoundException")
     void createNotification_NonExistentEmployee_ShouldThrowResourceNotFoundException() {
-        when(employeeDAO.findById(validEmployeeId)).thenReturn(Optional.empty());
+        when(employeeDAO.existsById(validEmployeeId)).thenReturn(false);
 
         assertThatThrownBy(() -> notificationService.create(validNotificationCreateDTO))
-                .isInstanceOf(ResourceNotFoundException.class).hasMessageContaining("Empleado no encontrado con id:");
+                .isInstanceOf(ResourceNotFoundException.class)
+                .hasMessageContaining("Empleado no encontrado con id:");
 
-        verify(employeeDAO, times(1)).findById(validEmployeeId);
+        verify(employeeDAO, times(1)).existsById(validEmployeeId);
         verify(notificationDAO, never()).create(any(NotificationCreateDTO.class));
     }
 
@@ -94,27 +94,27 @@ public class NotificationServiceTest {
                 new NotificationResponseDTO(1L, "Notificación 1", LocalDateTime.now(), false),
                 new NotificationResponseDTO(2L, "Notificación 2", LocalDateTime.now(), true));
 
-        when(employeeDAO.findById(validEmployeeId)).thenReturn(Optional.of(mock(EmployeeResponseDTO.class)));
+        when(employeeDAO.existsById(validEmployeeId)).thenReturn(true);
         when(notificationDAO.findByEmployeeId(validEmployeeId)).thenReturn(expectedList);
 
         List<NotificationResponseDTO> result = notificationService.getNotificationsByEmployee(validEmployeeId);
 
         assertThat(result).hasSize(2);
         assertThat(result).isEqualTo(expectedList);
-        verify(employeeDAO, times(1)).findById(validEmployeeId);
+        verify(employeeDAO, times(1)).existsById(validEmployeeId);
         verify(notificationDAO, times(1)).findByEmployeeId(validEmployeeId);
     }
 
     @Test
     @DisplayName("GET BY EMPLOYEE - Empleado inexistente debe lanzar ResourceNotFoundException")
     void getNotificationsByEmployee_EmployeeNotFound_ShouldThrowResourceNotFoundException() {
-        when(employeeDAO.findById(validEmployeeId)).thenReturn(Optional.empty());
+        when(employeeDAO.existsById(validEmployeeId)).thenReturn(false);
 
         assertThatThrownBy(() -> notificationService.getNotificationsByEmployee(validEmployeeId))
                 .isInstanceOf(ResourceNotFoundException.class)
                 .hasMessageContaining("Empleado no encontrado con id:");
 
-        verify(employeeDAO, times(1)).findById(validEmployeeId);
+        verify(employeeDAO, times(1)).existsById(validEmployeeId);
         verify(notificationDAO, never()).findByEmployeeId(validEmployeeId);
     }
 
