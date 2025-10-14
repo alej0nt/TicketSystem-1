@@ -194,7 +194,6 @@ public class TicketServiceTest {
                 LocalDateTime.now(),
                 null);
 
-        when(ticketDAO.existsById(validTicketId)).thenReturn(true);
         when(ticketDAO.findById(validTicketId)).thenReturn(Optional.of(validTicketResponse));
         when(ticketDAO.updateState(validTicketId, updateDTO)).thenReturn(Optional.of(updatedTicket));
 
@@ -238,7 +237,6 @@ public class TicketServiceTest {
                 LocalDateTime.now(),
                 LocalDateTime.now());
 
-        when(ticketDAO.existsById(validTicketId)).thenReturn(true);
         when(ticketDAO.findById(validTicketId)).thenReturn(Optional.of(ticketEnProgreso));
         when(ticketDAO.updateState(validTicketId, updateDTO)).thenReturn(Optional.of(updatedTicket));
 
@@ -259,7 +257,6 @@ public class TicketServiceTest {
         // ARRANGE
         TicketUpdateStateDTO updateDTO = new TicketUpdateStateDTO(State.ABIERTO);
 
-        when(ticketDAO.existsById(validTicketId)).thenReturn(true);
         when(ticketDAO.findById(validTicketId)).thenReturn(Optional.of(validTicketResponse));
 
         // ACT & ASSERT
@@ -278,7 +275,6 @@ public class TicketServiceTest {
         // ARRANGE
         TicketUpdateStateDTO updateDTO = new TicketUpdateStateDTO(State.RESUELTO);
 
-        when(ticketDAO.existsById(validTicketId)).thenReturn(true);
         when(ticketDAO.findById(validTicketId)).thenReturn(Optional.of(validTicketResponse));
 
         // ACT & ASSERT
@@ -307,13 +303,15 @@ public class TicketServiceTest {
 
         TicketUpdateStateDTO updateDTO = new TicketUpdateStateDTO(State.CERRADO);
 
-        when(ticketDAO.existsById(validTicketId)).thenReturn(true);
         when(ticketDAO.findById(validTicketId)).thenReturn(Optional.of(ticketEnProgreso));
 
         // ACT & ASSERT
         assertThatThrownBy(() -> ticketService.updateState(validTicketId, updateDTO))
                 .isInstanceOf(InvalidStateException.class)
                 .hasMessageContaining("solo se puede cambiar a 'Resuelto' o 'Abierto'");
+
+        verify(ticketRecordService, never()).create(any());
+        verify(ticketDAO, never()).updateState(anyLong(), any());
     }
 
     @Test
@@ -343,7 +341,6 @@ public class TicketServiceTest {
                 LocalDateTime.now(),
                 LocalDateTime.now());
 
-        when(ticketDAO.existsById(validTicketId)).thenReturn(true);
         when(ticketDAO.findById(validTicketId)).thenReturn(Optional.of(ticketResuelto));
         when(ticketDAO.updateState(validTicketId, updateDTO)).thenReturn(Optional.of(updatedTicket));
 
@@ -353,6 +350,10 @@ public class TicketServiceTest {
         // ASSERT
         assertThat(result).isNotNull();
         assertThat(result.getState()).isEqualTo(State.CERRADO);
+
+        verify(ticketRecordService, times(1)).create(any(TicketRecordCreateDTO.class));
+        verify(ticketDAO, times(1)).updateState(validTicketId, updateDTO);
+        verify(notificationService, times(1)).create(any(NotificationCreateDTO.class));
     }
 
     @Test
@@ -382,7 +383,6 @@ public class TicketServiceTest {
                 LocalDateTime.now(),
                 LocalDateTime.now());
 
-        when(ticketDAO.existsById(validTicketId)).thenReturn(true);
         when(ticketDAO.findById(validTicketId)).thenReturn(Optional.of(ticketCerrado));
         when(ticketDAO.updateState(validTicketId, updateDTO)).thenReturn(Optional.of(updatedTicket));
 
@@ -392,6 +392,10 @@ public class TicketServiceTest {
         // ASSERT
         assertThat(result).isNotNull();
         assertThat(result.getState()).isEqualTo(State.RESUELTO);
+
+        verify(ticketRecordService, times(1)).create(any(TicketRecordCreateDTO.class));
+        verify(ticketDAO, times(1)).updateState(validTicketId, updateDTO);
+        verify(notificationService, times(1)).create(any(NotificationCreateDTO.class));
     }
 
     @Test
@@ -411,13 +415,15 @@ public class TicketServiceTest {
 
         TicketUpdateStateDTO updateDTO = new TicketUpdateStateDTO(State.ABIERTO);
 
-        when(ticketDAO.existsById(validTicketId)).thenReturn(true);
         when(ticketDAO.findById(validTicketId)).thenReturn(Optional.of(ticketCerrado));
 
         // ACT & ASSERT
         assertThatThrownBy(() -> ticketService.updateState(validTicketId, updateDTO))
                 .isInstanceOf(InvalidStateException.class)
                 .hasMessageContaining("solo se puede reabrir a 'Resuelto'");
+
+        verify(ticketRecordService, never()).create(any());
+        verify(ticketDAO, never()).updateState(anyLong(), any());
     }
 
     @Test
@@ -425,14 +431,14 @@ public class TicketServiceTest {
     void updateState_NonExistentTicket_ShouldThrowException() {
         // ARRANGE
         TicketUpdateStateDTO updateDTO = new TicketUpdateStateDTO(State.EN_PROGRESO);
-        when(ticketDAO.existsById(validTicketId)).thenReturn(false);
+        when(ticketDAO.findById(validTicketId)).thenReturn(Optional.empty());
 
         // ACT & ASSERT
         assertThatThrownBy(() -> ticketService.updateState(validTicketId, updateDTO))
                 .isInstanceOf(ResourceNotFoundException.class)
                 .hasMessageContaining("Tiquete no encontrado con ID");
 
-        verify(ticketDAO, never()).findById(anyLong());
+        verify(ticketDAO, times(1)).findById(validTicketId);
         verify(ticketDAO, never()).updateState(anyLong(), any());
     }
 
@@ -442,7 +448,6 @@ public class TicketServiceTest {
         // ARRANGE
         TicketUpdateStateDTO updateDTO = new TicketUpdateStateDTO(State.EN_PROGRESO);
 
-        when(ticketDAO.existsById(validTicketId)).thenReturn(true);
         when(ticketDAO.findById(validTicketId)).thenReturn(Optional.of(validTicketResponse));
         when(ticketDAO.updateState(validTicketId, updateDTO)).thenReturn(Optional.empty());
 
@@ -473,7 +478,6 @@ public class TicketServiceTest {
 
         TicketUpdateStateDTO updateDTO = new TicketUpdateStateDTO(State.ABIERTO);
 
-        when(ticketDAO.existsById(validTicketId)).thenReturn(true);
         when(ticketDAO.findById(validTicketId)).thenReturn(Optional.of(ticketResuelto));
 
         // ACT & ASSERT
@@ -522,7 +526,6 @@ public class TicketServiceTest {
     @DisplayName("GET BY ID - Ticket existente debe retornar ticket")
     void getTicketById_ExistingTicket_ShouldReturnTicket() {
         // ARRANGE
-        when(ticketDAO.existsById(validTicketId)).thenReturn(true);
         when(ticketDAO.findById(validTicketId)).thenReturn(Optional.of(validTicketResponse));
 
         // ACT
@@ -533,23 +536,18 @@ public class TicketServiceTest {
         assertThat(result.getId()).isEqualTo(validTicketId);
         assertThat(result.getTitle()).isEqualTo("Error en inicio de sesión");
 
-        verify(ticketDAO, times(1)).existsById(validTicketId);
         verify(ticketDAO, times(1)).findById(validTicketId);
     }
 
     @Test
     @DisplayName("GET BY ID - Ticket no existe debe lanzar ResourceNotFoundException")
     void getTicketById_NonExistentTicket_ShouldThrowException() {
-        // ARRANGE
-        when(ticketDAO.existsById(validTicketId)).thenReturn(false);
-
         // ACT & ASSERT
         assertThatThrownBy(() -> ticketService.getTicketById(validTicketId))
                 .isInstanceOf(ResourceNotFoundException.class)
                 .hasMessageContaining("Tiquete no encontrado con ID");
 
-        verify(ticketDAO, times(1)).existsById(validTicketId);
-        verify(ticketDAO, never()).findById(anyLong());
+        verify(ticketDAO, times(1)).findById(anyLong());
     }
 
     // ==================== GET ALL TICKETS TESTS ====================
