@@ -1,0 +1,23 @@
+<div class="relative">
+  <input
+    [type]="type"
+    [placeholder]="placeholder"
+    [value]="value"
+    [disabled]="disabled"
+    (input)="onInput($event)"
+    (blur)="onBlur()"
+    [class]= "currentVariant"
+    [class.pr-12]="showToggle"
+    aria-label="{{ placeholder }}"
+  />
+  <button
+    *ngIf="showToggle"
+    type="button"
+    (click)="handleToggle()"
+    class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
+    aria-pressed="false"
+    aria-label="Mostrar / ocultar contraseña"
+  >
+    ver
+  </button>
+</div>
