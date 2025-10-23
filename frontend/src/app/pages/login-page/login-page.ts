@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { LoginLayoutComponent } from '../../shared/layout/login-layout/login-layout';
-import { LoginCredentials } from '../../shared/molecules/login-form/login-form';
+import { LoginCredentials } from '../../shared/organisms/login-form/login-form';
 
 @Component({
   selector: 'app-login-page',

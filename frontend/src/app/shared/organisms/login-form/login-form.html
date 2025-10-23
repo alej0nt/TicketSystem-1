@@ -14,14 +14,14 @@
 
   <!-- Password Input -->
   <div class="mb-6">
-    <app-input-field
+    <app-input-field-showbutton
       [type]="showPassword() ? 'text' : 'password'"
       placeholder="Contraseña"
       [(ngModel)]="password"
       [showToggle]="true"
       (toggleClick)="togglePassword()"
       variant="baseType"
-    ></app-input-field>
+    ></app-input-field-showbutton>
   </div>
 
   <!-- Login Button -->

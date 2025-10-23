@@ -1,6 +1,6 @@
 import { Component, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { LoginFormComponent, LoginCredentials } from '../../molecules/login-form/login-form';
+import { LoginFormComponent, LoginCredentials } from '../../organisms/login-form/login-form';
 
 @Component({
   selector: 'app-login-layout',

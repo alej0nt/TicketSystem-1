@@ -1,0 +1,19 @@
+<div class="relative">
+  <input
+    [type]="inputType"
+    [placeholder]="placeholder"
+    [value]="value"
+    [disabled]="disabled"
+    (input)="onInput($event)"
+    (blur)="onBlur()"
+    [class]="currentVariant"
+    aria-label="{{ placeholder }}"
+  />
+  <app-button
+    *ngIf="showToggle"
+    variant="eyeIcon"
+    [iconClass]="class"
+    (buttonClick)="handleToggle()"
+    ariaLabel="Mostrar / ocultar contraseña"
+  ></app-button>
+</div>

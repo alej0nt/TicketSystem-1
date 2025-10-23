@@ -4,7 +4,8 @@ import { FormsModule } from '@angular/forms';
 import { InputFieldComponent } from '../../atoms/input-field/input-field';
 import { ButtonComponent } from '../../atoms/button/button';
 import { TextLinkComponent } from '../../atoms/text-link/text-link';
-import {AuthService} from '../../../services/auth.service'
+import {AuthService} from '../../../services/auth.service';
+import { InputFieldShowButtonComponent } from '../../molecules/input-field-showbutton/input-field-showbutton';
 
 export interface LoginCredentials {
   email: string;
@@ -19,7 +20,8 @@ export interface LoginCredentials {
     FormsModule,
     InputFieldComponent,
     ButtonComponent,
-    TextLinkComponent
+    TextLinkComponent,
+    InputFieldShowButtonComponent
   ],
   templateUrl: './login-form.html',
   styleUrl: './login-form.css'

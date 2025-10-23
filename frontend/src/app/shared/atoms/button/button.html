@@ -1,7 +1,17 @@
 <button
+  type="button"
   (click)="handleClick()"
   [disabled]="disabled"
   [class]="style"
+  [attr.aria-label]="ariaLabel || text"
 >
-  {{ text }}
+  <!-- Si el botón NO es de ícono, muestra texto -->
+  <ng-container *ngIf="variant !== 'eyeIcon'; else iconButton">
+    {{ text }}
+  </ng-container>
+
+  <!-- Si es el botón de ícono -->
+  <ng-template #iconButton>
+    <i [class]="iconClass" class="text-lg hover:scale-110 transition-transform duration-150"></i>
+  </ng-template>
 </button>
