@@ -5,13 +5,6 @@
   [class]="style"
   [attr.aria-label]="ariaLabel || text"
 >
-  <!-- Si el botón NO es de ícono, muestra texto -->
-  <ng-container *ngIf="variant !== 'eyeIcon'; else iconButton">
-    {{ text }}
-  </ng-container>
-
-  <!-- Si es el botón de ícono -->
-  <ng-template #iconButton>
-    <i [class]="iconClass" class="text-lg hover:scale-110 transition-transform duration-150"></i>
-  </ng-template>
+  <span *ngIf="text" class="ml-2">{{ text }}</span>
+  <i *ngIf="currentIconClass" [class]="currentIconClass"></i>
 </button>

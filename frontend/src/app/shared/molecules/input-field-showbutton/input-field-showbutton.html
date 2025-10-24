@@ -9,10 +9,10 @@
     [class]="currentVariant"
     aria-label="{{ placeholder }}"
   />
+  <i *ngIf="currentIcon" [class]="currentIcon"></i>
   <app-button
     *ngIf="showToggle"
-    variant="eyeIcon"
-    [iconClass]="class"
+    [variant]="passwordVisible ? 'eyeIconClosed' : 'eyeIcon'"
     (buttonClick)="handleToggle()"
     ariaLabel="Mostrar / ocultar contraseña"
   ></app-button>
