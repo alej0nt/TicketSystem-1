@@ -1,0 +1,23 @@
+<div class="bg-white/80 backdrop-blur-md rounded-3xl shadow-xl border border-white/60 overflow-hidden">
+  
+  <!-- Header -->
+  <div class="p-6 border-b border-gray-200">
+    <h2 class="text-xl font-bold text-gray-800 flex items-center gap-2">
+      <i class="fas fa-comments text-indigo-600"></i>
+      Comentarios
+      <span class="ml-2 text-sm bg-indigo-100 text-indigo-700 px-3 py-1 rounded-full font-semibold">
+        {{ comments.length }}
+      </span>
+    </h2>
+  </div>
+
+  <!-- Lista de comentarios -->
+  <div class="p-8 space-y-6">
+    <app-comment-item *ngFor="let comment of comments" [author]="comment.author" [role]="comment.role" [date]="comment.date" [text]="comment.text" [color]="comment.color"></app-comment-item>
+  </div>
+
+  <!-- Formulario para agregar comentario -->
+  <app-comment-form (send)="onAddComment($event)"></app-comment-form>
+
+</div>
+

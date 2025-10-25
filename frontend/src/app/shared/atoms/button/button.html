@@ -5,6 +5,6 @@
   [class]="style"
   [attr.aria-label]="ariaLabel || text"
 >
-  <span *ngIf="text" class="ml-2">{{ text }}</span>
+  <span *ngIf="text" [class]="currentIconClass ? 'mr-2' : 'ml-1'">{{ text }}</span>
   <i *ngIf="currentIconClass" [class]="currentIconClass"></i>
 </button>

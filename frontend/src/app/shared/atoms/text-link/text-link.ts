@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
-type TextLinkVariants = 'baseType';
+type TextLinkVariants = 'baseType' | 'breadcumb';
 @Component({
   selector: 'app-text-link',
   standalone: true,
@@ -15,6 +15,7 @@ export class TextLinkComponent {
 
   private variants= {
     baseType: 'text-gray-200 hover:text-gray-300 text-sm sm:text-base',
+    breadcumb: 'hover:text-indigo-600 transition-colors'
   }
 
   get currentVariant(): string {
