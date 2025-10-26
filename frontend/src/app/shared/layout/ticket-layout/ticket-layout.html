@@ -5,9 +5,9 @@
     <div class="flex items-center gap-2 text-gray-500 text-sm mb-3">
       <app-text-link href="/" text="Tickets" variant="breadcumb" />
       <span>/</span>
-      <span class="text-gray-700 font-medium">#{{ ticketId }}</span>
+      <span class="text-gray-700 font-medium">#{{ ticketObj.ticket.id }} nuevo ticket</span>
     </div>
-    <h1 class="text-4xl font-bold text-gray-800">Ticket #{{ ticketId }}</h1>
+    <h1 class="text-4xl font-bold text-gray-800">Ticket #{{ ticketObj.ticket.id }}</h1>
   </div>
 
   <!-- Sección: Detalles del Ticket + Acciones -->
@@ -15,7 +15,7 @@
 
     <!-- Detalles del Ticket -->
     <div class="lg:col-span-2">
-      <app-ticket-info/>
+      <app-ticket-info [ticketObj]="ticketObj"/>
     </div>
 
     <!-- Sidebar - Solo Acciones (UI fija) -->

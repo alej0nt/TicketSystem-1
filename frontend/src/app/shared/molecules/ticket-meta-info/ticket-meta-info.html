@@ -1,14 +1,14 @@
 <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 pt-6 border-t border-gray-200">
   <div>
     <span class="text-sm text-gray-500 block mb-1">Asignado a</span>
-    <div class="flex items-center gap-2" *ngIf="agent">
-      <app-avatar [initials]="agent.initials" size="md" [color]="'indigo'"></app-avatar>
+    <div class="flex items-center gap-2" *ngIf="assignment">
+      <app-avatar [initials]="assignment.agent.name" size="md" [color]="'indigo'"></app-avatar>
       <div>
-        <div class="text-gray-800 font-semibold">{{ agent.name }}</div>
-        <div class="text-sm text-gray-500">{{ agent.role }}</div>
+        <div class="text-gray-800 font-semibold">{{ assignment.agent.name }}</div>
+        <div class="text-sm text-gray-500">{{ assignment.agent.department }}</div>
       </div>
     </div>
-    <div *ngIf="!agent" class="text-gray-500 italic">No asignado</div>
+    <div *ngIf="!assignment" class="text-gray-500 italic">No asignado</div>
   </div>
 
   <div>

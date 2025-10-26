@@ -1,9 +1,10 @@
-import { Component } from '@angular/core';
+import { Component, Input, input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TicketInfoComponent } from '../../organisms/ticket-info/ticket-info';
 import { CommentsSectionComponent } from '../../organisms/comments-section/comments-section';
 import { TextLinkComponent } from "../../atoms/text-link/text-link";
 import { ButtonComponent } from "../../atoms/button/button";
+import { TicketData } from '../../../pages/ticket-page/ticket-page';
 
 @Component({
   selector: 'app-ticket-layout',
@@ -13,7 +14,7 @@ import { ButtonComponent } from "../../atoms/button/button";
   styleUrls: ['./ticket-layout.css'],
 })
 export class TicketLayoutComponent {
-  ticketId = '5001';
+  @Input() ticketObj!: TicketData;
 
   // acciones (solo UI por ahora)
   onEdit() {

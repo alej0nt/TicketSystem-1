@@ -51,6 +51,8 @@ export class LoginFormComponent {
             email: this.email(),
             password: this.password()
           });
+          // Agrego el token al localStorage
+          localStorage.setItem('authToken', response.token);
         },
         error: (error) => {
           console.error('Login error:', error);
