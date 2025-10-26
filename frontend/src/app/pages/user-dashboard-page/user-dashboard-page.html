@@ -1,0 +1,169 @@
+<app-dashboard-layout [userInfo]="userInfo" (logout)="handleLogout()">
+  <!-- Welcome Section -->
+  <div class="mb-8 flex justify-between items-center">
+    <div>
+      <h2 class="text-3xl font-bold text-gray-800 mb-2">
+        Bienvenido, {{ userInfo.name.split(' ')[0] || 'Usuario' }}
+      </h2>
+      <p class="text-gray-600">Aquí puedes ver y gestionar todos tus tickets</p>
+    </div>
+    <button
+      (click)="openCreateModal()"
+      class="px-6 py-3 bg-gradient-to-r from-[#8b9d8e] to-[#7a8d7d] text-white rounded-lg font-semibold hover:shadow-lg transition-all flex items-center gap-2"
+    >
+      <i class="fas fa-plus"></i>
+      <span class="hidden sm:inline">Crear Ticket</span>
+    </button>
+  </div>
+
+  <!-- Stats Cards -->
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+    <!-- Total Tickets -->
+    <div class="bg-white rounded-xl shadow-md p-6 border-l-4 border-[#8b9d8e]">
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="text-gray-500 text-sm font-medium">Total</p>
+          <p class="text-3xl font-bold text-gray-800">{{ getTicketCount('all') }}</p>
+        </div>
+        <div class="bg-[#8b9d8e] bg-opacity-20 rounded-full p-3">
+          <i class="fas fa-ticket-alt text-[#8b9d8e] text-2xl"></i>
+        </div>
+      </div>
+    </div>
+
+    <!-- Open Tickets -->
+    <div class="bg-white rounded-xl shadow-md p-6 border-l-4 border-blue-500">
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="text-gray-500 text-sm font-medium">Abiertos</p>
+          <p class="text-3xl font-bold text-gray-800">{{ getTicketCount('open') }}</p>
+        </div>
+        <div class="bg-blue-100 rounded-full p-3">
+          <i class="fas fa-folder-open text-blue-500 text-2xl"></i>
+        </div>
+      </div>
+    </div>
+
+    <!-- In Progress -->
+    <div class="bg-white rounded-xl shadow-md p-6 border-l-4 border-yellow-500">
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="text-gray-500 text-sm font-medium">En Proceso</p>
+          <p class="text-3xl font-bold text-gray-800">{{ getTicketCount('in_progress') }}</p>
+        </div>
+        <div class="bg-yellow-100 rounded-full p-3">
+          <i class="fas fa-spinner text-yellow-500 text-2xl"></i>
+        </div>
+      </div>
+    </div>
+
+    <!-- Resolved -->
+    <div class="bg-white rounded-xl shadow-md p-6 border-l-4 border-green-500">
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="text-gray-500 text-sm font-medium">Resueltos</p>
+          <p class="text-3xl font-bold text-gray-800">{{ getTicketCount('resolved') }}</p>
+        </div>
+        <div class="bg-green-100 rounded-full p-3">
+          <i class="fas fa-check-circle text-green-500 text-2xl"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Filter Tabs -->
+  <div class="bg-white rounded-xl shadow-md p-4 mb-6">
+    <div class="flex flex-wrap gap-2">
+      <button
+        (click)="filterTickets('all')"
+        [class]="
+          selectedFilter === 'all'
+            ? 'bg-[#8b9d8e] text-white'
+            : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+        "
+        class="px-4 py-2 rounded-lg font-medium transition-colors"
+      >
+        Todos
+      </button>
+      <button
+        (click)="filterTickets('open')"
+        [class]="
+          selectedFilter === 'open'
+            ? 'bg-blue-500 text-white'
+            : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+        "
+        class="px-4 py-2 rounded-lg font-medium transition-colors"
+      >
+        Abiertos
+      </button>
+      <button
+        (click)="filterTickets('in_progress')"
+        [class]="
+          selectedFilter === 'in_progress'
+            ? 'bg-yellow-500 text-white'
+            : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+        "
+        class="px-4 py-2 rounded-lg font-medium transition-colors"
+      >
+        En Proceso
+      </button>
+      <button
+        (click)="filterTickets('resolved')"
+        [class]="
+          selectedFilter === 'resolved'
+            ? 'bg-green-500 text-white'
+            : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+        "
+        class="px-4 py-2 rounded-lg font-medium transition-colors"
+      >
+        Resueltos
+      </button>
+      <button
+        (click)="filterTickets('closed')"
+        [class]="
+          selectedFilter === 'closed'
+            ? 'bg-gray-500 text-white'
+            : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+        "
+        class="px-4 py-2 rounded-lg font-medium transition-colors"
+      >
+        Cerrados
+      </button>
+    </div>
+  </div>
+
+  @if(isLoading) {
+  <!-- Tickets Grid -->
+  <div *ngIf="isLoading" class="text-center py-12">
+    <i class="fas fa-spinner fa-spin text-4xl text-[#8b9d8e] mb-4"></i>
+    <p class="text-gray-600">Cargando tickets...</p>
+  </div>
+  } @if(!isLoading && filteredTickets.length === 0) {
+  <div class="text-center py-12 bg-white rounded-xl shadow-md">
+    <i class="fas fa-inbox text-6xl text-gray-300 mb-4"></i>
+    <p class="text-gray-600 text-lg">No hay tickets para mostrar</p>
+  </div>
+  } @if(!isLoading && filteredTickets.length > 0) {
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    @for(ticket of filteredTickets; track ticket.id) {
+      <app-ticket-card [ticket]="ticket"></app-ticket-card>
+    }
+  </div>
+  }
+
+  <!-- Floating Action Button (Mobile) -->
+  <button
+    (click)="openCreateModal()"
+    class="fixed bottom-6 right-6 sm:hidden w-14 h-14 bg-gradient-to-r from-[#8b9d8e] to-[#7a8d7d] text-white rounded-full shadow-lg hover:shadow-xl transition-all flex items-center justify-center"
+  >
+    <i class="fas fa-plus text-xl"></i>
+  </button>
+</app-dashboard-layout>
+
+@if(showCreateModal) {
+  <!-- Create Ticket Modal -->
+  <app-create-ticket-modal
+    (close)="closeCreateModal()"
+    (ticketCreated)="handleTicketCreated()"
+  ></app-create-ticket-modal>
+}

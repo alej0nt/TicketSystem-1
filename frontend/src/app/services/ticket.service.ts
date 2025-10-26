@@ -15,6 +15,14 @@ export interface TicketResponseDTO {
     creationDate: string;
     closingDate: string;
 }
+
+export interface TicketCreateDTO {
+    employeeId: number;
+    title: string;
+    description: string;
+    categoryId: number;
+    priority: string;
+}
 @Injectable({
     providedIn: 'root'
 })
@@ -28,5 +36,21 @@ export class TicketService {
             'Authorization': `Bearer ${token}`
         });
         return this.http.get<TicketResponseDTO>(`${this.apiUrl}/${ticketId}`, { headers });
+    }
+
+    getAllTickets(): Observable<TicketResponseDTO[]> {
+        const token = localStorage.getItem('authToken');
+        const headers = new HttpHeaders({
+            'Authorization': `Bearer ${token}`
+        });
+        return this.http.get<TicketResponseDTO[]>(this.apiUrl, { headers });
+    }
+
+    createTicket(ticketData: TicketCreateDTO): Observable<TicketResponseDTO> {
+        const token = localStorage.getItem('authToken');
+        const headers = new HttpHeaders({
+            'Authorization': `Bearer ${token}`
+        });
+        return this.http.post<TicketResponseDTO>(this.apiUrl, ticketData, { headers });
     }
 }

@@ -1,0 +1,57 @@
+<div class="relative">
+  <!-- Bell Button -->
+  <button 
+    (click)="toggleDropdown()"
+    class="relative p-2 text-[#e8e8e3] hover:text-white transition-colors focus:outline-none"
+  >
+    <i class="fas fa-bell text-xl"></i>
+    <span 
+      *ngIf="unreadCount() > 0"
+      class="absolute top-0 right-0 bg-red-500 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center"
+    >
+      {{ unreadCount() > 9 ? '9+' : unreadCount() }}
+    </span>
+  </button>
+
+  <!-- Dropdown -->
+  <div 
+    *ngIf="showDropdown()"
+    class="absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-xl border border-gray-200 z-50 max-h-96 overflow-y-auto"
+  >
+    <!-- Header -->
+    <div class="p-4 border-b border-gray-200 bg-gray-50 rounded-t-lg">
+      <h3 class="font-bold text-gray-800">Notificaciones</h3>
+      <p class="text-xs text-gray-500">{{ unreadCount() }} sin leer</p>
+    </div>
+
+    <!-- Notifications List -->
+    <div *ngIf="notifications().length === 0" class="p-8 text-center text-gray-500">
+      <i class="fas fa-bell-slash text-4xl mb-2 text-gray-300"></i>
+      <p>No tienes notificaciones</p>
+    </div>
+
+    <div *ngIf="notifications().length > 0" class="divide-y divide-gray-200">
+      <div 
+        *ngFor="let notification of notifications()"
+        (click)="markAsRead(notification)"
+        [class]="notification.isRead ? 'bg-white' : 'bg-blue-50'"
+        class="p-4 hover:bg-gray-50 cursor-pointer transition-colors"
+      >
+        <div class="flex items-start gap-3">
+          <div [class]="notification.isRead ? 'text-gray-400' : 'text-blue-500'">
+            <i class="fas fa-info-circle text-lg"></i>
+          </div>
+          <div class="flex-1">
+            <p [class]="notification.isRead ? 'text-gray-600' : 'text-gray-800 font-semibold'" class="text-sm">
+              {{ notification.message }}
+            </p>
+            <p class="text-xs text-gray-500 mt-1">
+              {{ getTimeAgo(notification.createdAt) }}
+            </p>
+          </div>
+          <div *ngIf="!notification.isRead" class="w-2 h-2 bg-blue-500 rounded-full mt-2"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
