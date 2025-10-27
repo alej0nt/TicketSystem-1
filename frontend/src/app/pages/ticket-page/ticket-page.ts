@@ -9,7 +9,7 @@ import { forkJoin } from 'rxjs';
 
 export interface TicketData {
   ticket: TicketResponseDTO,
-  assignment: { id: number, agent: EmployeeResponseDTO, date: string }
+  assignment: { id: number, agent: EmployeeResponseDTO, date: string } | null
 };
 
 @Component({
@@ -41,11 +41,11 @@ export class TicketPageComponent {
           next: ({ ticket, assignment }) => {
             this.ticketData = {
               ticket,
-              assignment: {
+              assignment: assignment ?{
                 id: assignment.id,
                 agent: assignment.employee,
                 date: assignment.assignmentDate
-              }
+              } : null
             };
             console.log('Ticket data:', this.ticketData);
           },

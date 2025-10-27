@@ -14,13 +14,15 @@ export interface CategoryResponseDTO {
 })
 export class CategoryService {
     private apiUrl = `${environment.apiBaseURL}/categories`
-    constructor(private http: HttpClient) {}
+    constructor(private http: HttpClient) { }
 
-    getAllCategories(): Observable<CategoryResponseDTO[]> {
+    private getHeaders(): HttpHeaders {
         const token = localStorage.getItem('authToken');
-        const headers = new HttpHeaders({
+        return new HttpHeaders({
             'Authorization': `Bearer ${token}`
         });
-        return this.http.get<CategoryResponseDTO[]>(this.apiUrl, { headers });
+    }
+    getAllCategories(): Observable<CategoryResponseDTO[]> {
+        return this.http.get<CategoryResponseDTO[]>(this.apiUrl, { headers: this.getHeaders() });
     }
 }

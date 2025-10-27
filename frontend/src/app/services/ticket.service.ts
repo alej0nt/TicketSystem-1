@@ -1,8 +1,9 @@
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { environment } from "../../environments/environment";
 import { Injectable } from "@angular/core";
-import { Observable } from "rxjs";
+import { map, Observable } from "rxjs";
 import { CategoryResponseDTO } from "./category.service";
+import { formatDate } from "../utils/date.utils";
 
 export interface TicketResponseDTO {
     id: number;
@@ -30,27 +31,27 @@ export class TicketService {
     private apiUrl = `${environment.apiBaseURL}/tickets`
     constructor(private http: HttpClient) { }
 
-    getTicket(ticketId: number): Observable<TicketResponseDTO> {
+    private getHeaders(): HttpHeaders {
         const token = localStorage.getItem('authToken');
-        const headers = new HttpHeaders({
+        return new HttpHeaders({
             'Authorization': `Bearer ${token}`
         });
-        return this.http.get<TicketResponseDTO>(`${this.apiUrl}/${ticketId}`, { headers });
+    }
+
+    getTicket(ticketId: number): Observable<TicketResponseDTO> {
+        return this.http.get<TicketResponseDTO>(`${this.apiUrl}/${ticketId}`, { headers: this.getHeaders() }).pipe(
+                    map(ticket => ({
+                        ...ticket,
+                        creationDate: formatDate(ticket.creationDate) 
+                    })));
     }
 
     getAllTickets(): Observable<TicketResponseDTO[]> {
-        const token = localStorage.getItem('authToken');
-        const headers = new HttpHeaders({
-            'Authorization': `Bearer ${token}`
-        });
-        return this.http.get<TicketResponseDTO[]>(this.apiUrl, { headers });
+        return this.http.get<TicketResponseDTO[]>(this.apiUrl, { headers: this.getHeaders() });
     }
 
     createTicket(ticketData: TicketCreateDTO): Observable<TicketResponseDTO> {
-        const token = localStorage.getItem('authToken');
-        const headers = new HttpHeaders({
-            'Authorization': `Bearer ${token}`
-        });
-        return this.http.post<TicketResponseDTO>(this.apiUrl, ticketData, { headers });
+
+        return this.http.post<TicketResponseDTO>(this.apiUrl, ticketData, { headers: this.getHeaders() });
     }
 }

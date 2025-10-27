@@ -17,21 +17,20 @@ export interface EmployeeResponseDTO {
 export class EmployeeService {
   private apiUrl = `${environment.apiBaseURL}/employees`;
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
-  getEmployeeById(id: number): Observable<EmployeeResponseDTO> {
+  private getHeaders(): HttpHeaders {
     const token = localStorage.getItem('authToken');
-    const headers = new HttpHeaders({
+    return new HttpHeaders({
       'Authorization': `Bearer ${token}`
     });
-    return this.http.get<EmployeeResponseDTO>(`${this.apiUrl}/${id}`, { headers });
+  }
+
+  getEmployeeById(id: number): Observable<EmployeeResponseDTO> {
+    return this.http.get<EmployeeResponseDTO>(`${this.apiUrl}/${id}`, { headers: this.getHeaders() });
   }
 
   updateEmployee(id: number, employeeData: Partial<EmployeeResponseDTO>): Observable<EmployeeResponseDTO> {
-    const token = localStorage.getItem('authToken');
-    const headers = new HttpHeaders({
-      'Authorization': `Bearer ${token}`
-    });
-    return this.http.put<EmployeeResponseDTO>(`${this.apiUrl}/${id}`, employeeData, { headers });
+    return this.http.put<EmployeeResponseDTO>(`${this.apiUrl}/${id}`, employeeData, { headers: this.getHeaders() });
   }
 }
