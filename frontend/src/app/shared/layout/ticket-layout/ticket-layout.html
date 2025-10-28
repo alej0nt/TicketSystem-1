@@ -27,20 +27,23 @@
         </h3>
 
         <div class="space-y-3">
-          <div><app-button [text]="'Editar ticket'" [variant]="'actionBlue'" (buttonClick)="onEdit()">
+          <!-- <div><app-button [text]="'Editar ticket'" [variant]="'actionBlue'" (buttonClick)="onEdit()">
+          </app-button></div> -->
+
+          <div *ngIf="ticketObj.ticket.state == 'EN_PROGRESO'"><app-button [text]="'Reasignar'" [variant]="'actionPurple'" (buttonClick)="reassign.emit()">
           </app-button></div>
 
-          <div><app-button [text]="'Reasignar'" [variant]="'actionPurple'" (buttonClick)="onReassign()">
+          <div *ngIf="ticketObj.ticket.state == 'EN_PROGRESO'"><app-button [text]="'Marcar como resuelto'" [variant]="'actionGreen'" (buttonClick)="resolve.emit()">
           </app-button></div>
 
-          <div><app-button [text]="'Marcar como resuelto'" [variant]="'actionGreen'" (buttonClick)="onResolve()">
+          <div *ngIf="ticketObj.ticket.state == 'RESUELTO'"><app-button [text]="'Cerrar ticket'" [variant]="'actionGray'" (buttonClick)="close.emit()">
           </app-button></div>
 
-          <div><app-button [text]="'Cerrar ticket'" [variant]="'actionGray'" (buttonClick)="onClose()">
+          <div *ngIf="ticketObj.ticket.state == 'RESUELTO' || ticketObj.ticket.state == 'CERRADO'"><app-button [text]="'Reanudar ticket'" [variant]="'actionGray'" (buttonClick)="reopen.emit()">
           </app-button></div>
 
-          <div class="pt-3 border-t border-gray-200">
-            <app-button [text]="'Eliminar'" [variant]="'actionRed'" (buttonClick)="onDelete()">
+          <div *ngIf="ticketObj.ticket.state == 'ABIERTO'" class="pt-3 border-t border-gray-200">
+            <app-button [text]="'Eliminar'" [variant]="'actionRed'" (buttonClick)="delete.emit()">
             </app-button>
           </div>
         </div>

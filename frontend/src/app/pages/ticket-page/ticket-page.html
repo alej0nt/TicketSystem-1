@@ -1,3 +1,11 @@
 <div class="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 py-8">
-    <app-ticket-layout *ngIf="ticketData" [ticketObj]="ticketData"></app-ticket-layout>
+    <app-ticket-layout 
+    *ngIf="ticketData" 
+    [ticketObj]="ticketData"
+    (reassign)="onReassign()"
+    (resolve)="onResolve()"
+    (close)="onClose()"
+    (reopen)="onReopen()"
+    (delete)="onDelete()">
+</app-ticket-layout>
 </div>

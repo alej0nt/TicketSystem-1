@@ -54,4 +54,11 @@ export class TicketService {
 
         return this.http.post<TicketResponseDTO>(this.apiUrl, ticketData, { headers: this.getHeaders() });
     }
+
+    updateTicketState(ticketId: number, newState: string): Observable<TicketResponseDTO> {
+        return this.http.put<TicketResponseDTO>(`${this.apiUrl}/${ticketId}/state`, { state: newState }, { headers: this.getHeaders() });
+    }
+    deleteTicket(ticketId: number): Observable<void> {
+        return this.http.delete<void>(`${this.apiUrl}/${ticketId}`, { headers: this.getHeaders() });
+    }
 }

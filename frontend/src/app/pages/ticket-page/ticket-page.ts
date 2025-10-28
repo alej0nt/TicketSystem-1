@@ -60,4 +60,38 @@ export class TicketPageComponent {
       }
     })
   }
+
+  private updateTicketState(newState: string) {
+    this.ticketService.updateTicketState(this.ticketData.ticket.id, newState).subscribe({
+      next: (updatedTicket) => {
+        this.ticketData.ticket.state = updatedTicket.state;
+        console.log('Ticket state updated:', updatedTicket);
+      },
+      error: (err) => {
+        console.error('Error updating ticket state:', err);
+      }
+    });
+  }
+
+  onReassign() { /* lógica de reasignar */ }
+  onResolve() { 
+    this.updateTicketState('RESUELTO');
+  }
+  onClose() { 
+    this.updateTicketState('CERRADO');
+   }
+  onDelete() {
+    this.ticketService.deleteTicket(this.ticketData.ticket.id).subscribe({
+      next: () => {
+        this.router.navigate(['/dashboard/user']);
+      },
+      error: (err) => {
+        console.log('Error deleting ticket ' + err)
+      }
+    })
+
+  } 
+  onReopen() { 
+    this.updateTicketState('RESUELTO');
+  }
 }
