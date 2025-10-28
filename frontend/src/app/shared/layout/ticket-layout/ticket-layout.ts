@@ -1,4 +1,4 @@
-import { Component, Input, input } from '@angular/core';
+import { Component, EventEmitter, Input, input, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TicketInfoComponent } from '../../organisms/ticket-info/ticket-info';
 import { CommentsSectionComponent } from '../../organisms/comments-section/comments-section';
@@ -16,20 +16,9 @@ import { TicketData } from '../../../pages/ticket-page/ticket-page';
 export class TicketLayoutComponent {
   @Input() ticketObj!: TicketData;
 
-  // acciones (solo UI por ahora)
-  onEdit() {
-    console.log('Editar ticket');
-  }
-  onReassign() {
-    console.log('Reasignar');
-  }
-  onResolve() {
-    console.log('Marcar como resuelto');
-  }
-  onClose() {
-    console.log('Cerrar ticket');
-  }
-  onDelete() {
-    console.log('Eliminar ticket');
-  }
+  @Output() reassign = new EventEmitter<void>();
+  @Output() resolve = new EventEmitter<void>();
+  @Output() close = new EventEmitter<void>();
+  @Output() reopen = new EventEmitter<void>();
+  @Output() delete = new EventEmitter<void>();
 }

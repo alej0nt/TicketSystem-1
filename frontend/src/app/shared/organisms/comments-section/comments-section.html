@@ -1,5 +1,5 @@
 <div class="bg-white/80 backdrop-blur-md rounded-3xl shadow-xl border border-white/60 overflow-hidden">
-  
+
   <!-- Header -->
   <div class="p-6 border-b border-gray-200">
     <h2 class="text-xl font-bold text-gray-800 flex items-center gap-2">
@@ -12,12 +12,19 @@
   </div>
 
   <!-- Lista de comentarios -->
-  <div class="p-8 space-y-6">
-    <app-comment-item *ngFor="let comment of comments" [author]="comment.author" [role]="comment.role" [date]="comment.date" [text]="comment.text" [color]="comment.color"></app-comment-item>
+  <div class="p-8">
+    <div *ngIf="comments.length > 0; else noComments" class="space-y-5">
+      <div *ngFor="let comment of comments">
+        <app-comment-item [author]="comment.employee.name" [role]="comment.employee.role" [date]="comment.creationDate"
+          [text]="comment.text" [color]="'indigo'"></app-comment-item>
+      </div>
+    </div>
+    <ng-template #noComments>
+      <p class="text-center text-gray-500 italic">No hay comentarios aún. Sé el primero en agregar uno.</p>
+    </ng-template>
   </div>
+
 
   <!-- Formulario para agregar comentario -->
   <app-comment-form (send)="onAddComment($event)"></app-comment-form>
-
 </div>
-

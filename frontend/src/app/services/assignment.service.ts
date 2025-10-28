@@ -3,7 +3,8 @@ import { environment } from "../../environments/environment";
 import { Injectable } from "@angular/core";
 import { TicketResponseDTO } from "./ticket.service";
 import { EmployeeResponseDTO } from "./employee.service";
-import { Observable } from "rxjs";
+import { catchError, map, Observable, of, throwError } from "rxjs";
+import { formatDate } from "../utils/date.utils";
 
 export interface AssignmentRespondeDTO {
     id: number;
@@ -19,11 +20,21 @@ export class AssignmentService {
     private apiUrl = `${environment.apiBaseURL}/assignments`;
     constructor(private http: HttpClient) {}
 
-    getAssignmentByTicketId(ticketId: number): Observable<AssignmentRespondeDTO> {
+    private getHeaders(): HttpHeaders {
         const token = localStorage.getItem('authToken');
-        const headers = new HttpHeaders({
+        return new HttpHeaders({
             'Authorization': `Bearer ${token}`
         });
-        return this.http.get<AssignmentRespondeDTO>(`${this.apiUrl}/ticket/${ticketId}`, { headers });
+    }
+
+    getAssignmentByTicketId(ticketId: number): Observable<AssignmentRespondeDTO | null> {
+        return this.http.get<AssignmentRespondeDTO>(`${this.apiUrl}/ticket/${ticketId}`, { headers: this.getHeaders() }).pipe(
+            map(assignment => ({
+                ...assignment,
+                assignmentDate: formatDate(assignment.assignmentDate) 
+            })),
+            // Si el assignment no existe, devolvemos null en lugar de un error
+            catchError(err => err.status === 404 ? of(null) : throwError(() => err))
+        );
     }
 }

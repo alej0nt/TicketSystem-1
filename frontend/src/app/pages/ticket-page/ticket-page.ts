@@ -9,7 +9,7 @@ import { forkJoin } from 'rxjs';
 
 export interface TicketData {
   ticket: TicketResponseDTO,
-  assignment: { id: number, agent: EmployeeResponseDTO, date: string }
+  assignment: { id: number, agent: EmployeeResponseDTO, date: string } | null
 };
 
 @Component({
@@ -41,11 +41,11 @@ export class TicketPageComponent {
           next: ({ ticket, assignment }) => {
             this.ticketData = {
               ticket,
-              assignment: {
+              assignment: assignment ?{
                 id: assignment.id,
                 agent: assignment.employee,
                 date: assignment.assignmentDate
-              }
+              } : null
             };
             console.log('Ticket data:', this.ticketData);
           },
@@ -59,5 +59,39 @@ export class TicketPageComponent {
         console.error('Invalid ticket ID');
       }
     })
+  }
+
+  private updateTicketState(newState: string) {
+    this.ticketService.updateTicketState(this.ticketData.ticket.id, newState).subscribe({
+      next: (updatedTicket) => {
+        this.ticketData.ticket.state = updatedTicket.state;
+        console.log('Ticket state updated:', updatedTicket);
+      },
+      error: (err) => {
+        console.error('Error updating ticket state:', err);
+      }
+    });
+  }
+
+  onReassign() { /* lógica de reasignar */ }
+  onResolve() { 
+    this.updateTicketState('RESUELTO');
+  }
+  onClose() { 
+    this.updateTicketState('CERRADO');
+   }
+  onDelete() {
+    this.ticketService.deleteTicket(this.ticketData.ticket.id).subscribe({
+      next: () => {
+        this.router.navigate(['/dashboard/user']);
+      },
+      error: (err) => {
+        console.log('Error deleting ticket ' + err)
+      }
+    })
+
+  } 
+  onReopen() { 
+    this.updateTicketState('RESUELTO');
   }
 }
