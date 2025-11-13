@@ -16,6 +16,7 @@ import { TicketData } from '../../../pages/ticket-page/ticket-page';
 export class TicketLayoutComponent {
   @Input() ticketObj!: TicketData;
 
+  @Output() assign = new EventEmitter<void>();
   @Output() reassign = new EventEmitter<void>();
   @Output() resolve = new EventEmitter<void>();
   @Output() close = new EventEmitter<void>();

@@ -31,20 +31,10 @@ export class CommentService {
         });
     }
     getCommentsByTicketId(ticketId: number): Observable<CommentResponseDTO[]> {
-        return this.http.get<CommentResponseDTO[]>(`${this.apiUrl}/ticket/${ticketId}`, { headers: this.getHeaders() }).pipe(
-        map(comments => comments.map(comment => ({
-          ...comment,
-          creationDate: formatDate(comment.creationDate) 
-        })))
-      );
+        return this.http.get<CommentResponseDTO[]>(`${this.apiUrl}/ticket/${ticketId}`, { headers: this.getHeaders() })
     }
 
     createComment(commentCreateDTO: CommentCreateDTO): Observable<CommentResponseDTO> {
-        return this.http.post<CommentResponseDTO>(this.apiUrl, commentCreateDTO, { headers: this.getHeaders() }).pipe(
-            map(comment => ({
-                ...comment,
-                creationDate: formatDate(comment.creationDate) 
-            }))
-        );
+        return this.http.post<CommentResponseDTO>(this.apiUrl, commentCreateDTO, { headers: this.getHeaders() });
     }
 }

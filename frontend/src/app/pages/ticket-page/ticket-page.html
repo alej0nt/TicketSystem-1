@@ -2,6 +2,7 @@
     <app-ticket-layout 
     *ngIf="ticketData" 
     [ticketObj]="ticketData"
+    (assign)="onAssign()"
     (reassign)="onReassign()"
     (resolve)="onResolve()"
     (close)="onClose()"

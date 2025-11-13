@@ -1,6 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AvatarComponent } from '../../atoms/avatar/avatar';
+import { formatDate } from '../../../utils/date.utils';
 
 @Component({
   selector: 'app-comment-item',
@@ -15,4 +16,8 @@ export class CommentItemComponent {
   @Input() date!: string;
   @Input() text!: string;
   @Input() color!: string;
+
+  get formattedDate(): string {
+    return formatDate(this.date);
+  }
 }

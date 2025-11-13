@@ -41,7 +41,7 @@ export class TicketPageComponent {
           next: ({ ticket, assignment }) => {
             this.ticketData = {
               ticket,
-              assignment: assignment ?{
+              assignment: assignment ? {
                 id: assignment.id,
                 agent: assignment.employee,
                 date: assignment.assignmentDate
@@ -65,6 +65,10 @@ export class TicketPageComponent {
     this.ticketService.updateTicketState(this.ticketData.ticket.id, newState).subscribe({
       next: (updatedTicket) => {
         this.ticketData.ticket.state = updatedTicket.state;
+
+        if (newState == 'CERRADO' || newState == 'RESUELTO') {
+          this.ticketData.ticket.closingDate = updatedTicket.closingDate;
+        }
         console.log('Ticket state updated:', updatedTicket);
       },
       error: (err) => {
@@ -73,13 +77,15 @@ export class TicketPageComponent {
     });
   }
 
+  onAssign() { /* lógica de asignar */ }
   onReassign() { /* lógica de reasignar */ }
-  onResolve() { 
+  onResolve() {
     this.updateTicketState('RESUELTO');
   }
-  onClose() { 
+  onClose() {
     this.updateTicketState('CERRADO');
-   }
+
+  }
   onDelete() {
     this.ticketService.deleteTicket(this.ticketData.ticket.id).subscribe({
       next: () => {
@@ -90,8 +96,8 @@ export class TicketPageComponent {
       }
     })
 
-  } 
-  onReopen() { 
-    this.updateTicketState('RESUELTO');
+  }
+  onReopen() {
+    this.updateTicketState('EN_PROGRESO');
   }
 }

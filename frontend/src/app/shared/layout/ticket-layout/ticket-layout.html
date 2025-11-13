@@ -29,6 +29,8 @@
         <div class="space-y-3">
           <!-- <div><app-button [text]="'Editar ticket'" [variant]="'actionBlue'" (buttonClick)="onEdit()">
           </app-button></div> -->
+          <div *ngIf="ticketObj.ticket.state == 'ABIERTO'"><app-button [text]="'Asignar'" [variant]="'actionPurple'" (buttonClick)="assign.emit()">
+          </app-button></div>
 
           <div *ngIf="ticketObj.ticket.state == 'EN_PROGRESO'"><app-button [text]="'Reasignar'" [variant]="'actionPurple'" (buttonClick)="reassign.emit()">
           </app-button></div>
@@ -39,7 +41,9 @@
           <div *ngIf="ticketObj.ticket.state == 'RESUELTO'"><app-button [text]="'Cerrar ticket'" [variant]="'actionGray'" (buttonClick)="close.emit()">
           </app-button></div>
 
-          <div *ngIf="ticketObj.ticket.state == 'RESUELTO' || ticketObj.ticket.state == 'CERRADO'"><app-button [text]="'Reanudar ticket'" [variant]="'actionGray'" (buttonClick)="reopen.emit()">
+          <div *ngIf="ticketObj.ticket.state == 'RESUELTO'"><app-button [text]="'Reabrir ticket'" [variant]="'actionBlue'" (buttonClick)="reopen.emit()">
+          </app-button></div>
+          <div *ngIf="ticketObj.ticket.state == 'CERRADO'"><app-button [text]="'Reabrir ticket'" [variant]="'actionGray'" (buttonClick)="resolve.emit()">
           </app-button></div>
 
           <div *ngIf="ticketObj.ticket.state == 'ABIERTO'" class="pt-3 border-t border-gray-200">

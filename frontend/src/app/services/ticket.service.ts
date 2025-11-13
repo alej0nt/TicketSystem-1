@@ -1,9 +1,8 @@
-import { HttpClient, HttpHeaders } from "@angular/common/http";
+import { HttpClient, HttpHeaders, HttpParams } from "@angular/common/http";
 import { environment } from "../../environments/environment";
 import { Injectable } from "@angular/core";
-import { map, Observable } from "rxjs";
+import { Observable } from "rxjs";
 import { CategoryResponseDTO } from "./category.service";
-import { formatDate } from "../utils/date.utils";
 
 export interface TicketResponseDTO {
     id: number;
@@ -24,6 +23,14 @@ export interface TicketCreateDTO {
     categoryId: number;
     priority: string;
 }
+
+export interface TicketRecordResponseDTO {
+    id: number;
+    previousState: string;
+    nextState: string;
+    changedDate: string;
+}
+
 @Injectable({
     providedIn: 'root'
 })
@@ -39,11 +46,7 @@ export class TicketService {
     }
 
     getTicket(ticketId: number): Observable<TicketResponseDTO> {
-        return this.http.get<TicketResponseDTO>(`${this.apiUrl}/${ticketId}`, { headers: this.getHeaders() }).pipe(
-                    map(ticket => ({
-                        ...ticket,
-                        creationDate: formatDate(ticket.creationDate) 
-                    })));
+        return this.http.get<TicketResponseDTO>(`${this.apiUrl}/${ticketId}`, { headers: this.getHeaders() });
     }
 
     getAllTickets(): Observable<TicketResponseDTO[]> {
@@ -60,5 +63,19 @@ export class TicketService {
     }
     deleteTicket(ticketId: number): Observable<void> {
         return this.http.delete<void>(`${this.apiUrl}/${ticketId}`, { headers: this.getHeaders() });
+    }
+
+    getTicketRecords(ticketId: number, from?: string, to?: string): Observable<TicketRecordResponseDTO[]> {
+        let params = new HttpParams();
+        if (from) {
+            params = params.set('from', from);
+        }
+        if (to) {
+            params = params.set('to', to);
+        }
+        return this.http.get<TicketRecordResponseDTO[]>(`${this.apiUrl}/${ticketId}/tickets-record`, {
+            headers: this.getHeaders(),
+            params
+        });
     }
 }

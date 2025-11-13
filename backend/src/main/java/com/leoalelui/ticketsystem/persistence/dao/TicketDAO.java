@@ -39,7 +39,16 @@ public class TicketDAO {
     public Optional<TicketResponseDTO> updateState(Long id, TicketUpdateStateDTO updateDTO) {
         return ticketRepository.findById(id)
                 .map(entity -> {
-                    entity.setState(updateDTO.getState());
+                    State previousState = entity.getState();
+                    State newState = updateDTO.getState();
+                    entity.setState(newState);
+
+                    if (newState == State.CERRADO) {
+                        entity.setClosingDate(LocalDateTime.now());
+                    } else if (previousState == State.CERRADO && newState == State.RESUELTO) {
+                        entity.setClosingDate(null);
+                    }
+
                     TicketEntity updated = ticketRepository.save(entity);
                     return ticketMapper.toResponseDTO(updated);
                 });

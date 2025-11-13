@@ -2,6 +2,7 @@ import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AvatarComponent } from '../../atoms/avatar/avatar';
 import { TicketData } from '../../../pages/ticket-page/ticket-page';
+import { formatDate } from '../../../utils/date.utils';
 
 type AvatarColor = 'blue' | 'green' | 'indigo' | 'purple' | 'orange' | 'pink' | 'teal';
 
@@ -16,4 +17,8 @@ export class TicketMetaInfoComponent {
   @Input() assignment!: TicketData['assignment'];
   @Input() createdAt!: string;
   @Input() closedAt!: string;
+
+  getFormattedDate(isoDate: string): string {
+    return formatDate(isoDate);
+  }
 }
