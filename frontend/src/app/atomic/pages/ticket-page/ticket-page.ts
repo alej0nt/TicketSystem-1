@@ -4,8 +4,9 @@ import { TicketResponseDTO, TicketService } from '../../../core/services/ticket.
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgIf } from '@angular/common';
 import { AssignmentService } from '../../../core/services/assignment.service';
-import { EmployeeResponseDTO } from '../../../core/services/employee.service';
+import { EmployeeResponseDTO, EmployeeService } from '../../../core/services/employee.service';
 import { forkJoin } from 'rxjs';
+import { AssignAgentModalComponent, Agent } from '../../organism/assign-agent-modal/assign-agent-modal';
 
 export interface TicketData {
   ticket: TicketResponseDTO,
@@ -15,18 +16,24 @@ export interface TicketData {
 @Component({
   selector: 'app-ticket-page',
   standalone: true,
-  imports: [TicketLayoutComponent, NgIf],
+  imports: [TicketLayoutComponent, NgIf, AssignAgentModalComponent],
   templateUrl: './ticket-page.html',
   styleUrl: './ticket-page.css'
 })
 export class TicketPageComponent {
   ticketData!: TicketData;
+  
+  // Modal state
+  isModalOpen: boolean = false;
+  modalMode: 'assign' | 'reassign' = 'assign';
+  availableAgents: Agent[] = [];
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private ticketService: TicketService,
-    private assignmentService: AssignmentService
+    private assignmentService: AssignmentService,
+    private employeeService: EmployeeService 
   ) { }
 
   ngOnInit() {
@@ -53,12 +60,26 @@ export class TicketPageComponent {
             console.error('Error loading ticket or assignment:', err);
           }
         });
-
       } else {
-        //this.router.navigate(['/not-found']);
         console.error('Invalid ticket ID');
       }
-    })
+    });
+  }
+
+  loadAvailableAgents() {
+    this.employeeService.getAgents().subscribe({
+      next: (agents) => {
+        this.availableAgents = agents.map(emp => ({
+          id: emp.id,
+          name: emp.name,
+          email: emp.email,
+          department: emp.department
+        }));
+      },
+      error: (err) => {
+        console.error('Error loading agents:', err);
+      }
+    });
   }
 
   private updateTicketState(newState: string) {
@@ -69,7 +90,6 @@ export class TicketPageComponent {
         if (newState == 'CERRADO' || newState == 'RESUELTO') {
           this.ticketData.ticket.closingDate = updatedTicket.closingDate;
         }
-        console.log('Ticket state updated:', updatedTicket);
       },
       error: (err) => {
         console.error('Error updating ticket state:', err);
@@ -77,26 +97,72 @@ export class TicketPageComponent {
     });
   }
 
-  onAssign() { /* lógica de asignar */ }
-  onReassign() { /* lógica de reasignar */ }
+  onAssign() {
+    this.modalMode = 'assign';
+    this.isModalOpen = true;
+    this.loadAvailableAgents();
+  }
+
+  onReassign() {
+    this.modalMode = 'reassign';
+    this.isModalOpen = true;
+    this.loadAvailableAgents();
+  }
+
+  onConfirmAgent(agentId: number) {
+    if (this.modalMode === 'assign') {
+      this.assignmentService.createAssignmentByTicketId(this.ticketData.ticket.id, agentId).subscribe({
+        next: (assignment) => {
+          this.ticketData.assignment = {
+            id: assignment.id,
+            agent: assignment.employee,
+            date: assignment.assignmentDate
+          };
+          this.ticketData.ticket.state = 'EN_PROGRESO';
+        },
+        error: (err) => {
+          console.error('Error asignando agente:', err);
+        }
+      });
+    } else {
+      this.assignmentService.reassignEmployee(this.ticketData.ticket.id, agentId).subscribe({
+        next: (assignment) => {
+          this.ticketData.assignment = {
+            id: assignment.id,
+            agent: assignment.employee,
+            date: assignment.assignmentDate
+          };
+        },
+        error: (err) => {
+          console.error('Error reasignando agente:', err);
+        }
+      });
+    }
+  }
+
+  closeModal() {
+    this.isModalOpen = false;
+  }
+
   onResolve() {
     this.updateTicketState('RESUELTO');
   }
+
   onClose() {
     this.updateTicketState('CERRADO');
-
   }
+
   onDelete() {
     this.ticketService.deleteTicket(this.ticketData.ticket.id).subscribe({
       next: () => {
         this.router.navigate(['/dashboard/user']);
       },
       error: (err) => {
-        console.log('Error deleting ticket ' + err)
+        console.log('Error deleting ticket ', err)
       }
     })
-
   }
+
   onReopen() {
     this.updateTicketState('EN_PROGRESO');
   }

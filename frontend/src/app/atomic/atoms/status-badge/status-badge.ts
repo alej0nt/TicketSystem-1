@@ -16,8 +16,18 @@ export class StatusBadgeComponent {
 
   private variants = {
     status: {
-      class: 'bg-yellow-100 text-yellow-700 border-yellow-300',
-    },
+  getClass: (text: string) => {
+    const map: Record<string, string> = {
+      'ABIERTO':     'bg-green-100 text-green-700 border-green-300',
+      'EN_PROGRESO': 'bg-blue-100 text-blue-700 border-blue-300',
+      'CERRADO':     'bg-red-100 text-red-700 border-red-300',
+      'RESUELTO':    'bg-indigo-100 text-indigo-700 border-indigo-300',
+    };
+
+    return map[text] || 'bg-gray-100 text-gray-700 border-gray-300'; // default
+  }
+},
+
     priority: {
       class: 'bg-orange-100 text-orange-700 border-orange-300',
     },
@@ -27,6 +37,18 @@ export class StatusBadgeComponent {
   };
 
   get style(): string {
-    return this.variants[this.variant].class + ' px-4 py-1.5 rounded-full text-sm font-semibold border';
+  if (this.variant === 'status') {
+    return (
+      this.variants.status.getClass(this.text) +
+      ' px-4 py-1.5 rounded-full text-sm font-semibold border'
+    );
   }
+
+  // prioridad y categoría quedan iguales
+  return (
+    this.variants[this.variant].class +
+    ' px-4 py-1.5 rounded-full text-sm font-semibold border'
+  );
+}
+
 }

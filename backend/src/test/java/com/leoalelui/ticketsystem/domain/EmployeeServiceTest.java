@@ -284,27 +284,27 @@ public class EmployeeServiceTest {
         );
 
         List<EmployeeResponseDTO> expectedList = List.of(responseDTO, employee2);
-        when(employeeDAO.findAll()).thenReturn(expectedList);
+        when(employeeDAO.findAll(Role.AGENT)).thenReturn(expectedList);
 
-        List<EmployeeResponseDTO> result = employeeService.getAllEmployees();
+        List<EmployeeResponseDTO> result = employeeService.getAllEmployees(Role.AGENT);
 
         assertThat(result).hasSize(2);
         assertThat(result).isEqualTo(expectedList);
         assertThat(result.get(0).getName()).isEqualTo("Juan Pérez");
         assertThat(result.get(1).getName()).isEqualTo("María López");
 
-        verify(employeeDAO, times(1)).findAll();
+        verify(employeeDAO, times(1)).findAll(Role.AGENT);
     }
 
     @Test
     @DisplayName("GET ALL - Debe retornar lista vacía cuando no hay empleados")
     void getAllEmployees_NoEmployees_ShouldReturnEmptyList() {
-        when(employeeDAO.findAll()).thenReturn(List.of());
+        when(employeeDAO.findAll(Role.AGENT)).thenReturn(List.of());
 
-        List<EmployeeResponseDTO> result = employeeService.getAllEmployees();
+        List<EmployeeResponseDTO> result = employeeService.getAllEmployees(Role.AGENT);
 
         assertThat(result).isEmpty();
-        verify(employeeDAO, times(1)).findAll();
+        verify(employeeDAO, times(1)).findAll(Role.AGENT);
     }
 
     // ==================== GET EMPLOYEE BY EMAIL TESTS ====================

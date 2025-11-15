@@ -6,6 +6,7 @@ import com.leoalelui.ticketsystem.domain.dto.response.EmployeeResponseDTO;
 import com.leoalelui.ticketsystem.domain.exception.ResourceNotFoundException;
 import com.leoalelui.ticketsystem.domain.service.EmployeeService;
 import com.leoalelui.ticketsystem.persistence.dao.EmployeeDAO;
+import com.leoalelui.ticketsystem.persistence.enums.Role;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -54,8 +55,8 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
-    public List<EmployeeResponseDTO> getAllEmployees() {
-        return employeeDAO.findAll();
+    public List<EmployeeResponseDTO> getAllEmployees(Role role) {
+        return employeeDAO.findAll(role);
     }
 
     @Override

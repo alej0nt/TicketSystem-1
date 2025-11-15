@@ -1,0 +1,59 @@
+<div class="bg-white/80 backdrop-blur-md rounded-3xl shadow-xl border border-white/60 overflow-hidden">
+  
+  <!-- Estado de Carga -->
+  <div *ngIf="isLoading" class="p-6 text-center">
+    <div class="inline-block">
+      <i class="fas fa-spinner fa-spin text-indigo-600 text-3xl"></i>
+      <p class="text-gray-600 mt-2">Cargando registros...</p>
+    </div>
+  </div>
+
+  <!-- Sin Registros -->
+  <div *ngIf="!isLoading && records.length === 0" class="p-6 text-center">
+    <i class="fas fa-inbox text-gray-400 text-4xl mb-3"></i>
+    <p class="text-gray-600">No hay registros disponibles para este rango de fechas</p>
+  </div>
+
+  <!-- Tabla -->
+  <div *ngIf="!isLoading && records.length > 0" class="overflow-x-auto">
+    <table class="w-full">
+      <thead>
+        <tr class="bg-gradient-to-r from-indigo-600 to-purple-600 text-white">
+          <th class="px-6 py-3 text-left text-sm font-semibold">ID</th>
+          <th class="px-6 py-3 text-left text-sm font-semibold">Estado Anterior</th>
+          <th class="px-6 py-3 text-left text-sm font-semibold">Nuevo Estado</th>
+          <th class="px-6 py-3 text-left text-sm font-semibold">Fecha de Cambio</th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-gray-200">
+        <tr *ngFor="let record of records; let i = index" 
+            class="hover:bg-gray-50 transition duration-150"
+            [ngClass]="{ 'bg-blue-50': i % 2 === 0 }">
+          <td class="px-6 py-4 text-sm font-medium text-gray-900">{{ record.id }}</td>
+          <td class="px-6 py-4 text-sm">
+            <app-status-badge 
+              [text]="record.previousState" 
+              variant="status"
+            ></app-status-badge>
+          </td>
+          <td class="px-6 py-4 text-sm">
+            <app-status-badge 
+              [text]="record.nextState" 
+              variant="status"
+            ></app-status-badge>
+          </td>
+          <td class="px-6 py-4 text-sm text-gray-700">
+            <i class="fas fa-calendar-alt text-indigo-600 mr-2"></i>
+            {{ getFormattedDate(record.changedDate) }}
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Pie de tabla -->
+  <div *ngIf="!isLoading && records.length > 0" class="px-6 py-3 bg-gray-50 border-t border-gray-200 text-sm text-gray-600">
+    <i class="fas fa-info-circle mr-2"></i>
+    Total de registros: <span class="font-semibold">{{ records.length }}</span>
+  </div>
+</div>

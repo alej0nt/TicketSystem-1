@@ -1,11 +1,15 @@
 <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 pt-6 border-t border-gray-200">
   <div>
-    <span class="text-sm text-gray-500 block mb-1">Asignado a</span>
+    <span class="text-sm text-gray-700 block mb-1">Asignado a</span>
     <div class="flex items-center gap-2" *ngIf="assignment else noAssignment">
       <app-avatar [initials]="assignment.agent.name" size="md" [color]="'indigo'"></app-avatar>
       <div>
         <div class="text-gray-800 font-semibold">{{ assignment.agent.name }}</div>
-        <div class="text-sm text-gray-500">{{ assignment.agent.department }}</div>
+        <div class="text-sm text-gray-600">{{ assignment.agent.department }}</div>
+        <div class="text-sm text-gray-500 mt-1">
+          <i class="fas fa-clock mr-1"></i>
+          Asignado: {{ getFormattedDate(assignment.date) || '-' }}
+        </div>
       </div>
     </div>
     <ng-template #noAssignment>
@@ -14,14 +18,14 @@
   </div>
 
   <div>
-    <span class="text-sm text-gray-500 block mb-2">Fechas</span>
+    <span class="text-sm text-gray-700 block mb-2">Fechas</span>
     <div class="space-y-1.5 text-base">
       <div class="flex items-center gap-2 text-gray-700">
         <i class="fas fa-calendar-plus text-green-500 w-4"></i>
         <span>Creado: {{ getFormattedDate(createdAt) || '-' }}</span>
       </div>
-      <div class="flex items-center gap-2 text-gray-500">
-        <i class="fas fa-calendar-check text-gray-400 w-4"></i>
+      <div class="flex items-center gap-2 text-gray-600">
+        <i class="fas fa-calendar-check text-gray-600 w-4"></i>
         <span>Cerrado: {{ getFormattedDate(closedAt) || 'No cerrado' }}</span>
       </div>
     </div>

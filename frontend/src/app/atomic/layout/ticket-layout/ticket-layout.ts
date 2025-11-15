@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, input, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
 import { TicketInfoComponent } from '../../organism/ticket-info/ticket-info';
 import { CommentsSectionComponent } from '../../organism/comments-section/comments-section';
 import { TextLinkComponent } from "../../atoms/text-link/text-link";
@@ -22,4 +23,10 @@ export class TicketLayoutComponent {
   @Output() close = new EventEmitter<void>();
   @Output() reopen = new EventEmitter<void>();
   @Output() delete = new EventEmitter<void>();
+
+  constructor(private router: Router) { }
+
+  viewRecords() {
+    this.router.navigate([`/ticket/${this.ticketObj.ticket.id}/record`]);
+  }
 }

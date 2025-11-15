@@ -1,0 +1,6 @@
+/* Estilos específicos para el componente de filtro */
+@media (max-width: 768px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+}

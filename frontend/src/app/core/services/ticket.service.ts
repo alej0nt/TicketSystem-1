@@ -65,7 +65,7 @@ export class TicketService {
         return this.http.delete<void>(`${this.apiUrl}/${ticketId}`, { headers: this.getHeaders() });
     }
 
-    getTicketRecords(ticketId: number, from?: string, to?: string): Observable<TicketRecordResponseDTO[]> {
+    getAllTicketRecordsByTicketId(ticketId: number, from?: string, to?: string): Observable<TicketRecordResponseDTO[]> {
         let params = new HttpParams();
         if (from) {
             params = params.set('from', from);

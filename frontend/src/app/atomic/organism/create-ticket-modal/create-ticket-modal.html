@@ -31,6 +31,7 @@
             Título del Ticket <span class="text-red-500">*</span>
           </label>
           <input-atom
+          [forceLight]="true"
             name="title"
             [value]="title()"
             (valueChange)="title.set($event)"

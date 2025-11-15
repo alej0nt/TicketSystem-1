@@ -9,4 +9,14 @@
     (reopen)="onReopen()"
     (delete)="onDelete()">
 </app-ticket-layout>
+
+<app-assign-agent-modal
+    *ngIf="ticketData"
+    [isOpen]="isModalOpen"
+    [mode]="modalMode"
+    [agents]="availableAgents"
+    [currentAgentId]="ticketData.assignment?.agent?.id"
+    (close)="closeModal()"
+    (confirm)="onConfirmAgent($event)"
+  ></app-assign-agent-modal>
 </div>

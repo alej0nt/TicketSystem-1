@@ -5,8 +5,8 @@ import { UserDashboardPageComponent } from './atomic/pages/user-dashboard-page/u
 import { AdminDashboardPageComponent } from './atomic/pages/admin-dashboard-page/admin-dashboard-page';
 import { AgentDashboardPageComponent } from './atomic/pages/agent-dashboard-page/agent-dashboard-page';
 import { AgentTicketPageComponent } from './atomic/pages/agent-ticket-page/agent-ticket-page';
-
 import { ProfilePageComponent } from './atomic/pages/profile-page/profile-page';
+import { TicketRecordPageComponent } from './atomic/pages/ticket-record-page/ticket-record-page';
 
 export const routes: Routes = [
   {
@@ -40,6 +40,10 @@ export const routes: Routes = [
   {
     path: 'ticket/:id',
     component: TicketPageComponent,
+  },
+  {
+    path: 'ticket/:ticketId/record',
+    component: TicketRecordPageComponent,
   },
   {
     path: '',

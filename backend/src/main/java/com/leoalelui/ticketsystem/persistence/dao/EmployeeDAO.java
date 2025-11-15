@@ -57,9 +57,13 @@ public class EmployeeDAO {
     }
 
     // Listar todos
-    public List<EmployeeResponseDTO> findAll() {
-        return employeeRepository.findAll()
-                .stream()
+    public List<EmployeeResponseDTO> findAll(Role role) {
+        if (role == null || role.getDisplayName().isEmpty()) {
+            return employeeRepository.findAll().stream()
+                    .map(employeeMapper::toResponseDTO)
+                    .toList();
+        }
+        return employeeRepository.findByRole(role).stream()
                 .map(employeeMapper::toResponseDTO)
                 .toList();
     }

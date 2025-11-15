@@ -4,7 +4,10 @@ import com.leoalelui.ticketsystem.domain.dto.request.EmployeeCreateDTO;
 import com.leoalelui.ticketsystem.domain.dto.request.EmployeeUpdateDTO;
 import com.leoalelui.ticketsystem.domain.dto.response.EmployeeResponseDTO;
 import com.leoalelui.ticketsystem.domain.service.EmployeeService;
+import com.leoalelui.ticketsystem.persistence.enums.Role;
+
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -84,16 +87,16 @@ public class EmployeeController {
         return ResponseEntity.ok(employeeFound); // 200 OK
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary = "Listar todos los empleados", description = "Obtiene una lista con todos los empleados registrados en el sistema.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Lista obtenida exitosamente (puede estar vacía)."),
             @ApiResponse(responseCode = "400", description = "Parámetros de consulta inválidos."),
             @ApiResponse(responseCode = "500", description = "Error interno del servidor.")
     })
-    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping
-    public ResponseEntity<List<EmployeeResponseDTO>> getAllEmployees() {
-        List<EmployeeResponseDTO> employees = employeeService.getAllEmployees();
+    public ResponseEntity<List<EmployeeResponseDTO>> getAllEmployees(@RequestParam(value="role", required = false) @Parameter(description = "Parámetro de filtro por rol") Role role) {
+        List<EmployeeResponseDTO> employees = employeeService.getAllEmployees(role);
         return ResponseEntity.ok(employees); // 200 OK
     }
 

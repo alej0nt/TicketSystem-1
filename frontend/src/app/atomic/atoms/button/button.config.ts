@@ -18,21 +18,25 @@ export const BUTTON_STYLES = {
   variants: {
     solid: {
       blue: 'text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800',
-      purple: 'focus:outline-none text-white bg-purple-700 hover:bg-purple-800 focus:ring-4 focus:ring-purple-300 dark:bg-purple-600 dark:hover:bg-purple-700 dark:focus:ring-purple-900'
+      purple: 'focus:outline-none text-white bg-purple-700 hover:bg-purple-800 focus:ring-4 focus:ring-purple-300 dark:bg-purple-600 dark:hover:bg-purple-700 dark:focus:ring-purple-900',
+      red: 'focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900'
     },
     outline: {
       blue: '',
-      purple: ''
+      purple: '',
+      red: ''
     },
     gradient: {
       blue: '',
-      purple: ''
+      purple: '',
+      red: ''
     }
   },
   
   shadows: {
     blue: 'shadow-lg shadow-blue-500/50 dark:shadow-lg dark:shadow-blue-800/80',
-    purple: ''
+    purple: '',
+    red: ''
   },
   
   effects: {
