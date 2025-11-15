@@ -33,7 +33,7 @@ export class TicketPageComponent {
     private router: Router,
     private ticketService: TicketService,
     private assignmentService: AssignmentService,
-    private employeeService: EmployeeService // Asumiendo que tienes este servicio
+    private employeeService: EmployeeService 
   ) { }
 
   ngOnInit() {
@@ -65,12 +65,10 @@ export class TicketPageComponent {
       }
     });
 
-    // Cargar agentes disponibles
     this.loadAvailableAgents();
   }
 
   loadAvailableAgents() {
-    // Asumiendo que tienes un servicio para obtener empleados/agentes
     this.employeeService.getAgents().subscribe({
       next: (agents) => {
         this.availableAgents = agents.map(emp => ({
@@ -114,7 +112,6 @@ export class TicketPageComponent {
 
   onConfirmAgent(agentId: number) {
     if (this.modalMode === 'assign') {
-      // Lógica para asignar
       this.assignmentService.createAssignmentByTicketId(this.ticketData.ticket.id, agentId).subscribe({
         next: (assignment) => {
           this.ticketData.assignment = {
@@ -122,6 +119,7 @@ export class TicketPageComponent {
             agent: assignment.employee,
             date: assignment.assignmentDate
           };
+          this.ticketData.ticket.state = 'EN_PROGRESO';
           console.log('Agente asignado:', assignment);
         },
         error: (err) => {
@@ -129,7 +127,6 @@ export class TicketPageComponent {
         }
       });
     } else {
-      // Lógica para reasignar
       this.assignmentService.reassignEmployee(this.ticketData.ticket.id, agentId).subscribe({
         next: (assignment) => {
           this.ticketData.assignment = {
