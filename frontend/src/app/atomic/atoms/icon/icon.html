@@ -1,0 +1,13 @@
+<ng-container *ngIf="name; else customSvg">
+  <i-lucide
+    [name]="name"
+    [ngClass]="size + ' ' + extraClass"
+  ></i-lucide>
+</ng-container>
+<ng-template #customSvg>
+  <span
+    [innerHTML]="svg"
+    [ngClass]="size + ' ' + extraClass"
+    aria-hidden="true"
+  ></span>
+</ng-template>

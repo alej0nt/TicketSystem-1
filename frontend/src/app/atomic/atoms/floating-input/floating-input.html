@@ -1,0 +1,22 @@
+<div class="relative z-0 w-full mb-5 group">
+  <input
+    [id]="id"
+    [name]="name"
+    [type]="type"
+    [value]="value"
+    [class]="inputClass"
+    [placeholder]="placeholder"
+    [required]="required"
+    [disabled]="disabled"
+    [readonly]="readonly"
+    (input)="onInput($event)"
+    (focus)="onFocus($event)"
+    (blur)="onBlur($event)"
+  />
+  <label
+    [for]="id"
+    [class]="labelClass"
+  >
+    {{ label }}
+  </label>
+</div>

@@ -1,0 +1,46 @@
+<div [ngClass]="containerClass">
+  <!-- Icono izquierdo -->
+  <div *ngIf="iconLeft || iconLeftSvg" class="absolute inset-y-0 start-0 flex items-center ps-3.5 pointer-events-none">
+    <icon-atom 
+      *ngIf="iconLeft" 
+      [name]="iconLeft" 
+      [size]="iconSize" 
+      extraClass="text-gray-500 dark:text-gray-400"
+    ></icon-atom>
+    <span 
+      *ngIf="!iconLeft && iconLeftSvg" 
+      [innerHTML]="iconLeftSvg" 
+      [ngClass]="iconSize + ' text-gray-500 dark:text-gray-400'"
+      aria-hidden="true"
+    ></span>
+  </div>
+
+  <!-- Input principal -->
+  <input
+    [id]="id"
+    [type]="type"
+    [placeholder]="placeholder"
+    [value]="value"
+    [class]="inputClass"
+    [disabled]="disabled"
+    [readonly]="readonly"
+    [required]="required"
+    (input)="onInput($event)"
+  />
+
+  <!-- Icono derecho -->
+  <div *ngIf="iconRight || iconRightSvg" class="absolute inset-y-0 end-0 flex items-center pe-3.5 pointer-events-none">
+    <icon-atom 
+      *ngIf="iconRight" 
+      [name]="iconRight" 
+      [size]="iconSize" 
+      extraClass="text-gray-500 dark:text-gray-400"
+    ></icon-atom>
+    <span 
+      *ngIf="!iconRight && iconRightSvg" 
+      [innerHTML]="iconRightSvg" 
+      [ngClass]="iconSize + ' text-gray-500 dark:text-gray-400'"
+      aria-hidden="true"
+    ></span>
+  </div>
+</div>

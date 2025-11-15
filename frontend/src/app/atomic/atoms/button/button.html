@@ -1,0 +1,12 @@
+<button
+  [type]="type"
+  [class]="buttonClass"
+  [disabled]="disabled"
+  (click)="onButtonClick($event)"
+>
+  <!-- Contenido proyectado tiene prioridad -->
+  <ng-content></ng-content>
+  
+  <!-- Texto por defecto si no hay contenido proyectado -->
+  <span>{{ text }}</span>
+</button>
