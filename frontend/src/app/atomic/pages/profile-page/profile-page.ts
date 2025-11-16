@@ -22,12 +22,9 @@ export class ProfilePageComponent implements OnInit {
     department: ''
   };
 
-  name = signal('');
-  email = signal('');
-  department = signal('');
-  currentPassword = signal('');
-  newPassword = signal('');
-  confirmPassword = signal('');
+  nameValue = '';
+  emailValue = '';
+  departmentValue = '';
 
   isEditing = false;
   isLoading = false;
@@ -53,9 +50,9 @@ export class ProfilePageComponent implements OnInit {
         role: employee.role,
         department: employee.department
       };
-      this.name.set(employee.name);
-      this.email.set(employee.email);
-      this.department.set(employee.department);
+      this.nameValue = employee.name;
+      this.emailValue = employee.email;
+      this.departmentValue = employee.department;
     }
   }
 
@@ -66,42 +63,32 @@ export class ProfilePageComponent implements OnInit {
     if (!this.isEditing) {
       // Reset values if canceling
       this.loadUserInfo();
-      this.currentPassword.set('');
-      this.newPassword.set('');
-      this.confirmPassword.set('');
     }
   }
 
   handleSave(): void {
-    this.errorMessage = '';
-    this.successMessage = '';
+    if (!this.nameValue.trim() || !this.emailValue.trim() || !this.departmentValue.trim()) {
+      this.errorMessage = 'Por favor completa todos los campos';
+      return;
+    }
 
-    // Validate passwords if changing
-    if (this.newPassword()) {
-      if (this.newPassword() !== this.confirmPassword()) {
-        this.errorMessage = 'Las contraseñas no coinciden';
-        return;
-      }
-      if (this.newPassword().length < 6) {
-        this.errorMessage = 'La contraseña debe tener al menos 6 caracteres';
-        return;
-      }
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(this.emailValue)) {
+      this.errorMessage = 'Por favor ingresa un email válido';
+      return;
     }
 
     this.isLoading = true;
 
-    const updateData: Partial<EmployeeResponseDTO> = {
-      name: this.name(),
-      email: this.email(),
-      department: this.department()
-    };
-
-    // Note: Password update would need a separate endpoint in real implementation
-    // For now, we'll just update the basic info
-
-    this.employeeService.updateEmployee(this.employeeId, updateData).subscribe({
+    const { nameValue, emailValue, departmentValue } = this;
+    this.employeeService.updateEmployee(this.employeeId, { 
+      name: nameValue, 
+      email: emailValue,
+      role: this.userInfo.role,
+      department: departmentValue 
+    }).subscribe({
       next: (updatedEmployee) => {
-        // Update localStorage
+        console.log('✓ SUCCESS:', updatedEmployee);
         localStorage.setItem('employeeData', JSON.stringify(updatedEmployee));
         this.userInfo = {
           name: updatedEmployee.name,
@@ -109,15 +96,16 @@ export class ProfilePageComponent implements OnInit {
           role: updatedEmployee.role,
           department: updatedEmployee.department
         };
+        this.nameValue = updatedEmployee.name;
+        this.emailValue = updatedEmployee.email;
+        this.departmentValue = updatedEmployee.department;
         this.successMessage = 'Perfil actualizado exitosamente';
         this.isEditing = false;
         this.isLoading = false;
-        this.currentPassword.set('');
-        this.newPassword.set('');
-        this.confirmPassword.set('');
       },
       error: (error) => {
-        console.error('Error updating profile:', error);
+        console.log('✗ ERROR:', error.status, error.message);
+        console.log('Error details:', error);
         this.errorMessage = 'Error al actualizar el perfil. Por favor intenta de nuevo.';
         this.isLoading = false;
       }

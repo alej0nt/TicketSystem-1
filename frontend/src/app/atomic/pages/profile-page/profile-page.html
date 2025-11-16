@@ -7,18 +7,18 @@
         <p class="text-gray-600">Gestiona tu información personal</p>
       </div>
       <button-atom
-        (click)="goToDashboard()"
+        text="← Volver al Dashboard"
+        (buttonClick)="goToDashboard()"
         variant="outline"
         [extraClass]="'px-4 py-2 text-gray-600 hover:text-gray-800 transition-colors flex items-center gap-2'"
-      >
-        <i class="fas fa-arrow-left"></i>
-        <span>Volver al Dashboard</span>
-      </button-atom>
+      ></button-atom>
     </div>
 
     <!-- Success Message -->
     @if(successMessage) {
-    <div class="mb-6 p-4 bg-green-100 border border-green-400 text-green-700 rounded-lg flex items-center">
+    <div
+      class="mb-6 p-4 bg-green-100 border border-green-400 text-green-700 rounded-lg flex items-center"
+    >
       <i class="fas fa-check-circle mr-2"></i>
       {{ successMessage }}
     </div>
@@ -26,7 +26,9 @@
 
     <!-- Error Message -->
     @if(errorMessage) {
-    <div class="mb-6 p-4 bg-red-100 border border-red-400 text-red-700 rounded-lg flex items-center">
+    <div
+      class="mb-6 p-4 bg-red-100 border border-red-400 text-red-700 rounded-lg flex items-center"
+    >
       <i class="fas fa-exclamation-circle mr-2"></i>
       {{ errorMessage }}
     </div>
@@ -37,8 +39,11 @@
       <!-- Header Section -->
       <div class="bg-gradient-to-r from-[#8b9d8e] to-[#7a8d7d] p-8">
         <div class="flex items-center gap-6">
-          <div class="w-24 h-24 bg-white rounded-full flex items-center justify-center text-[#8b9d8e] text-3xl font-bold shadow-lg">
-            {{ userInfo.name.split(' ')[0]?.charAt(0) || '?' }}{{ userInfo.name.split(' ')[1]?.charAt(0) || '' }}
+          <div
+            class="w-24 h-24 bg-white rounded-full flex items-center justify-center text-[#8b9d8e] text-3xl font-bold shadow-lg"
+          >
+            {{ userInfo.name.split(' ')[0]?.charAt(0) || '?'
+            }}{{ userInfo.name.split(' ')[1]?.charAt(0) || '' }}
           </div>
           <div class="text-white">
             <h3 class="text-2xl font-bold">{{ userInfo.name }}</h3>
@@ -54,13 +59,11 @@
           <h4 class="text-xl font-bold text-gray-800">Información Personal</h4>
           @if(!isEditing) {
           <button-atom
-            (click)="toggleEdit()"
+            text="✎ Editar"
+            (buttonClick)="toggleEdit()"
             variant="outline"
             [extraClass]="'px-4 py-2 bg-[#8b9d8e] text-white rounded-lg hover:bg-[#7a8d7d] transition-colors flex items-center gap-2'"
-          >
-            <i class="fas fa-edit"></i>
-            Editar
-          </button-atom>
+          ></button-atom>
           }
         </div>
 
@@ -69,9 +72,9 @@
           <div>
             <label class="block text-sm font-semibold text-gray-700 mb-2">Nombre Completo</label>
             <input-atom
-              name="name"
-              [value]="name()"
-              (valueChange)="name.set($event)"
+              type="text"
+              [value]="nameValue"
+              (valueChange)="nameValue = $event"
               [disabled]="!isEditing"
               [extraClass]="'w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#8b9d8e] focus:border-transparent outline-none transition-all disabled:bg-gray-100 disabled:cursor-not-allowed'"
             ></input-atom>
@@ -82,9 +85,8 @@
             <label class="block text-sm font-semibold text-gray-700 mb-2">Correo Electrónico</label>
             <input-atom
               type="email"
-              name="email"
-              [value]="email()"
-              (valueChange)="email.set($event)"
+              [value]="emailValue"
+              (valueChange)="emailValue = $event"
               [disabled]="!isEditing"
               [extraClass]="'w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#8b9d8e] focus:border-transparent outline-none transition-all disabled:bg-gray-100 disabled:cursor-not-allowed'"
             ></input-atom>
@@ -94,9 +96,9 @@
           <div>
             <label class="block text-sm font-semibold text-gray-700 mb-2">Departamento</label>
             <input-atom
-              name="department"
-              [value]="department()"
-              (valueChange)="department.set($event)"
+              type="text"
+              [value]="departmentValue"
+              (valueChange)="departmentValue = $event"
               [disabled]="!isEditing"
               [extraClass]="'w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#8b9d8e] focus:border-transparent outline-none transition-all disabled:bg-gray-100 disabled:cursor-not-allowed'"
             ></input-atom>
@@ -105,84 +107,50 @@
           <!-- Role (Read-only) -->
           <div>
             <label class="block text-sm font-semibold text-gray-700 mb-2">Rol</label>
-            <input-atom
+            <input
+              type="text"
               [value]="userInfo.role"
-              [readonly]="true"
-              [disabled]="true"
-              [extraClass]="'w-full px-4 py-3 border border-gray-300 rounded-lg bg-gray-100 cursor-not-allowed text-gray-600'"
-            ></input-atom>
+              disabled
+              class="w-full px-4 py-3 border border-gray-300 rounded-lg bg-gray-100 cursor-not-allowed text-gray-600"
+            />
             <p class="text-xs text-gray-500 mt-1">El rol no puede ser modificado</p>
           </div>
-
-          <!-- Password Section (only when editing) -->
-          @if(isEditing) {
-          <div class="border-t pt-6 mt-6">
-            <h5 class="text-lg font-bold text-gray-800 mb-4">Cambiar Contraseña (Opcional)</h5>
-            
-            <div class="space-y-4">
-              <div>
-                <label class="block text-sm font-semibold text-gray-700 mb-2">Contraseña Actual</label>
-                <input-atom
-                  type="password"
-                  name="currentPassword"
-                  [value]="currentPassword()"
-                  (valueChange)="currentPassword.set($event)"
-                  [extraClass]="'w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#8b9d8e] focus:border-transparent outline-none transition-all'"
-                ></input-atom>
-              </div>
-
-              <div>
-                <label class="block text-sm font-semibold text-gray-700 mb-2">Nueva Contraseña</label>
-                <input-atom
-                  type="password"
-                  name="newPassword"
-                  [value]="newPassword()"
-                  (valueChange)="newPassword.set($event)"
-                  [extraClass]="'w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#8b9d8e] focus:border-transparent outline-none transition-all'"
-                ></input-atom>
-              </div>
-
-              <div>
-                <label class="block text-sm font-semibold text-gray-700 mb-2">Confirmar Nueva Contraseña</label>
-                <input-atom
-                  type="password"
-                  name="confirmPassword"
-                  [value]="confirmPassword()"
-                  (valueChange)="confirmPassword.set($event)"
-                  [extraClass]="'w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#8b9d8e] focus:border-transparent outline-none transition-all'"
-                ></input-atom>
-              </div>
-            </div>
-          </div>
-          }
 
           <!-- Action Buttons (only when editing) -->
           @if(isEditing) {
           <div class="flex gap-4 pt-6">
             <button-atom
+              text="Cancelar"
               type="button"
               variant="outline"
-              (click)="toggleEdit()"
+              (buttonClick)="toggleEdit()"
               [disabled]="isLoading"
-              [extraClass]="'flex-1 px-6 py-3 border-2 border-gray-300 text-gray-700 rounded-lg font-semibold hover:bg-gray-50 transition-all'"
-            >
-              Cancelar
-            </button-atom>
+              [extraClass]="
+                'flex-1 px-6 py-3 border-2 border-gray-300 text-gray-700 rounded-lg font-semibold hover:bg-gray-50 transition-all'
+              "
+            ></button-atom>
+            @if(isLoading) {
             <button-atom
+              text="Guardando..."
               type="submit"
               variant="outline"
               [disabled]="isLoading"
-              [extraClass]="'flex-1 px-6 py-3 bg-gradient-to-r from-[#8b9d8e] to-[#7a8d7d] text-white rounded-lg font-semibold hover:shadow-lg transition-all disabled:opacity-50'"
-            >
-              @if(!isLoading) {
-                <span>Guardar Cambios</span>
-              } @else {
-                <span>
-                  <i class="fas fa-spinner fa-spin mr-2"></i>
-                  Guardando...
-                </span>
-              }
-            </button-atom>
+              [extraClass]="
+                'flex-1 px-6 py-3 bg-gradient-to-r from-[#8b9d8e] to-[#7a8d7d] text-white rounded-lg font-semibold hover:shadow-lg transition-all disabled:opacity-50'
+              "
+            ></button-atom>
+            }
+            @if(!isLoading) {
+            <button-atom
+              text="Guardar Cambios"
+              type="submit"
+              variant="outline"
+              [disabled]="isLoading"
+              [extraClass]="
+                'flex-1 px-6 py-3 bg-gradient-to-r from-[#8b9d8e] to-[#7a8d7d] text-white rounded-lg font-semibold hover:shadow-lg transition-all disabled:opacity-50'
+              "
+            ></button-atom>
+            }
           </div>
           }
         </form>

@@ -21,13 +21,14 @@ export class ButtonComponent {
   @Input() disabled = false;
   @Input() extraClass = '';
 
-  @Output() readonly click = new EventEmitter<Event>();
+  @Output() buttonClick = new EventEmitter<void>();
 
   private readonly styles = BUTTON_STYLES;
 
   onButtonClick(event: Event): void {
+    console.log('Button clicked, disabled:', this.disabled);
     if (!this.disabled) {
-      this.click.emit(event);
+      this.buttonClick.emit();
     }
   }
 
