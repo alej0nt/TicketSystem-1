@@ -1,0 +1,111 @@
+version: '3.8'
+
+services:
+
+  # ==========================================
+  # BASE DE DATOS MYSQL
+  # ==========================================
+  db:
+    image: mysql:8.0
+    container_name: ticket-system-db
+
+    environment:
+      MYSQL_ROOT_PASSWORD: 123
+      MYSQL_DATABASE: ticket_system
+      MYSQL_USER: ticketuser
+      MYSQL_PASSWORD: ticketpass
+
+    ports:
+      - "3306:3306"
+
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./docs/Diseño de bases de datos/ticket_system_creationdb.sql:/docker-entrypoint-initdb.d/init.sql
+
+    networks:
+      - ticket-network
+
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p123"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+    restart: unless-stopped
+
+  # ==========================================
+  # BACKEND SPRING BOOT
+  # ==========================================
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+
+    container_name: ticket-system-backend
+
+    ports:
+      - "8080:8080"
+
+    environment:
+      # URL de Conexión a MySQL
+      DATABASE_URL: "jdbc:mysql://db:3306/ticket_system?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC"
+      DATABASE_USER: ticketuser
+      DATABASE_PASSWORD: ticketpass
+
+      # Configuración de JPA
+      DDL_AUTO: update
+      SHOW_SQL: "true"
+      SPRING_JPA_DATABASE_PLATFORM: org.hibernate.dialect.MySQLDialect
+
+      JAVA_OPTS: "-Xms256m -Xmx512m"
+
+    depends_on:
+      db:
+        condition: service_healthy
+
+    networks:
+      - ticket-network
+
+    restart: unless-stopped
+
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:8080/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # ==========================================
+  # FRONTEND ANGULAR
+  # ==========================================
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+
+    container_name: ticket-system-frontend
+
+    ports:
+      - "4200:80"
+
+    depends_on:
+      backend:
+        condition: service_healthy
+
+    networks:
+      - ticket-network
+
+    restart: unless-stopped
+
+# ==========================================
+# REDES Y VOLÚMENES
+# ==========================================
+networks:
+  ticket-network:
+    driver: bridge
+    name: ticket-system-network
+
+volumes:
+  mysql_data:
+    name: ticket-system-mysql-data
