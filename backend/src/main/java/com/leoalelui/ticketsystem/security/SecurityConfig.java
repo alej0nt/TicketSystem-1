@@ -54,7 +54,7 @@ public class SecurityConfig {
                 // Configure the UserDetailsService so Spring registers a suitable AuthenticationProvider internally
                 .userDetailsService(customUserDetailsService)
                 .authorizeHttpRequests(a
-                        -> a.requestMatchers("/api/v1/auth/**",
+                        -> a.requestMatchers("/api/hello","/api/v1/auth/**",
                         // Permisos para Swagger/OpenAPI
                         "/swagger-ui/**",
                         "/v3/api-docs/**",

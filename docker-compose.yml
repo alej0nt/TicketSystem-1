@@ -12,8 +12,6 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: 123
       MYSQL_DATABASE: ticket_system
-      MYSQL_USER: ticketuser
-      MYSQL_PASSWORD: ticketpass
 
     ports:
       - "3306:3306"
@@ -44,16 +42,15 @@ services:
 
     container_name: ticket-system-backend
 
-    ports:
-      - "8080:8080"
-
     environment:
-      # URL de Conexión a MySQL
-      DATABASE_URL: "jdbc:mysql://db:3306/ticket_system?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC"
-      DATABASE_USER: ticketuser
-      DATABASE_PASSWORD: ticketpass
+      SPRING_PROFILES_ACTIVE: prod
 
-      # Configuración de JPA
+      # >>> VARIABLES EXACTAS QUE ESPERA application-prod.properties <<<
+      DATABASE_URL: "jdbc:mysql://db:3306/ticket_system?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC"
+      DATABASE_USER: root
+      DATABASE_PASSWORD: 123
+
+      # >>> JPA / HIBERNATE <<<
       DDL_AUTO: update
       SHOW_SQL: "true"
       SPRING_JPA_DATABASE_PLATFORM: org.hibernate.dialect.MySQLDialect
@@ -64,13 +61,16 @@ services:
       db:
         condition: service_healthy
 
+    ports:
+      - "8080:8080"
+
     networks:
       - ticket-network
 
     restart: unless-stopped
 
     healthcheck:
-      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:8080/api/health"]
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:8080/api/hello"]
       interval: 30s
       timeout: 10s
       retries: 3
