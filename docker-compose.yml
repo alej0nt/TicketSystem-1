@@ -43,7 +43,7 @@ services:
     container_name: ticket-system-backend
 
     environment:
-      SPRING_PROFILES_ACTIVE: prod
+      SPRING_PROFILES_ACTIVE: dev
 
       # >>> VARIABLES EXACTAS QUE ESPERA application-prod.properties <<<
       DATABASE_URL: "jdbc:mysql://db:3306/ticket_system?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC"
