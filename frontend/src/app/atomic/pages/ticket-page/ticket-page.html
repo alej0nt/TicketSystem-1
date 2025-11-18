@@ -1,5 +1,5 @@
 <div class="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 py-8">
-    <app-ticket-layout 
+  <app-ticket-layout 
     *ngIf="ticketData" 
     [ticketObj]="ticketData"
     (assign)="onAssign()"
@@ -8,9 +8,16 @@
     (close)="onClose()"
     (reopen)="onReopen()"
     (delete)="onDelete()">
-</app-ticket-layout>
+  </app-ticket-layout>
 
-<app-assign-agent-modal
+  <div *ngIf="!ticketData" class="flex items-center justify-center min-h-screen">
+    <div class="text-center">
+      <i class="fas fa-spinner fa-spin text-4xl text-indigo-600 mb-4"></i>
+      <p class="text-gray-600 text-lg">Cargando ticket...</p>
+    </div>
+  </div>
+
+  <app-assign-agent-modal
     *ngIf="ticketData"
     [isOpen]="isModalOpen"
     [mode]="modalMode"

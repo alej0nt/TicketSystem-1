@@ -81,7 +81,7 @@ export class UserDashboardPageComponent implements OnInit {
     } else {
       const stateMap = {
         'open': 'ABIERTO',
-        'in_progress': 'EN_PROCESO',
+        'in_progress': 'EN_PROGRESO',
         'resolved': 'RESUELTO',
         'closed': 'CERRADO'
       };
@@ -95,7 +95,7 @@ export class UserDashboardPageComponent implements OnInit {
     }
     const stateMap = {
       'open': 'ABIERTO',
-      'in_progress': 'EN_PROCESO',
+      'in_progress': 'EN_PROGRESO',
       'resolved': 'RESUELTO',
       'closed': 'CERRADO'
     };

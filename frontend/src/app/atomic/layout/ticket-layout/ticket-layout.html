@@ -30,49 +30,55 @@
           <!-- <div><app-button [text]="'Editar ticket'" [variant]="'actionBlue'" (buttonClick)="onEdit()">
   </app-button></div> -->
 
-          <div *ngIf="ticketObj.ticket.state === 'ABIERTO'">
+          <!-- Asignar (solo ADMIN, solo si ABIERTO) -->
+          <div *ngIf="ticketObj.ticket.state === 'ABIERTO' && isAdmin()">
             <button-atom [type]="'button'" [color]="'blue'" [variant]="'solid'" [size]="'md'" (click)="assign.emit()" [extraClass]="'w-full'">
               <i class="fas fa-user-plus mr-2"></i>
               Asignar
             </button-atom>
           </div>
 
-          <div *ngIf="ticketObj.ticket.state === 'EN_PROGRESO'">
+          <!-- Reasignar (solo ADMIN, solo si EN_PROGRESO) -->
+          <div *ngIf="ticketObj.ticket.state === 'EN_PROGRESO' && isAdmin()">
             <button-atom [type]="'button'" [color]="'blue'" [variant]="'solid'" [size]="'md'" (click)="reassign.emit()" [extraClass]="'w-full'">
               <i class="fas fa-user-edit mr-2"></i>
               Reasignar
             </button-atom>
           </div>
 
-          <div *ngIf="ticketObj.ticket.state === 'EN_PROGRESO'">
+          <!-- Marcar como resuelto (ADMIN o AGENT, solo si EN_PROGRESO) -->
+          <div *ngIf="ticketObj.ticket.state === 'EN_PROGRESO' && isAdminOrAgent()">
             <button-atom [type]="'button'" [color]="'purple'" [variant]="'solid'" [size]="'md'" (click)="resolve.emit()" [extraClass]="'w-full'">
               <i class="fas fa-check-circle mr-2"></i>
               Marcar como resuelto
             </button-atom>
           </div>
 
-          <div *ngIf="ticketObj.ticket.state === 'RESUELTO'">
+          <!-- Cerrar ticket (ADMIN o AGENT, solo si RESUELTO) -->
+          <div *ngIf="ticketObj.ticket.state === 'RESUELTO' && isAdmin()">
             <button-atom [type]="'button'" [color]="'blue'" [variant]="'solid'" [size]="'md'" (click)="close.emit()" [extraClass]="'w-full'">
               <i class="fas fa-lock mr-2"></i>
               Cerrar ticket
             </button-atom>
           </div>
 
-          <div *ngIf="ticketObj.ticket.state === 'RESUELTO' || ticketObj.ticket.state === 'CERRADO'">
+          <!-- Reabrir ticket (ADMIN, si RESUELTO o CERRADO) -->
+          <div *ngIf="(ticketObj.ticket.state === 'RESUELTO' || ticketObj.ticket.state === 'CERRADO') && isAdmin()">
             <button-atom [type]="'button'" [color]="'purple'" [variant]="'solid'" [size]="'md'" (click)="reopen.emit()" [extraClass]="'w-full'">
               <i class="fas fa-redo mr-2"></i>
               Reabrir ticket
             </button-atom>
           </div>
 
-          <div *ngIf="ticketObj.ticket.state === 'ABIERTO'" class="pt-3 border-t border-gray-200">
+          <!-- Eliminar (solo ADMIN, solo si ABIERTO) -->
+          <div *ngIf="ticketObj.ticket.state === 'ABIERTO' && isAdmin()" class="pt-3 border-t border-gray-200">
             <button-atom [type]="'button'" [color]="'red'" [variant]="'solid'" [size]="'md'" (click)="delete.emit()" [extraClass]="'w-full'">
               <i class="fas fa-trash-alt mr-2"></i>
               Eliminar
             </button-atom>
           </div>
 
-          <!-- Ver Historial -->
+          <!-- Ver Historial (visible para todos) -->
           <div class="pt-3 border-t border-gray-200">
             <button-atom [type]="'button'" [color]="'blue'" [variant]="'solid'" [size]="'md'" (click)="viewRecords()" [extraClass]="'w-full'">
               <i class="fas fa-history mr-2"></i>
