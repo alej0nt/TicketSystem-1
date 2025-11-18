@@ -94,7 +94,7 @@ public class TicketController {
         @ApiResponse(responseCode = "400", description = "Parámetros de consulta inválidos."),
         @ApiResponse(responseCode = "500", description = "Error interno del servidor.")
     })
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN','USER')")
     @GetMapping
     public ResponseEntity<List<TicketResponseDTO>> getAllTickets() {
         List<TicketResponseDTO> tickets = ticketService.getAllTickets();
